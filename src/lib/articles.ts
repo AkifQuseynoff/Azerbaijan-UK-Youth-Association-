@@ -1,0 +1,322 @@
+import { SEED_ARTICLES } from "../data/news";
+import type { Article, ArticleInput, NewsCategory } from "../types";
+import { isSupabaseConfigured, supabase } from "./supabase";
+
+const LOCAL_KEY = "auya_articles";
+const PAGE_SIZE = 6;
+
+type ArticleRow = {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  body: string;
+  category: Article["category"];
+  cover_path: string | null;
+  author_name: string;
+  author_id: string | null;
+  status: Article["status"];
+  featured: boolean;
+  published_at: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+function coverPublicUrl(path: string | null, fallback = ""): string {
+  if (!path) return fallback;
+  if (path.startsWith("http") || path.startsWith("data:")) return path;
+  if (!supabase) return fallback;
+  const { data } = supabase.storage.from("news-covers").getPublicUrl(path);
+  return data.publicUrl;
+}
+
+function fromRow(row: ArticleRow): Article {
+  return {
+    id: row.id,
+    slug: row.slug,
+    title: row.title,
+    excerpt: row.excerpt,
+    body: row.body,
+    category: row.category,
+    coverPath: row.cover_path,
+    coverUrl: coverPublicUrl(row.cover_path),
+    authorName: row.author_name,
+    authorId: row.author_id,
+    status: row.status,
+    featured: row.featured,
+    publishedAt: row.published_at,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
+function isLive(article: Article, now = Date.now()): boolean {
+  if (article.status !== "published" || !article.publishedAt) return false;
+  return new Date(article.publishedAt).getTime() <= now;
+}
+
+function loadLocal(): Article[] {
+  try {
+    const raw = localStorage.getItem(LOCAL_KEY);
+    if (!raw) {
+      localStorage.setItem(LOCAL_KEY, JSON.stringify(SEED_ARTICLES));
+      return SEED_ARTICLES.map((a) => ({ ...a }));
+    }
+    return JSON.parse(raw) as Article[];
+  } catch {
+    return SEED_ARTICLES.map((a) => ({ ...a }));
+  }
+}
+
+function saveLocal(articles: Article[]) {
+  localStorage.setItem(LOCAL_KEY, JSON.stringify(articles));
+}
+
+function matchesQuery(article: Article, query: string): boolean {
+  if (!query.trim()) return true;
+  const q = query.toLowerCase();
+  return (
+    article.title.toLowerCase().includes(q) ||
+    article.excerpt.toLowerCase().includes(q) ||
+    article.body.toLowerCase().includes(q)
+  );
+}
+
+export async function listPublishedArticles(options: {
+  category?: NewsCategory;
+  query?: string;
+  page?: number;
+  pageSize?: number;
+}): Promise<{ articles: Article[]; featured: Article | null; total: number; pageSize: number }> {
+  const page = options.page ?? 1;
+  const pageSize = options.pageSize ?? PAGE_SIZE;
+  const category = options.category && options.category !== "All" ? options.category : undefined;
+  const query = options.query ?? "";
+
+  if (supabase && isSupabaseConfigured) {
+    let request = supabase
+      .from("articles")
+      .select("*", { count: "exact" })
+      .eq("status", "published")
+      .lte("published_at", new Date().toISOString())
+      .order("published_at", { ascending: false });
+
+    if (category) request = request.eq("category", category);
+    if (query.trim()) {
+      const like = `%${query.trim().replace(/[%(),]/g, "")}%`;
+      request = request.or(`title.ilike.${like},excerpt.ilike.${like},body.ilike.${like}`);
+    }
+
+    const featuredQuery = supabase
+      .from("articles")
+      .select("*")
+      .eq("status", "published")
+      .eq("featured", true)
+      .lte("published_at", new Date().toISOString())
+      .order("published_at", { ascending: false })
+      .limit(1);
+
+    const [{ data, error, count }, featuredRes] = await Promise.all([
+      request.range((page - 1) * pageSize, page * pageSize - 1),
+      featuredQuery,
+    ]);
+    if (error) throw error;
+
+    const featuredRow = (featuredRes.data ?? [])[0] as ArticleRow | undefined;
+    const featured = featuredRow ? fromRow(featuredRow) : null;
+    return {
+      articles: ((data ?? []) as ArticleRow[]).map(fromRow),
+      featured: !category && !query ? featured : null,
+      total: count ?? 0,
+      pageSize,
+    };
+  }
+
+  const all = loadLocal()
+    .filter((a) => isLive(a))
+    .sort((a, b) => (b.publishedAt ?? "").localeCompare(a.publishedAt ?? ""));
+  const featured = all.find((a) => a.featured) ?? all[0] ?? null;
+  const filtered = all.filter((a) => (!category || a.category === category) && matchesQuery(a, query));
+  const start = (page - 1) * pageSize;
+  return {
+    articles: filtered.slice(start, start + pageSize),
+    featured: !category && !query ? featured : null,
+    total: filtered.length,
+    pageSize,
+  };
+}
+
+export async function getPublishedArticle(slug: string): Promise<Article | null> {
+  if (supabase && isSupabaseConfigured) {
+    const { data, error } = await supabase
+      .from("articles")
+      .select("*")
+      .eq("slug", slug)
+      .eq("status", "published")
+      .lte("published_at", new Date().toISOString())
+      .maybeSingle();
+    if (error) throw error;
+    return data ? fromRow(data as ArticleRow) : null;
+  }
+  return loadLocal().find((a) => a.slug === slug && isLive(a)) ?? null;
+}
+
+export async function getRelatedArticles(article: Article, limit = 3): Promise<Article[]> {
+  if (supabase && isSupabaseConfigured) {
+    const { data, error } = await supabase
+      .from("articles")
+      .select("*")
+      .eq("status", "published")
+      .eq("category", article.category)
+      .neq("id", article.id)
+      .lte("published_at", new Date().toISOString())
+      .order("published_at", { ascending: false })
+      .limit(limit);
+    if (error) throw error;
+    return ((data ?? []) as ArticleRow[]).map(fromRow);
+  }
+  return loadLocal()
+    .filter((a) => a.id !== article.id && a.category === article.category && isLive(a))
+    .slice(0, limit);
+}
+
+export async function listLatestPublished(limit = 3): Promise<Article[]> {
+  const { articles } = await listPublishedArticles({ page: 1, pageSize: limit });
+  return articles;
+}
+
+export async function listStaffArticles(): Promise<Article[]> {
+  if (supabase && isSupabaseConfigured) {
+    const { data, error } = await supabase
+      .from("articles")
+      .select("*")
+      .order("updated_at", { ascending: false });
+    if (error) throw error;
+    return ((data ?? []) as ArticleRow[]).map(fromRow);
+  }
+  return loadLocal().sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+}
+
+export async function getStaffArticle(id: string): Promise<Article | null> {
+  if (supabase && isSupabaseConfigured) {
+    const { data, error } = await supabase.from("articles").select("*").eq("id", id).maybeSingle();
+    if (error) throw error;
+    return data ? fromRow(data as ArticleRow) : null;
+  }
+  return loadLocal().find((a) => a.id === id) ?? null;
+}
+
+async function uploadCover(file: File, slug: string): Promise<string> {
+  if (!supabase) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result));
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(file);
+    });
+  }
+  const ext = file.name.split(".").pop() || "jpg";
+  const path = `${slug}-${crypto.randomUUID()}.${ext}`;
+  const { error } = await supabase.storage.from("news-covers").upload(path, file, { upsert: true });
+  if (error) throw error;
+  return path;
+}
+
+export async function saveArticle(id: string | null, input: ArticleInput, authorId: string | null): Promise<Article> {
+  let coverPath: string | null = input.coverUrl ?? null;
+  if (input.coverFile) {
+    coverPath = await uploadCover(input.coverFile, input.slug);
+  }
+
+  const publishedAt =
+    input.status === "published"
+      ? input.publishedAt ?? new Date().toISOString()
+      : input.status === "scheduled"
+        ? input.publishedAt
+        : input.publishedAt;
+
+  if (supabase && isSupabaseConfigured) {
+    const payload = {
+      slug: input.slug,
+      title: input.title,
+      excerpt: input.excerpt,
+      body: input.body,
+      category: input.category,
+      cover_path: coverPath,
+      author_name: input.authorName,
+      author_id: authorId,
+      status: input.status,
+      featured: input.featured,
+      published_at: publishedAt,
+    };
+    if (id) {
+      const { data, error } = await supabase.from("articles").update(payload).eq("id", id).select("*").single();
+      if (error) throw error;
+      return fromRow(data as ArticleRow);
+    }
+    const { data, error } = await supabase.from("articles").insert(payload).select("*").single();
+    if (error) throw error;
+    return fromRow(data as ArticleRow);
+  }
+
+  const articles = loadLocal();
+  const now = new Date().toISOString();
+  if (id) {
+    const next = articles.map((a) =>
+      a.id === id
+        ? {
+            ...a,
+            ...input,
+            coverPath,
+            coverUrl: coverPath && (coverPath.startsWith("http") || coverPath.startsWith("data:")) ? coverPath : a.coverUrl,
+            authorId,
+            publishedAt,
+            updatedAt: now,
+          }
+        : a,
+    );
+    saveLocal(next);
+    return next.find((a) => a.id === id)!;
+  }
+
+  const created: Article = {
+    id: crypto.randomUUID(),
+    slug: input.slug,
+    title: input.title,
+    excerpt: input.excerpt,
+    body: input.body,
+    category: input.category,
+    coverPath,
+    coverUrl:
+      coverPath && (coverPath.startsWith("http") || coverPath.startsWith("data:"))
+        ? coverPath
+        : "https://images.unsplash.com/photo-1612779361237-966485682855?w=800&h=500&fit=crop&auto=format",
+    authorName: input.authorName,
+    authorId,
+    status: input.status,
+    featured: input.featured,
+    publishedAt,
+    createdAt: now,
+    updatedAt: now,
+  };
+  saveLocal([created, ...articles]);
+  return created;
+}
+
+export async function setArticleStatus(id: string, status: Article["status"]): Promise<void> {
+  const publishedAt = status === "published" ? new Date().toISOString() : undefined;
+  if (supabase && isSupabaseConfigured) {
+    const payload: Record<string, unknown> = { status };
+    if (publishedAt) payload.published_at = publishedAt;
+    const { error } = await supabase.from("articles").update(payload).eq("id", id);
+    if (error) throw error;
+    return;
+  }
+  saveLocal(
+    loadLocal().map((a) =>
+      a.id === id
+        ? { ...a, status, publishedAt: publishedAt ?? a.publishedAt, updatedAt: new Date().toISOString() }
+        : a,
+    ),
+  );
+}
