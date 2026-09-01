@@ -1,0 +1,76 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+@import 'tailwindcss';
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+:root {
+  --navy: #003580;
+  --navy-dark: #002060;
+  --navy-light: #0d4ba0;
+  --crimson: #CC2229;
+  --crimson-light: #e83038;
+  --teal: #00997A;
+  --teal-light: #00b891;
+  --gold: #F5C518;
+  --bg: #F4F6FB;
+  --surface: #ffffff;
+  --text-primary: #0D1B2A;
+  --text-secondary: #4A5568;
+  --border: #D9E2EF;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  color: var(--text-primary);
+  background: var(--bg);
+}
+
+.font-display {
+  font-family: 'DM Serif Display', serif;
+}
+
+/* Hide scrollbar by default */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 53, 128, 0.25);
+  border-radius: 3px;
+}
+
+/* Flag stripe accent */
+.flag-stripe {
+  background: linear-gradient(to right, #003580 33.33%, #CC2229 33.33% 66.66%, #00997A 66.66%);
+}
+
+/* Smooth transitions */
+.page-transition {
+  animation: fadeUp 0.35s ease;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Form focus ring */
+input:focus, select:focus, textarea:focus {
+  outline: 2px solid var(--navy);
+  outline-offset: 2px;
+}
+
+/* FAQ accordion */
+details summary::-webkit-details-marker {
+  display: none;
+}
