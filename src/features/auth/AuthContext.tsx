@@ -26,6 +26,7 @@ type AuthContextValue = {
   updatePassword: (password: string) => Promise<void>;
   updateProfile: (patch: Partial<Profile>) => Promise<void>;
   isStaff: boolean;
+  isAdmin: boolean;
 };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -185,6 +186,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       demo: isDemoMode,
       needsEmailConfirmation,
       isStaff: profile?.role === "editor" || profile?.role === "admin",
+      isAdmin: profile?.role === "admin",
       signUp: async (payload) => {
         setNeedsEmailConfirmation(false);
         if (supabase && isSupabaseConfigured) {

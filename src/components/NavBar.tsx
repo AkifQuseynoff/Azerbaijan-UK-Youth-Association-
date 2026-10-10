@@ -5,7 +5,7 @@ import Logo from "./Logo";
 
 export default function NavBar() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { profile, isStaff, signOut } = useAuth();
+  const { profile, isStaff, isAdmin, signOut } = useAuth();
 
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     `px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
@@ -28,6 +28,7 @@ export default function NavBar() {
             <>
               <NavLink to="/admin/news" className={linkClass}>Newsroom</NavLink>
               <NavLink to="/admin/events" className={linkClass}>Manage events</NavLink>
+              {isAdmin && <NavLink to="/admin/members" className={linkClass}>Members</NavLink>}
             </>
           )}
           {profile ? (
@@ -97,6 +98,11 @@ export default function NavBar() {
               <NavLink to="/admin/events" onClick={() => setMobileOpen(false)} className="px-4 py-3 rounded-lg text-sm text-blue-200">
                 Manage events
               </NavLink>
+              {isAdmin && (
+                <NavLink to="/admin/members" onClick={() => setMobileOpen(false)} className="px-4 py-3 rounded-lg text-sm text-blue-200">
+                  Members
+                </NavLink>
+              )}
             </>
           )}
           {profile ? (

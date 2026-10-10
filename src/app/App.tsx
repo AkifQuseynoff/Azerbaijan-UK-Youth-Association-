@@ -24,6 +24,7 @@ import TermsPage from "../pages/TermsPage";
 const AdminNewsPage = lazy(() => import("../features/news/admin/AdminNewsPage"));
 const AdminNewsEditorPage = lazy(() => import("../features/news/admin/AdminNewsEditorPage"));
 const AdminEventsPage = lazy(() => import("../features/events/admin/AdminEventsPage"));
+const AdminMembersPage = lazy(() => import("../features/members/AdminMembersPage"));
 const AdminEventEditorPage = lazy(() => import("../features/events/admin/AdminEventEditorPage"));
 
 export default function App() {
@@ -55,6 +56,9 @@ export default function App() {
                   <Route path="/admin/news/:id" element={<AdminNewsEditorPage />} />
                   <Route path="/admin/events" element={<AdminEventsPage />} />
                   <Route path="/admin/events/:id" element={<AdminEventEditorPage />} />
+                </Route>
+                <Route element={<RequireAuth admin />}>
+                  <Route path="/admin/members" element={<AdminMembersPage />} />
                 </Route>
                 <Route path="*" element={<NotFoundPage />} />
               </Route>
