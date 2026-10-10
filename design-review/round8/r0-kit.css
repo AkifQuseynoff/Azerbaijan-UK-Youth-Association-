@@ -1,0 +1,38 @@
+/* Stitched rail: the track plus three yarn fills (blue, red, green) clipped to the progress */
+.r3-rail { position: relative; height: 15px; }
+.r3-rail i { position: absolute; inset: 0; background-repeat: repeat-x; background-size: 18px 15px; }
+.r3-rail .f { will-change: clip-path; }
+/* On phones the page progress runs along the top edge, where a thumb never covers it */
+.r3-top { position: fixed; top: 0; left: 0; right: 0; z-index: 2147482000; height: 15px; pointer-events: none; padding-top: env(safe-area-inset-top); box-sizing: content-box; filter: drop-shadow(0 1px 1px rgba(255, 255, 255, 0.6)); }
+
+/* ---- Shared mark: arcs above the logo (always outside every letter, always behind it), a soft halo, then the logo igniting.
+   The three flames sway very slowly afterwards. Time-driven only: the pointer does nothing. ---- */
+.mk { position: relative; padding-block: 12%; width: var(--mk-w, min(75%, 420px, 58svh)); }
+.mk-halo { position: absolute; z-index: 0; left: 4%; right: 4%; top: 50%; aspect-ratio: 1; transform: translateY(-50%); border-radius: 50%; background: radial-gradient(circle at 50% 56%, rgba(194, 48, 40, 0.13), rgba(47, 108, 192, 0.09) 52%, transparent 72%); opacity: 0; animation: mk-fade 1.6s cubic-bezier(0.23, 1, 0.32, 1) 0.9s forwards, mk-breathe 9s ease-in-out 3s infinite; pointer-events: none; }
+.mk-arcs { position: absolute; z-index: 0; left: -18.75%; top: 50%; width: 137.5%; aspect-ratio: 1; transform: translateY(-50%) rotate(90deg); pointer-events: none; overflow: visible; }
+.mk-arcs circle { fill: none; stroke-width: 0.9; stroke-linecap: round; stroke-dasharray: 0 100; }
+.mk-arcs .a { stroke: #2f6cc0; stroke-dashoffset: -20; animation: mk-arc-a 1.6s cubic-bezier(0.23, 1, 0.32, 1) 0.2s forwards; }
+.mk-arcs .b { stroke: #c23028; stroke-dashoffset: -40.83; animation: mk-arc-b 1.6s cubic-bezier(0.23, 1, 0.32, 1) 0.55s forwards; }
+.mk-arcs .c { stroke: #3e894c; stroke-dashoffset: -60.56; animation: mk-arc-c 1.6s cubic-bezier(0.23, 1, 0.32, 1) 0.9s forwards; }
+@keyframes mk-arc-a { to { stroke-dasharray: 19.44 100; } } @keyframes mk-arc-b { to { stroke-dasharray: 18.33 100; } } @keyframes mk-arc-c { to { stroke-dasharray: 19.44 100; } }
+@keyframes mk-fade { to { opacity: 1; } }
+@keyframes mk-breathe { 0%, 100% { transform: translateY(-50%) scale(1); } 50% { transform: translateY(-50%) scale(1.04); } }
+.mk-logo { position: relative; z-index: 1; width: 100%; height: auto; display: block; }
+.mk-logo .lg-swoosh, .mk-logo .lg-red, .mk-logo .lg-green { transform-box: fill-box; transform-origin: 50% 100%; }
+@keyframes mk-sway-a { 0%, 100% { transform: none; } 50% { transform: skewX(0.6deg) scaleY(1.008); } }
+@keyframes mk-sway-b { 0%, 100% { transform: none; } 30% { transform: skewX(1.1deg) scaleY(1.016); } 70% { transform: skewX(-0.9deg) scaleY(0.992); } }
+@keyframes mk-sway-c { 0%, 100% { transform: none; } 35% { transform: skewX(-1deg) scaleY(1.014); } 75% { transform: skewX(0.8deg) scaleY(0.994); } }
+.mk-logo .lg-swoosh { animation: mk-sway-a 11s ease-in-out 4.9s infinite; }
+.mk-logo .lg-red { animation: mk-sway-b 9s ease-in-out 5.5s infinite; }
+.mk-logo .lg-green { animation: mk-sway-c 10s ease-in-out 6.1s infinite; }
+/* small logos (header, footer) just sway */
+.az-root .az-logo-solid:not(.mk-logo) .lg-red { animation: mk-sway-b 9s ease-in-out infinite; }
+.az-root .az-logo-solid:not(.mk-logo) .lg-green { animation: mk-sway-c 10s ease-in-out -3s infinite; }
+/* the Flame Towers take the logo's colours as the logo's own flames emerge */
+.si-towers path { animation: mk-lit 2.4s ease-in-out backwards; }
+.si-towers .t1 { fill: #2f6cc0; animation-delay: 2.4s; } .si-towers .t2 { fill: #c23028; animation-delay: 3s; } .si-towers .t3 { fill: #3e894c; animation-delay: 3.6s; }
+@keyframes mk-lit { from { fill: #0e1f45; } }
+@media (prefers-reduced-motion: reduce) {
+  .mk-halo { animation: none; opacity: 1; } .mk-arcs circle { animation: none; } .mk-arcs .a { stroke-dasharray: 19.44 100; } .mk-arcs .b { stroke-dasharray: 18.33 100; } .mk-arcs .c { stroke-dasharray: 19.44 100; }
+  .mk-logo .lg-swoosh, .mk-logo .lg-red, .mk-logo .lg-green, .az-root .az-logo-solid:not(.mk-logo) .lg-red, .az-root .az-logo-solid:not(.mk-logo) .lg-green, .si-towers path { animation: none; }
+}
