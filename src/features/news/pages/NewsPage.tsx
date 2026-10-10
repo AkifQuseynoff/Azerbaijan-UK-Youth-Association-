@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import FlagDivider from "../components/FlagDivider";
-import NewsCard from "../components/NewsCard";
-import { listPublishedArticles } from "../lib/articles";
-import type { Article, NewsCategory } from "../types";
-import { NEWS_CATEGORIES, categoryColors, formatArticleDate, readTimeFromBody } from "../types";
+import FlagDivider from "../../../components/ui/FlagDivider";
+import NewsCard from "../NewsCard";
+import { listPublishedArticles } from "../api";
+import type { Article, NewsCategory } from "../../../types";
+import { categoryColors } from "../../../constants";
+import { NEWS_CATEGORIES, formatArticleDate, readTimeFromBody } from "../../../types";
 
 export default function NewsPage() {
   const [activeCategory, setActiveCategory] = useState<NewsCategory>("All");
@@ -84,6 +85,7 @@ export default function NewsPage() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search articles"
+            aria-label="Search articles"
             className="w-full md:w-72 border border-gray-300 rounded-xl px-4 py-2.5 text-sm bg-white"
           />
         </div>

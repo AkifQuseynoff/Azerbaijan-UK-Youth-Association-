@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import FlagDivider from "../../components/FlagDivider";
-import { listStaffArticles, setArticleStatus } from "../../lib/articles";
-import type { Article } from "../../types";
-import { formatArticleDate } from "../../types";
+import FlagDivider from "../../../components/ui/FlagDivider";
+import { listStaffArticles, setArticleStatus } from "../api";
+import type { Article } from "../../../types";
+import { formatArticleDate } from "../../../types";
 
 export default function AdminNewsPage() {
   const [articles, setArticles] = useState<Article[]>([]);

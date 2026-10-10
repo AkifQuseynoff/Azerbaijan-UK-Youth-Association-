@@ -1,12 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import FlagDivider from "../components/FlagDivider";
-import { useAuth } from "../context/AuthContext";
-
-const interestOptions = [
-  "Cultural events", "Language classes", "Career networking", "Scholarship opportunities",
-  "Mentorship", "Volunteering", "Sports & recreation", "Arts & music",
-];
+import { INTERESTS } from "../../constants";
+import { Field } from "../../components/ui/Field";
+import FlagDivider from "../../components/ui/FlagDivider";
+import { useAuth } from "../auth/AuthContext";
 
 export default function AccountPage() {
   const { profile, updateProfile, signOut, isStaff } = useAuth();
@@ -61,34 +58,28 @@ export default function AccountPage() {
         <form onSubmit={(e) => void handleSave(e)} className="bg-white rounded-2xl p-8 border border-gray-100 space-y-5">
           <div className="grid sm:grid-cols-2 gap-5">
             <div>
-              <label className="block text-sm font-medium mb-1.5">First name</label>
-              <input value={form.firstName} onChange={(e) => setForm({ ...form, firstName: e.target.value })} className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm" />
+              <Field label="First name" value={form.firstName} onChange={(e) => setForm({ ...form, firstName: e.target.value })} />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1.5">Last name</label>
-              <input value={form.lastName} onChange={(e) => setForm({ ...form, lastName: e.target.value })} className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm" />
+              <Field label="Last name" value={form.lastName} onChange={(e) => setForm({ ...form, lastName: e.target.value })} />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1.5">Phone</label>
-              <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm" />
+              <Field label="Phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1.5">City</label>
-              <input value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm" />
+              <Field label="City" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1.5">Occupation</label>
-              <input value={form.occupation} onChange={(e) => setForm({ ...form, occupation: e.target.value })} className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm" />
+              <Field label="Occupation" value={form.occupation} onChange={(e) => setForm({ ...form, occupation: e.target.value })} />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1.5">University</label>
-              <input value={form.university} onChange={(e) => setForm({ ...form, university: e.target.value })} className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm" />
+              <Field label="University" value={form.university} onChange={(e) => setForm({ ...form, university: e.target.value })} />
             </div>
           </div>
           <div>
             <p className="text-sm font-medium mb-3">Interests</p>
             <div className="grid sm:grid-cols-2 gap-2">
-              {interestOptions.map((interest) => (
+              {INTERESTS.map((interest) => (
                 <label key={interest} className="flex items-center gap-2 text-sm">
                   <input type="checkbox" checked={form.interests.includes(interest)} onChange={() => toggleInterest(interest)} className="accent-[#003580]" />
                   {interest}
@@ -105,7 +96,10 @@ export default function AccountPage() {
           <div className="flex flex-wrap gap-3">
             <button type="submit" className="px-6 py-3 bg-[#003580] text-white font-semibold rounded-xl">Save changes</button>
             {isStaff && (
-              <Link to="/admin/news" className="px-6 py-3 bg-[#00997A] text-white font-semibold rounded-xl">Open newsroom</Link>
+              <>
+                <Link to="/admin/news" className="px-6 py-3 bg-[#00997A] text-white font-semibold rounded-xl">Open newsroom</Link>
+                <Link to="/admin/events" className="px-6 py-3 bg-[#00997A] text-white font-semibold rounded-xl">Manage events</Link>
+              </>
             )}
             <button type="button" onClick={() => void signOut()} className="px-6 py-3 border border-gray-300 rounded-xl font-semibold">
               Log out

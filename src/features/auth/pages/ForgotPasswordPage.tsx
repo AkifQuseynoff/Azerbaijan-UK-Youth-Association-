@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import FlagDivider from "../components/FlagDivider";
-import { useAuth } from "../context/AuthContext";
+import { Field } from "../../../components/ui/Field";
+import FlagDivider from "../../../components/ui/FlagDivider";
+import { useAuth } from "../AuthContext";
 
 export default function ForgotPasswordPage() {
   const { requestPasswordReset, configured } = useAuth();
@@ -41,7 +42,7 @@ export default function ForgotPasswordPage() {
           </div>
         ) : (
           <form onSubmit={(e) => void handleSubmit(e)} className="bg-white rounded-2xl p-8 border border-gray-100 space-y-5">
-            <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email address" className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm" />
+            <div><Field label="Email address" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" /></div>
             {error && <p className="text-[#CC2229] text-sm">{error}</p>}
             <button type="submit" className="w-full py-3 bg-[#003580] text-white font-semibold rounded-xl">Send reset link</button>
           </form>

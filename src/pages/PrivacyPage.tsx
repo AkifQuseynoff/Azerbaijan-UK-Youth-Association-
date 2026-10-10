@@ -1,4 +1,4 @@
-import FlagDivider from "../components/FlagDivider";
+import FlagDivider from "../components/ui/FlagDivider";
 
 export default function PrivacyPage() {
   return (

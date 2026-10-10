@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import NewsCard from "../components/NewsCard";
-import FlagDivider from "../components/FlagDivider";
-import { listLatestPublished } from "../lib/articles";
+import NewsCard from "../features/news/NewsCard";
+import FlagDivider from "../components/ui/FlagDivider";
+import { listLatestPublished } from "../features/news/api";
 import type { Article } from "../types";
 
 export default function HomePage() {

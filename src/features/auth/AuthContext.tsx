@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
-import type { Profile, RegisterPayload } from "../types";
-import { isDemoMode, isSupabaseConfigured, supabase } from "../lib/supabase";
+import type { Profile, RegisterPayload } from "../../types";
+import { isDemoMode, isSupabaseConfigured, supabase } from "../../lib/supabase";
 
 const USERS_KEY = "auya_local_users";
 const SESSION_KEY = "auya_local_session";

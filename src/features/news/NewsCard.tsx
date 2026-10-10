@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
-import type { Article } from "../types";
-import { categoryColors, formatArticleDate, readTimeFromBody } from "../types";
+import type { Article } from "../../types";
+import { categoryColors } from "../../constants";
+import { formatArticleDate, readTimeFromBody } from "../../types";
 
 export default function NewsCard({ article }: { article: Article }) {
   return (

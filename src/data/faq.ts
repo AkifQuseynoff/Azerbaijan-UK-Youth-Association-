@@ -9,7 +9,7 @@ export const FAQ = [
   },
   {
     q: "How do I register for events?",
-    a: "Once you are a registered member, you can book event tickets through your member dashboard. Some events are open to non-members — these are clearly marked on the Events page.",
+    a: "Once you are a registered member, you can register for events directly from the Events page while logged in. Some events are open to non-members — these are clearly marked on the Events page.",
   },
   {
     q: "I am a student in the UK — can I access the scholarship fund?",

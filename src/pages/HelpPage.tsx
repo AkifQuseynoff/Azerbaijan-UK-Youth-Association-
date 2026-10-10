@@ -1,5 +1,5 @@
 import { useState } from "react";
-import FlagDivider from "../components/FlagDivider";
+import FlagDivider from "../components/ui/FlagDivider";
 import { FAQ } from "../data/faq";
 
 export default function HelpPage() {

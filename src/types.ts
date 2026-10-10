@@ -36,18 +36,6 @@ export interface ArticleInput {
   publishedAt: string | null;
 }
 
-export interface EventItem {
-  id: number;
-  title: string;
-  date: string;
-  time: string;
-  location: string;
-  description: string;
-  spots: number;
-  spotsLeft: number;
-  type: string;
-}
-
 export interface Profile {
   id: string;
   email: string;
@@ -81,16 +69,6 @@ export interface RegisterPayload {
   interests: string[];
   termsAccepted: boolean;
 }
-
-export const categoryColors: Record<string, string> = {
-  Culture: "bg-teal-600 text-white",
-  Events: "bg-blue-700 text-white",
-  Community: "bg-purple-600 text-white",
-  Announcements: "bg-red-600 text-white",
-  Education: "bg-emerald-600 text-white",
-  Networking: "bg-indigo-600 text-white",
-  Leadership: "bg-amber-600 text-white",
-};
 
 export const NEWS_CATEGORIES: NewsCategory[] = ["All", "Culture", "Events", "Community", "Announcements"];
 export const ARTICLE_CATEGORIES: ArticleCategory[] = ["Culture", "Events", "Community", "Announcements"];

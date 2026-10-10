@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import FlagDivider from "../components/FlagDivider";
-import { useAuth } from "../context/AuthContext";
+import { Field } from "../../../components/ui/Field";
+import FlagDivider from "../../../components/ui/FlagDivider";
+import { useAuth } from "../AuthContext";
 
 export default function LoginPage() {
   const { signIn, demo } = useAuth();
@@ -39,12 +40,10 @@ export default function LoginPage() {
       <div className="max-w-md mx-auto px-6 py-12">
         <form onSubmit={(e) => void handleSubmit(e)} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
-            <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm" autoComplete="email" />
+            <Field label="Email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
-            <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm" autoComplete="current-password" />
+            <Field label="Password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" />
           </div>
           {error && <p className="text-[#CC2229] text-sm">{error}</p>}
           <button type="submit" disabled={pending} className="w-full py-3 bg-[#003580] text-white font-semibold rounded-xl disabled:opacity-50">

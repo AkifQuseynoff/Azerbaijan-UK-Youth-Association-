@@ -1,4 +1,4 @@
-import type { Article } from "../types";
+import type { Article } from "../../types";
 
 export const SEED_ARTICLES: Article[] = [
   {

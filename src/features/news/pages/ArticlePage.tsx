@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import FlagDivider from "../components/FlagDivider";
-import NewsCard from "../components/NewsCard";
-import { MarkdownBody } from "../lib/markdown";
-import { getPublishedArticle, getRelatedArticles } from "../lib/articles";
-import type { Article } from "../types";
-import { categoryColors, formatArticleDate, readTimeFromBody } from "../types";
+import FlagDivider from "../../../components/ui/FlagDivider";
+import NewsCard from "../NewsCard";
+import { MarkdownBody } from "../markdown";
+import { getPublishedArticle, getRelatedArticles } from "../api";
+import type { Article } from "../../../types";
+import { categoryColors } from "../../../constants";
+import { formatArticleDate, readTimeFromBody } from "../../../types";
 
 export default function ArticlePage() {
   const { slug } = useParams();

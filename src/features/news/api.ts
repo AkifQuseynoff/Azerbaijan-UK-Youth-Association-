@@ -1,6 +1,6 @@
-import { SEED_ARTICLES } from "../data/news";
-import type { Article, ArticleInput, NewsCategory } from "../types";
-import { isSupabaseConfigured, supabase } from "./supabase";
+import { SEED_ARTICLES } from "./seedArticles";
+import type { Article, ArticleInput, NewsCategory } from "../../types";
+import { isSupabaseConfigured, supabase } from "../../lib/supabase";
 
 const LOCAL_KEY = "auya_articles";
 const PAGE_SIZE = 6;

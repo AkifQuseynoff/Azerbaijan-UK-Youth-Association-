@@ -1,13 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import FlagDivider from "../components/FlagDivider";
-import { useAuth } from "../context/AuthContext";
-import { ageFromDob, isValidEmail, passwordIssues } from "../lib/validation";
-
-const interestOptions = [
-  "Cultural events", "Language classes", "Career networking", "Scholarship opportunities",
-  "Mentorship", "Volunteering", "Sports & recreation", "Arts & music",
-];
+import FlagDivider from "../../../components/ui/FlagDivider";
+import { useAuth } from "../AuthContext";
+import { CITIES, HEARD_FROM_OPTIONS, INTERESTS } from "../../../constants";
+import { Field, SelectField } from "../../../components/ui/Field";
+import { ageFromDob, isValidEmail, passwordIssues } from "../../../lib/validation";
 
 export default function RegisterPage() {
   const { signUp, profile } = useAuth();
@@ -163,51 +160,36 @@ export default function RegisterPage() {
                 </h2>
                 <div className="grid sm:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">First name *</label>
-                    <input required type="text" value={form.firstName} onChange={(e) => setForm({ ...form, firstName: e.target.value })} className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm" />
+                    <Field label="First name *" required type="text" value={form.firstName} onChange={(e) => setForm({ ...form, firstName: e.target.value })} />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">Last name *</label>
-                    <input required type="text" value={form.lastName} onChange={(e) => setForm({ ...form, lastName: e.target.value })} className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm" />
+                    <Field label="Last name *" required type="text" value={form.lastName} onChange={(e) => setForm({ ...form, lastName: e.target.value })} />
                   </div>
                   <div className="sm:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">Email address *</label>
-                    <input required type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm" />
+                    <Field label="Email address *" required type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">Password *</label>
-                    <input required type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm" autoComplete="new-password" />
+                    <Field label="Password *" required type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} autoComplete="new-password" />
                     <p className="text-xs text-gray-400 mt-1">At least 8 characters, with upper, lower, and a number.</p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">Confirm password *</label>
-                    <input required type="password" value={form.confirmPassword} onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })} className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm" autoComplete="new-password" />
+                    <Field label="Confirm password *" required type="password" value={form.confirmPassword} onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })} autoComplete="new-password" />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">Phone number</label>
-                    <input type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm" />
+                    <Field label="Phone number" type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">Date of birth *</label>
-                    <input required type="date" value={form.dob} onChange={(e) => setForm({ ...form, dob: e.target.value })} className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm" />
+                    <Field label="Date of birth *" required type="date" value={form.dob} onChange={(e) => setForm({ ...form, dob: e.target.value })} />
                     <p className="text-xs text-gray-400 mt-1">You must be 16 or over. If you are 16 or 17, a parent or guardian should review our privacy notice with you.</p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">City in the UK *</label>
-                    <select required value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm bg-white">
-                      <option value="">Select city</option>
-                      {["London", "Manchester", "Birmingham", "Edinburgh", "Cardiff", "Leeds", "Glasgow", "Bristol", "Other"].map((c) => (
-                        <option key={c}>{c}</option>
-                      ))}
-                    </select>
+                    <SelectField label="City in the UK *" required value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} options={CITIES} placeholder="Select city" />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">Occupation</label>
-                    <input type="text" value={form.occupation} onChange={(e) => setForm({ ...form, occupation: e.target.value })} className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm" />
+                    <Field label="Occupation" type="text" value={form.occupation} onChange={(e) => setForm({ ...form, occupation: e.target.value })} />
                   </div>
                   <div className="sm:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">University (if applicable)</label>
-                    <input type="text" value={form.university} onChange={(e) => setForm({ ...form, university: e.target.value })} className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm" />
+                    <Field label="University (if applicable)" type="text" value={form.university} onChange={(e) => setForm({ ...form, university: e.target.value })} />
                   </div>
                 </div>
               </div>
@@ -220,7 +202,7 @@ export default function RegisterPage() {
                 </h2>
                 <p className="text-gray-500 text-sm mb-6">Select all that apply — helps us tailor what we send you.</p>
                 <div className="grid sm:grid-cols-2 gap-3 mb-8">
-                  {interestOptions.map((interest) => (
+                  {INTERESTS.map((interest) => (
                     <label
                       key={interest}
                       className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer ${
@@ -232,17 +214,7 @@ export default function RegisterPage() {
                     </label>
                   ))}
                 </div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">How did you hear about us?</label>
-                <select value={form.heardFrom} onChange={(e) => setForm({ ...form, heardFrom: e.target.value })} className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm bg-white">
-                  <option value="">Select an option</option>
-                  <option>Friend or family member</option>
-                  <option>Social media (Instagram)</option>
-                  <option>Social media (Facebook)</option>
-                  <option>University / college</option>
-                  <option>Google search</option>
-                  <option>Attended an event</option>
-                  <option>Other</option>
-                </select>
+                <SelectField label="How did you hear about us?" value={form.heardFrom} onChange={(e) => setForm({ ...form, heardFrom: e.target.value })} options={HEARD_FROM_OPTIONS} placeholder="Select an option" />
               </div>
             )}
 

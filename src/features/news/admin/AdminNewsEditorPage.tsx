@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import FlagDivider from "../../components/FlagDivider";
-import { useAuth } from "../../context/AuthContext";
-import { getStaffArticle, saveArticle } from "../../lib/articles";
-import { ARTICLE_CATEGORIES, slugify, toLocalInputValue, type ArticleCategory, type ArticleStatus } from "../../types";
+import { Field, SelectField, TextAreaField } from "../../../components/ui/Field";
+import FlagDivider from "../../../components/ui/FlagDivider";
+import { useAuth } from "../../auth/AuthContext";
+import { getStaffArticle, saveArticle } from "../api";
+import { ARTICLE_CATEGORIES, slugify, toLocalInputValue, type ArticleCategory, type ArticleStatus } from "../../../types";
 
 export default function AdminNewsEditorPage() {
   const { id } = useParams();
@@ -109,45 +110,34 @@ export default function AdminNewsEditorPage() {
       <div className="max-w-4xl mx-auto px-6 py-10">
         <div className="bg-white rounded-2xl p-8 border border-gray-100 space-y-5">
           <div>
-            <label className="block text-sm font-medium mb-1.5">Title</label>
-            <input value={form.title} onChange={(e) => handleTitle(e.target.value)} className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm" />
+            <Field label="Title" value={form.title} onChange={(e) => handleTitle(e.target.value)} />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1.5">Slug</label>
-            <input value={form.slug} onChange={(e) => setForm({ ...form, slug: slugify(e.target.value) })} className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm" />
+            <Field label="Slug" value={form.slug} onChange={(e) => setForm({ ...form, slug: slugify(e.target.value) })} />
           </div>
           <div className="grid sm:grid-cols-2 gap-5">
             <div>
-              <label className="block text-sm font-medium mb-1.5">Category</label>
-              <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value as ArticleCategory })} className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm bg-white">
-                {ARTICLE_CATEGORIES.map((c) => (
-                  <option key={c}>{c}</option>
-                ))}
-              </select>
+              <SelectField label="Category" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value as ArticleCategory })} options={ARTICLE_CATEGORIES} />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1.5">Byline</label>
-              <input value={form.authorName} onChange={(e) => setForm({ ...form, authorName: e.target.value })} className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm" />
+              <Field label="Byline" value={form.authorName} onChange={(e) => setForm({ ...form, authorName: e.target.value })} />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1.5">Excerpt</label>
-            <textarea value={form.excerpt} onChange={(e) => setForm({ ...form, excerpt: e.target.value })} rows={3} className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm resize-y" />
+            <TextAreaField label="Excerpt" value={form.excerpt} onChange={(e) => setForm({ ...form, excerpt: e.target.value })} rows={3} />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1.5">Body (Markdown)</label>
-            <textarea value={form.body} onChange={(e) => setForm({ ...form, body: e.target.value })} rows={12} className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm resize-y font-mono" />
+            <TextAreaField label="Body (Markdown)" value={form.body} onChange={(e) => setForm({ ...form, body: e.target.value })} rows={12} className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm resize-y font-mono" />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1.5">Cover image</label>
-            <input type="file" accept="image/*" onChange={(e) => setCoverFile(e.target.files?.[0] ?? null)} className="text-sm" />
+            <label htmlFor="cover-file" className="block text-sm font-medium mb-1.5">Cover image</label>
+            <input id="cover-file" type="file" accept="image/*" onChange={(e) => setCoverFile(e.target.files?.[0] ?? null)} className="text-sm" />
             {form.coverUrl && !coverFile && (
               <img src={form.coverUrl} alt="" className="mt-3 h-32 object-cover rounded-xl" />
             )}
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1.5">Publish at (for scheduling)</label>
-            <input type="datetime-local" value={form.publishedAt} onChange={(e) => setForm({ ...form, publishedAt: e.target.value })} className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm" />
+            <Field label="Publish at (for scheduling)" type="datetime-local" value={form.publishedAt} onChange={(e) => setForm({ ...form, publishedAt: e.target.value })} />
           </div>
           <label className="flex items-center gap-2 text-sm">
             <input type="checkbox" checked={form.featured} onChange={(e) => setForm({ ...form, featured: e.target.checked })} className="accent-[#003580]" />

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../features/auth/AuthContext";
 import Logo from "./Logo";
 
 export default function NavBar() {
@@ -25,7 +25,10 @@ export default function NavBar() {
           <NavLink to="/events" className={linkClass}>Events</NavLink>
           <NavLink to="/help" className={linkClass}>Help</NavLink>
           {isStaff && (
-            <NavLink to="/admin/news" className={linkClass}>Newsroom</NavLink>
+            <>
+              <NavLink to="/admin/news" className={linkClass}>Newsroom</NavLink>
+              <NavLink to="/admin/events" className={linkClass}>Manage events</NavLink>
+            </>
           )}
           {profile ? (
             <>
@@ -55,6 +58,7 @@ export default function NavBar() {
           className="md:hidden text-white p-2 rounded-lg hover:bg-white/10"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label="Toggle menu"
+          aria-expanded={mobileOpen}
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             {mobileOpen ? (
@@ -86,9 +90,14 @@ export default function NavBar() {
             </NavLink>
           ))}
           {isStaff && (
-            <NavLink to="/admin/news" onClick={() => setMobileOpen(false)} className="px-4 py-3 rounded-lg text-sm text-blue-200">
-              Newsroom
-            </NavLink>
+            <>
+              <NavLink to="/admin/news" onClick={() => setMobileOpen(false)} className="px-4 py-3 rounded-lg text-sm text-blue-200">
+                Newsroom
+              </NavLink>
+              <NavLink to="/admin/events" onClick={() => setMobileOpen(false)} className="px-4 py-3 rounded-lg text-sm text-blue-200">
+                Manage events
+              </NavLink>
+            </>
           )}
           {profile ? (
             <>
