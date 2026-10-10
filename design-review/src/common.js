@@ -2,6 +2,19 @@
 (function () {
   'use strict';
   var AZ = (window.AZ = { variants: [] });
+  AZ.fail = function (msg) {
+    var box = document.getElementById('az-error');
+    if (!box) {
+      box = document.createElement('div');
+      box.id = 'az-error';
+      box.setAttribute('role', 'alert');
+      box.style.cssText = 'position:fixed;left:12px;right:12px;top:12px;z-index:2147483647;padding:14px 16px;border-radius:12px;background:#fff;color:#8a0f1a;font:14px/1.45 -apple-system,system-ui,sans-serif;box-shadow:0 8px 30px rgba(0,0,0,.3)';
+      document.body.appendChild(box);
+    }
+    box.innerHTML = '<b>Something went wrong on this device.</b><br>Please send this text back so it can be fixed:<br><code style="word-break:break-all">' + String(msg).replace(/</g, '&lt;') + '</code><br>(' + navigator.userAgent.replace(/</g, '&lt;') + ')';
+  };
+  window.addEventListener('error', function (e) { AZ.fail((e.message || 'error') + ' @ line ' + (e.lineno || '?')); });
+  var loading = document.getElementById('az-loading');
   var RM = window.matchMedia('(prefers-reduced-motion: reduce)');
   AZ.reduced = function () { return RM.matches; };
 
@@ -238,7 +251,8 @@
       ctx = makeCtx(root);
       root.addEventListener('click', function (e) { var a = e.target.closest('a[href="#"]'); if (a) e.preventDefault(); });
       window.scrollTo(0, 0);
-      v.mount(ctx);
+      var l = document.getElementById('az-loading'); if (l) l.remove();
+      try { v.mount(ctx); } catch (err) { AZ.fail(err && err.message ? err.message : err); }
       updateTagline();
     });
   }

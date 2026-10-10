@@ -6,7 +6,7 @@
 }
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
-body { margin: 0; background: #111; -webkit-font-smoothing: antialiased; }
+body { margin: 0; background: #f4f1ea; -webkit-font-smoothing: antialiased; }
 .az-root { min-height: 100vh; overflow-x: clip; }
 :where(.az-root) a { color: inherit; text-decoration: none; }
 :where(.az-root) button { font: inherit; color: inherit; }

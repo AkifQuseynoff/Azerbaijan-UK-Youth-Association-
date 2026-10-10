@@ -38,7 +38,7 @@ for (const f of fonts) {
 const read = (n) => readFileSync(join(src, n), "utf8");
 const variantFiles = readdirSync(src).filter((n) => /^v\d+-.*\.(js|css)$/.test(n)).sort();
 const css = [read("common.css"), ...variantFiles.filter((n) => n.endsWith(".css")).map(read)].join("\n");
-const js = [read("common.js"), ...variantFiles.filter((n) => n.endsWith(".js")).map(read), "AZ.start();"].join("\n");
+const js = [read("common.js"), ...variantFiles.filter((n) => n.endsWith(".js")).map(read), "try { AZ.start(); } catch (e) { AZ.fail(e && e.message ? e.message : e); }"].join("\n");
 
 const html = read("template.html")
   .replace("/*FONTS*/", () => fontCss)
