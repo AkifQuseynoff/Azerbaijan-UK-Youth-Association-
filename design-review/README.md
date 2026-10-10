@@ -6,6 +6,7 @@ emailed, attached or opened by double-click, offline.
 ```bash
 node design-review/build.mjs round1   # first five directions
 node design-review/build.mjs round2   # second round: Siluet, Ilmə, Alov (with the new logo)
+node design-review/build.mjs round6   # sixth round: flames emerge through a feathered wipe, one clean skyline
 node design-review/build.mjs round5   # fifth round: Siluet, logo ignites, then blue/red/green flames, calm sway
 node design-review/build.mjs round4   # fourth round: Siluet only, with real fire
 node design-review/build.mjs round3   # third round: refined Alov, quicker Ilmə, refined Siluet (logo colours, phone-first motion)
