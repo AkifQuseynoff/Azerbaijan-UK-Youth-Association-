@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import FlagDivider from "../../components/FlagDivider";
 import { useAuth } from "../../context/AuthContext";
 import { getStaffArticle, saveArticle } from "../../lib/articles";
-import { ARTICLE_CATEGORIES, slugify, type ArticleCategory, type ArticleStatus } from "../../types";
+import { ARTICLE_CATEGORIES, slugify, toLocalInputValue, type ArticleCategory, type ArticleStatus } from "../../types";
 
 export default function AdminNewsEditorPage() {
   const { id } = useParams();
@@ -43,7 +43,7 @@ export default function AdminNewsEditorPage() {
         authorName: article.authorName,
         status: article.status,
         featured: article.featured,
-        publishedAt: article.publishedAt ? article.publishedAt.slice(0, 16) : "",
+        publishedAt: toLocalInputValue(article.publishedAt),
       });
     });
   }, [id, isNew]);

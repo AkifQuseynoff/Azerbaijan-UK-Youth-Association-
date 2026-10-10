@@ -29,7 +29,7 @@ export default function RegisterPage() {
     university: "",
     interests: [] as string[],
     heardFrom: "",
-    newsletter: true,
+    newsletter: false,
     terms: false,
   });
 
@@ -93,6 +93,7 @@ export default function RegisterPage() {
         heardFrom: form.heardFrom,
         newsletter: form.newsletter,
         interests: form.interests,
+        termsAccepted: form.terms,
       });
       if (result.needsConfirmation) {
         setConfirmation(true);

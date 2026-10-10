@@ -1,5 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
+import { isMisconfigured } from "./lib/supabase";
+import ConfigError from "./components/ConfigError";
 import Layout from "./components/Layout";
 import RequireAuth from "./components/RequireAuth";
 import HomePage from "./pages/HomePage";
@@ -18,6 +20,8 @@ import AdminNewsPage from "./pages/admin/AdminNewsPage";
 import AdminNewsEditorPage from "./pages/admin/AdminNewsEditorPage";
 
 export default function App() {
+  if (isMisconfigured) return <ConfigError />;
+
   return (
     <AuthProvider>
       <BrowserRouter>

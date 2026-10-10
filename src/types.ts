@@ -79,6 +79,7 @@ export interface RegisterPayload {
   heardFrom: string;
   newsletter: boolean;
   interests: string[];
+  termsAccepted: boolean;
 }
 
 export const categoryColors: Record<string, string> = {
@@ -116,4 +117,12 @@ export function formatArticleDate(iso: string | null): string {
     month: "short",
     year: "numeric",
   });
+}
+
+/** ISO timestamp -> value for <input type="datetime-local"> in the viewer's own timezone. */
+export function toLocalInputValue(iso: string | null): string {
+  if (!iso) return "";
+  const d = new Date(iso);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }

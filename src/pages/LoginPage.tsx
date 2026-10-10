@@ -4,7 +4,7 @@ import FlagDivider from "../components/FlagDivider";
 import { useAuth } from "../context/AuthContext";
 
 export default function LoginPage() {
-  const { signIn, configured } = useAuth();
+  const { signIn, demo } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const from = (location.state as { from?: string } | null)?.from || "/account";
@@ -57,7 +57,7 @@ export default function LoginPage() {
         <p className="text-sm text-gray-500 mt-6 text-center">
           New here? <Link to="/register" className="text-[#003580] font-semibold">Join the Association</Link>
         </p>
-        {!configured && (
+        {demo && (
           <p className="text-xs text-gray-400 mt-6 text-center">
             Preview mode: staff demo is editor@aukya.org.uk / Editor123!
           </p>

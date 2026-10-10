@@ -7,7 +7,9 @@
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
     "preview": "vite preview",
-    "format": "oxfmt"
+    "format": "oxfmt",
+    "typecheck": "tsc --noEmit",
+    "check": "pnpm typecheck && pnpm build"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.112.4",

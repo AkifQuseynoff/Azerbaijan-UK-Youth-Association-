@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import type { Profile, RegisterPayload } from "../types";
-import { isSupabaseConfigured, supabase } from "../lib/supabase";
+import { isDemoMode, isSupabaseConfigured, supabase } from "../lib/supabase";
 
 const USERS_KEY = "auya_local_users";
 const SESSION_KEY = "auya_local_session";
@@ -17,6 +17,7 @@ type AuthContextValue = {
   profile: Profile | null;
   loading: boolean;
   configured: boolean;
+  demo: boolean;
   needsEmailConfirmation: boolean;
   signUp: (payload: RegisterPayload) => Promise<{ needsConfirmation: boolean }>;
   signIn: (email: string, password: string) => Promise<void>;
@@ -118,35 +119,55 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     let cancelled = false;
     let unsubscribe: (() => void) | undefined;
 
-    async function hydrate() {
-      if (supabase && isSupabaseConfigured) {
-        const { data } = await supabase.auth.getSession();
-        const user = data.session?.user;
-        if (user && !cancelled) {
-          const next = await fetchProfile(user.id, user.email ?? "");
-          if (!cancelled) setProfile(next);
+    // Loads the profile for a session. A deactivated member is signed out
+    // immediately, so the lock-out applies on reload and to existing sessions too.
+    async function loadSessionProfile(user: { id: string; email?: string }) {
+      try {
+        const next = await fetchProfile(user.id, user.email ?? "");
+        if (cancelled) return;
+        if (next?.status === "deactivated") {
+          await supabase?.auth.signOut();
+          setProfile(null);
+          return;
         }
-        const { data: listener } = supabase.auth.onAuthStateChange(async (_event: string, session: { user: { id: string; email?: string } } | null) => {
-          if (!session?.user) {
-            setProfile(null);
-            return;
-          }
-          const next = await fetchProfile(session.user.id, session.user.email ?? "");
-          setProfile(next);
-        });
-        unsubscribe = () => listener.subscription.unsubscribe();
-        if (!cancelled) setLoading(false);
-        return;
+        setProfile(next);
+      } catch {
+        if (!cancelled) setProfile(null);
       }
+    }
 
-      const sessionId = localStorage.getItem(SESSION_KEY);
-      if (sessionId) {
-        const user = loadUsers().find((u) => u.id === sessionId);
-        if (user && !cancelled) {
-          setProfile({ ...user.profile, email: user.email, id: user.id });
+    async function hydrate() {
+      try {
+        if (supabase && isSupabaseConfigured) {
+          const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+            // Never await Supabase calls inside this callback (it can deadlock the
+            // auth client); defer the profile fetch to the next tick instead.
+            if (!session?.user) {
+              setProfile(null);
+              return;
+            }
+            const user = session.user;
+            window.setTimeout(() => void loadSessionProfile(user), 0);
+          });
+          unsubscribe = () => listener.subscription.unsubscribe();
+
+          const { data } = await supabase.auth.getSession();
+          if (data.session?.user && !cancelled) await loadSessionProfile(data.session.user);
+          return;
         }
+
+        const sessionId = localStorage.getItem(SESSION_KEY);
+        if (sessionId) {
+          const user = loadUsers().find((u) => u.id === sessionId);
+          if (user && !cancelled) {
+            setProfile({ ...user.profile, email: user.email, id: user.id });
+          }
+        }
+      } catch {
+        if (!cancelled) setProfile(null);
+      } finally {
+        if (!cancelled) setLoading(false);
       }
-      if (!cancelled) setLoading(false);
     }
 
     void hydrate();
@@ -161,6 +182,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       profile,
       loading,
       configured: isSupabaseConfigured,
+      demo: isDemoMode,
       needsEmailConfirmation,
       isStaff: profile?.role === "editor" || profile?.role === "admin",
       signUp: async (payload) => {
@@ -181,6 +203,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 heard_from: payload.heardFrom,
                 newsletter: payload.newsletter,
                 interests: payload.interests,
+                terms_accepted: payload.termsAccepted,
               },
             },
           });

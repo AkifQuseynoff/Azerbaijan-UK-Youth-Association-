@@ -19,7 +19,7 @@ export default function AccountPage() {
     city: profile?.city ?? "",
     occupation: profile?.occupation ?? "",
     university: profile?.university ?? "",
-    newsletter: profile?.newsletter ?? true,
+    newsletter: profile?.newsletter ?? false,
     interests: profile?.interests ?? [],
   }));
 

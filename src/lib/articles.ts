@@ -4,6 +4,8 @@ import { isSupabaseConfigured, supabase } from "./supabase";
 
 const LOCAL_KEY = "auya_articles";
 const PAGE_SIZE = 6;
+// Scheduled articles go live on their own once published_at has passed.
+const LIVE_STATUSES: Article["status"][] = ["published", "scheduled"];
 
 type ArticleRow = {
   id: string;
@@ -51,7 +53,7 @@ function fromRow(row: ArticleRow): Article {
 }
 
 function isLive(article: Article, now = Date.now()): boolean {
-  if (article.status !== "published" || !article.publishedAt) return false;
+  if (!LIVE_STATUSES.includes(article.status) || !article.publishedAt) return false;
   return new Date(article.publishedAt).getTime() <= now;
 }
 
@@ -97,7 +99,7 @@ export async function listPublishedArticles(options: {
     let request = supabase
       .from("articles")
       .select("*", { count: "exact" })
-      .eq("status", "published")
+      .in("status", LIVE_STATUSES)
       .lte("published_at", new Date().toISOString())
       .order("published_at", { ascending: false });
 
@@ -110,7 +112,7 @@ export async function listPublishedArticles(options: {
     const featuredQuery = supabase
       .from("articles")
       .select("*")
-      .eq("status", "published")
+      .in("status", LIVE_STATUSES)
       .eq("featured", true)
       .lte("published_at", new Date().toISOString())
       .order("published_at", { ascending: false })
@@ -152,7 +154,7 @@ export async function getPublishedArticle(slug: string): Promise<Article | null>
       .from("articles")
       .select("*")
       .eq("slug", slug)
-      .eq("status", "published")
+      .in("status", LIVE_STATUSES)
       .lte("published_at", new Date().toISOString())
       .maybeSingle();
     if (error) throw error;
@@ -166,7 +168,7 @@ export async function getRelatedArticles(article: Article, limit = 3): Promise<A
     const { data, error } = await supabase
       .from("articles")
       .select("*")
-      .eq("status", "published")
+      .in("status", LIVE_STATUSES)
       .eq("category", article.category)
       .neq("id", article.id)
       .lte("published_at", new Date().toISOString())
@@ -217,7 +219,7 @@ async function uploadCover(file: File, slug: string): Promise<string> {
   }
   const ext = file.name.split(".").pop() || "jpg";
   const path = `${slug}-${crypto.randomUUID()}.${ext}`;
-  const { error } = await supabase.storage.from("news-covers").upload(path, file, { upsert: true });
+  const { error } = await supabase.storage.from("news-covers").upload(path, file, { upsert: false });
   if (error) throw error;
   return path;
 }
@@ -228,12 +230,10 @@ export async function saveArticle(id: string | null, input: ArticleInput, author
     coverPath = await uploadCover(input.coverFile, input.slug);
   }
 
-  const publishedAt =
-    input.status === "published"
-      ? input.publishedAt ?? new Date().toISOString()
-      : input.status === "scheduled"
-        ? input.publishedAt
-        : input.publishedAt;
+  const publishedAt = input.status === "published" ? input.publishedAt ?? new Date().toISOString() : input.publishedAt;
+  if (input.status === "scheduled" && !publishedAt) {
+    throw new Error("Choose a date and time to schedule this article.");
+  }
 
   if (supabase && isSupabaseConfigured) {
     const payload = {
