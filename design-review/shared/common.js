@@ -306,10 +306,10 @@
   function showIntro() {
     var list = AZ.variants.map(function (v, i) { return '<li><i>' + (i + 1) + '</i><div><b>' + v.name + '</b><small>' + v.tagline + '</small></div></li>'; }).join('');
     dialog(
-      '<h2>Azerbaijan Youth Association: choose a look</h2>' +
-        '<p>Five different design directions for the new website, each using the colours of the Azerbaijani flag in its own way. They are fully clickable previews, and the event and podcast details are sample content for design purposes only.</p>' +
+      '<h2>' + (AZ.introTitle || 'Azerbaijan Youth Association: choose a look') + '</h2>' +
+        '<p>' + (AZ.introText || 'Design directions for the new website. They are fully clickable previews, and the event and podcast details are sample content for design purposes only.') + '</p>' +
         '<ol>' + list + '</ol>' +
-        '<p><b>How to look:</b> use the bar at the bottom (or the keys <b>1–5</b> and <b>← →</b>), scroll each page, and try the buttons. Press <b>Join</b> to drag the sheet. When one stands out, press <b>Choose this design</b> at the top right.</p>' +
+        '<p><b>How to look:</b> use the bar at the bottom (or the keys <b>1–' + AZ.variants.length + '</b> and <b>← →</b>), scroll each page, and try the buttons. Press <b>Join</b> to drag the sheet. When one stands out, press <b>Choose this design</b> at the top right.</p>' +
         '<div class="rv-actions"><button class="rv-btn is-primary" data-go>Start looking</button></div>',
       function (box, close) { box.querySelector('[data-go]').addEventListener('click', close); box.querySelector('[data-go]').focus(); }
     );

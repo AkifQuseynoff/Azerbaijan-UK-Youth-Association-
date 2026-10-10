@@ -1,18 +1,21 @@
 # Design review
 
-Five design directions for the website, packaged as **one self-contained HTML file** (fonts embedded) that can be
+Design directions for the website, packaged as **one self-contained HTML file** (fonts and logo embedded) that can be
 emailed, attached or opened by double-click, offline.
 
-Rebuild after editing anything in `src/`:
-
 ```bash
-node design-review/build.mjs
+node design-review/build.mjs round1   # first five directions
+node design-review/build.mjs round2   # second round: Siluet, Ilmə, Alov (with the new logo)
 ```
 
-Output: `design-review/dist/azerbaijan-youth-design-review.html` (generated, not committed).
+Output goes to `design-review/dist/` (generated, not committed).
 
-- `src/common.js` / `common.css`: springs, drag with momentum, the draggable Join sheet, the picker, and the "Choose this design" flow
-- `src/v1-…` to `v5-…`: one file pair per design (`AZ.variants.push(...)`); the build picks up any `vN-*.js/css`
+- `shared/common.js` / `common.css`: springs, drag with momentum, the draggable Join sheet, the picker, the "Choose this design" flow
+- `shared/logo.js`: the logo as vector parts, in solid / "draw" / crocheted ("yarn") versions, plus flames that lean toward the pointer
+- `shared/crochet.js` / `crochet.css`: crocheted scrollbar, moon and star, stitched dividers, scroll-reveal
+- `assets/logo-mark.svg` + `logo-paths.json`: the logo traced from the supplied PDF with `tools/trace-logo.py` and `tools/build-logo.py`
+  (needs `pip install pillow numpy potracer`). The wordmark is set in live text (Montserrat).
+- `round1/`, `round2/`: one file pair per design; `round.json` lists the fonts to embed
 - Sample events and the sample episode are placeholders for design purposes only.
 
-The `src/prototypes/` folder in the app is an earlier, dev-only round of three designs (Halı, Kaspi, Alov).
+`src/prototypes/` in the app is an earlier dev-only round (Halı, Kaspi, Alov).
