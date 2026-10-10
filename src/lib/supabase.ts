@@ -1,7 +1,11 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
-const url = import.meta.env.VITE_SUPABASE_URL?.trim();
-const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY?.trim();
+// Alternative names exist because some hosts refuse public-prefixed variables whose
+// names contain words like KEY. The anon key is designed to be public (row level
+// security protects the data); never put the service_role key in any VITE_ variable.
+const env = import.meta.env;
+const url = (env.VITE_SUPABASE_URL ?? env.VITE_SUPABASE_PROJECT)?.trim();
+const anonKey = (env.VITE_SUPABASE_ANON_KEY ?? env.VITE_SUPABASE_ANON ?? env.VITE_SUPABASE_PUBLIC)?.trim();
 
 export const isSupabaseConfigured = Boolean(url && anonKey);
 
