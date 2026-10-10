@@ -1,0 +1,6 @@
+/* Stitched rail: the track plus three yarn fills (blue, red, green) clipped to the progress */
+.r3-rail { position: relative; height: 15px; }
+.r3-rail i { position: absolute; inset: 0; background-repeat: repeat-x; background-size: 18px 15px; }
+.r3-rail .f { will-change: clip-path; }
+/* On phones the page progress runs along the top edge, where a thumb never covers it */
+.r3-top { position: fixed; top: 0; left: 0; right: 0; z-index: 2147482000; height: 15px; pointer-events: none; padding-top: env(safe-area-inset-top); box-sizing: content-box; filter: drop-shadow(0 1px 1px rgba(255, 255, 255, 0.6)); }
