@@ -1,11 +1,19 @@
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { useAuth } from "../features/auth/AuthContext";
+import AdminMenu from "./AdminMenu";
 import Logo from "./Logo";
 
 export default function NavBar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { profile, isStaff, isAdmin, signOut } = useAuth();
+
+  const adminLinks = [
+    { to: "/admin/news", label: "Newsroom" },
+    { to: "/admin/events", label: "Events" },
+    { to: "/admin/podcast", label: "Podcast" },
+    ...(isAdmin ? [{ to: "/admin/members", label: "Members" }] : []),
+  ];
 
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     `px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
@@ -25,14 +33,7 @@ export default function NavBar() {
           <NavLink to="/events" className={linkClass}>Events</NavLink>
           <NavLink to="/podcast" className={linkClass}>Podcast</NavLink>
           <NavLink to="/help" className={linkClass}>Help</NavLink>
-          {isStaff && (
-            <>
-              <NavLink to="/admin/news" className={linkClass}>Newsroom</NavLink>
-              <NavLink to="/admin/events" className={linkClass}>Manage events</NavLink>
-              <NavLink to="/admin/podcast" className={linkClass}>Manage podcast</NavLink>
-              {isAdmin && <NavLink to="/admin/members" className={linkClass}>Members</NavLink>}
-            </>
-          )}
+          {isStaff && <AdminMenu links={adminLinks} />}
           {profile ? (
             <>
               <NavLink to="/account" className={linkClass}>{profile.firstName || "Account"}</NavLink>
@@ -94,22 +95,14 @@ export default function NavBar() {
             </NavLink>
           ))}
           {isStaff && (
-            <>
-              <NavLink to="/admin/news" onClick={() => setMobileOpen(false)} className="px-4 py-3 rounded-lg text-sm text-blue-200">
-                Newsroom
-              </NavLink>
-              <NavLink to="/admin/events" onClick={() => setMobileOpen(false)} className="px-4 py-3 rounded-lg text-sm text-blue-200">
-                Manage events
-              </NavLink>
-              <NavLink to="/admin/podcast" onClick={() => setMobileOpen(false)} className="px-4 py-3 rounded-lg text-sm text-blue-200">
-                Manage podcast
-              </NavLink>
-              {isAdmin && (
-                <NavLink to="/admin/members" onClick={() => setMobileOpen(false)} className="px-4 py-3 rounded-lg text-sm text-blue-200">
-                  Members
+            <div className="mt-2 pt-2 border-t border-white/10">
+              <p className="px-4 pb-1 text-[11px] uppercase tracking-wider text-blue-300/70">Admin</p>
+              {adminLinks.map((link) => (
+                <NavLink key={link.to} to={link.to} onClick={() => setMobileOpen(false)} className="block px-4 py-3 rounded-lg text-sm text-blue-200">
+                  {link.label}
                 </NavLink>
-              )}
-            </>
+              ))}
+            </div>
           )}
           {profile ? (
             <>

@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { SITE } from "../config/site";
 import Logo from "./Logo";
 
 export default function Footer() {
@@ -13,11 +14,13 @@ export default function Footer() {
         <div className="md:col-span-2">
           <Logo />
           <p className="text-gray-400 mt-5 leading-relaxed text-sm max-w-xs">
-            The leading organisation representing young people of Azerbaijani heritage across the United Kingdom.
+            A community for young people of Azerbaijani heritage across the United Kingdom.
           </p>
-          <p className="text-gray-500 text-xs mt-6">
-            Registered charity in England and Wales · No. 1162847
-          </p>
+          {SITE.charityNumber && (
+            <p className="text-gray-500 text-xs mt-6">
+              Registered charity in England and Wales · No. {SITE.charityNumber}
+            </p>
+          )}
         </div>
         <div>
           <h4 className="font-bold text-sm uppercase tracking-wider text-gray-400 mb-5">Navigate</h4>
@@ -33,12 +36,9 @@ export default function Footer() {
         <div>
           <h4 className="font-bold text-sm uppercase tracking-wider text-gray-400 mb-5">Resources</h4>
           <ul className="space-y-3 text-sm text-gray-300">
-            <li><Link to="/help" className="hover:text-white transition-colors">Scholarships</Link></li>
-            <li><Link to="/help" className="hover:text-white transition-colors">Mentorship Programme</Link></li>
-            <li><Link to="/help" className="hover:text-white transition-colors">Volunteer Network</Link></li>
             <li><Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
             <li><Link to="/terms" className="hover:text-white transition-colors">Terms of Membership</Link></li>
-            <li><Link to="/help" className="hover:text-white transition-colors">Contact</Link></li>
+            <li><Link to="/help" className="hover:text-white transition-colors">Help &amp; contact</Link></li>
           </ul>
         </div>
       </div>

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import NewsCard from "../features/news/NewsCard";
 import FlagDivider from "../components/ui/FlagDivider";
+import { SITE } from "../config/site";
 import { listLatestPublished } from "../features/news/api";
 import type { Article } from "../types";
 
@@ -40,7 +41,7 @@ export default function HomePage() {
               <span className="text-[#00997A]">UK</span>
             </h1>
             <p className="text-blue-200 text-lg leading-relaxed mb-10 max-w-lg">
-              The Azerbaijan UK Youth Association brings together over 3,200 young people of Azerbaijani heritage across the United Kingdom — sharing culture, building careers, and shaping the future together.
+              The Azerbaijan UK Youth Association is a community for young people of Azerbaijani heritage across the United Kingdom — sharing culture, building connections, and shaping the future together.
             </p>
             <div className="flex flex-wrap gap-4">
               <Link
@@ -58,24 +59,29 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            {[
-              { value: "3,200+", label: "Members across the UK", color: "border-[#003580]" },
-              { value: "18+", label: "Years serving our community", color: "border-[#CC2229]" },
-              { value: "120+", label: "Events held each year", color: "border-[#00997A]" },
-              { value: "5", label: "City chapters: London, Manchester, Birmingham, Edinburgh, Cardiff", color: "border-[#003580]" },
-            ].map((stat) => (
-              <div
-                key={stat.value}
-                className={`bg-white/8 backdrop-blur-sm border-t-2 ${stat.color} rounded-2xl p-6 hover:bg-white/12 transition-colors`}
-              >
-                <p className="text-4xl font-bold text-white mb-1" style={{ fontFamily: "'DM Serif Display', serif" }}>
-                  {stat.value}
-                </p>
-                <p className="text-blue-200 text-sm leading-snug">{stat.label}</p>
-              </div>
-            ))}
-          </div>
+          {SITE.stats.length > 0 ? (
+            <div className="grid grid-cols-2 gap-4">
+              {SITE.stats.map((stat) => (
+                <div key={stat.label} className="bg-white/8 backdrop-blur-sm border-t-2 border-[#003580] rounded-2xl p-6">
+                  <p className="text-4xl font-bold text-white mb-1" style={{ fontFamily: "'DM Serif Display', serif" }}>{stat.value}</p>
+                  <p className="text-blue-200 text-sm leading-snug">{stat.label}</p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="grid gap-4">
+              {[
+                { to: "/events", title: "Upcoming events", desc: "Register for talks, socials and live podcast recordings.", color: "border-[#003580]" },
+                { to: "/podcast", title: "The podcast", desc: "Listen to conversations with and for young Azerbaijanis.", color: "border-[#CC2229]" },
+                { to: "/news", title: "Community news", desc: "Announcements and stories from the Association.", color: "border-[#00997A]" },
+              ].map((card) => (
+                <Link key={card.to} to={card.to} className={`block bg-white/8 hover:bg-white/12 backdrop-blur-sm border-t-2 ${card.color} rounded-2xl p-6 transition-colors`}>
+                  <p className="text-2xl font-bold text-white mb-1" style={{ fontFamily: "'DM Serif Display', serif" }}>{card.title}</p>
+                  <p className="text-blue-200 text-sm leading-snug">{card.desc}</p>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -89,10 +95,10 @@ export default function HomePage() {
               A bridge between two nations, one generation at a time
             </h2>
             <p className="text-gray-600 leading-relaxed mb-5">
-              The Azerbaijan UK Youth Association was founded by a group of Azerbaijani students at University College London. What began as a small student society has grown into the leading organisation representing young Azerbaijanis across the United Kingdom.
+              {SITE.story ?? "The Azerbaijan UK Youth Association brings together young people of Azerbaijani heritage, and anyone interested in Azerbaijani culture, who live in the United Kingdom."}
             </p>
             <p className="text-gray-600 leading-relaxed mb-8">
-              We champion cultural exchange, educational access, professional development, and civic engagement — ensuring that the Azerbaijani diaspora remains connected to its roots while thriving in British society.
+              We aim to support cultural exchange, learning and community — helping the Azerbaijani diaspora stay connected to its roots while thriving in British society.
             </p>
             <div className="flex gap-6">
               <Link
@@ -110,7 +116,7 @@ export default function HomePage() {
             <div className="rounded-2xl overflow-hidden shadow-2xl aspect-[4/3]">
               <img
                 src="https://images.unsplash.com/photo-1650222833514-bd19bc2f8665?w=700&h=500&fit=crop&auto=format"
-                alt="Azerbaijan UK Youth Association community members at a gathering"
+                alt=""
                 className="w-full h-full object-cover"
               />
             </div>
@@ -132,13 +138,13 @@ export default function HomePage() {
                 icon: "🎭",
                 color: "bg-[#003580]",
                 title: "Culture & Heritage",
-                desc: "Celebrating Azerbaijani traditions through festivals, music, art exhibitions, and language programmes — keeping our culture alive in the diaspora.",
+                desc: "Celebrating Azerbaijani culture through events, music, art and language — keeping traditions alive in the diaspora.",
               },
               {
                 icon: "🎓",
                 color: "bg-[#CC2229]",
                 title: "Education & Careers",
-                desc: "Scholarships, mentorship, career networking nights, and university guidance — helping Azerbaijani youth reach their professional ambitions.",
+                desc: "Talks, workshops and networking to help young people develop their skills and careers.",
               },
               {
                 icon: "🤝",
@@ -193,7 +199,7 @@ export default function HomePage() {
             Ready to be part of the community?
           </h2>
           <p className="text-blue-200 text-lg mb-8">
-            Membership is free. Join 3,200+ young Azerbaijanis across the UK today.
+            Membership is free. Join the community today.
           </p>
           <Link
             to="/register"

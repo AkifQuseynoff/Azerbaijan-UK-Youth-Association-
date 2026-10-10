@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { SITE, hasContact } from "../config/site";
 import FlagDivider from "../components/ui/FlagDivider";
 import { FAQ } from "../data/faq";
 
@@ -21,22 +22,18 @@ export default function HelpPage() {
       <FlagDivider />
 
       <div className="max-w-7xl mx-auto px-6 py-14">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-14">
-          {[
-            { icon: "🎓", title: "Scholarships", desc: "Funding for Azerbaijani students at UK universities.", color: "border-[#003580]" },
-            { icon: "🤝", title: "Mentorship", desc: "Connect with professionals who can guide your career.", color: "border-[#CC2229]" },
-            { icon: "📋", title: "Volunteer", desc: "Give back by joining our volunteer network.", color: "border-[#00997A]" },
-            { icon: "🆘", title: "Welfare Support", desc: "Guidance on housing, legal aid, and welfare rights.", color: "border-[#003580]" },
-          ].map((item) => (
-            <div key={item.title} className={`bg-white rounded-2xl p-6 border-t-4 ${item.color} shadow-sm`}>
-              <div className="text-3xl mb-4">{item.icon}</div>
-              <h3 className="text-lg font-bold text-[#0D1B2A] mb-1" style={{ fontFamily: "'DM Serif Display', serif" }}>
-                {item.title}
-              </h3>
-              <p className="text-gray-500 text-sm">{item.desc}</p>
-            </div>
-          ))}
-        </div>
+        {SITE.programmes.length > 0 && (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-14">
+            {SITE.programmes.map((item) => (
+              <div key={item.title} className="bg-white rounded-2xl p-6 border-t-4 border-[#003580] shadow-sm">
+                <h3 className="text-lg font-bold text-[#0D1B2A] mb-1" style={{ fontFamily: "'DM Serif Display', serif" }}>
+                  {item.title}
+                </h3>
+                <p className="text-gray-500 text-sm">{item.description}</p>
+              </div>
+            ))}
+          </div>
+        )}
 
         <div className="grid lg:grid-cols-[1fr_360px] gap-10">
           <div>
@@ -70,21 +67,26 @@ export default function HelpPage() {
           <div className="space-y-5">
             <div className="bg-[#002060] rounded-2xl p-7 text-white">
               <h3 className="text-2xl mb-4" style={{ fontFamily: "'DM Serif Display', serif" }}>Contact us</h3>
-              <div className="space-y-4 text-sm">
-                {[
-                  { label: "Email", value: "info@aukya.org.uk" },
-                  { label: "Address", value: "Azerbaijan UK Youth Association, 14 Cavaye Place, London SW10 9PT" },
-                  { label: "Phone", value: "+44 20 7946 0000" },
-                  { label: "Hours", value: "Mon–Fri, 10:00–18:00 GMT" },
-                ].map((c) => (
-                  <div key={c.label}>
-                    <p className="text-blue-300 text-xs">{c.label}</p>
-                    <p className="text-white">{c.value}</p>
-                  </div>
-                ))}
-              </div>
+              {hasContact ? (
+                <div className="space-y-4 text-sm">
+                  {[
+                    { label: "Email", value: SITE.contact.email },
+                    { label: "Address", value: SITE.contact.address },
+                    { label: "Phone", value: SITE.contact.phone },
+                    { label: "Hours", value: SITE.contact.hours },
+                  ]
+                    .filter((c) => c.value)
+                    .map((c) => (
+                      <div key={c.label}>
+                        <p className="text-blue-300 text-xs">{c.label}</p>
+                        <p className="text-white">{c.value}</p>
+                      </div>
+                    ))}
+                </div>
+              ) : (
+                <p className="text-blue-200 text-sm leading-relaxed">Contact details will be published here soon.</p>
+              )}
             </div>
-            <p className="text-xs text-gray-400">The contact form will send email once the association mailbox is connected. For now, use the address above.</p>
           </div>
         </div>
       </div>
