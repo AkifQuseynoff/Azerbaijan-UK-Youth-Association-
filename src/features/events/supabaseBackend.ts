@@ -105,6 +105,42 @@ export const supabaseBackend: EventsBackend = {
     return withAvailability(rows);
   },
 
+  async getBySlug(slug) {
+    const { data, error } = await db().from("events").select("*").eq("slug", slug).in("status", ["published", "cancelled"]).maybeSingle();
+    if (error) fail(error);
+    if (!data) return null;
+    const [event] = await withAvailability([data as EventRow]);
+    return event;
+  },
+
+  async myUpcoming(userId) {
+    const { data, error } = await db()
+      .from("event_registrations")
+      .select("id, event_id, status, ticket_code, created_at")
+      .eq("user_id", userId)
+      .in("status", ["confirmed", "waitlisted"]);
+    if (error) fail(error);
+    const regs = (data ?? []) as RegistrationRow[];
+    if (regs.length === 0) return [];
+    const { data: rows, error: eventError } = await db().from("events").select("*").in("id", regs.map((r) => r.event_id));
+    if (eventError) fail(eventError);
+    const events = await withAvailability((rows ?? []) as EventRow[]);
+    const byId = new Map(events.map((e) => [e.id, e]));
+    const now = Date.now();
+    return regs
+      .map((r) => ({ registration: toRegistration(r), event: byId.get(r.event_id) }))
+      .filter((x): x is { registration: EventRegistration; event: EventItem } => Boolean(x.event))
+      .filter((x) => new Date(x.event.endsAt ?? x.event.startsAt).getTime() > now)
+      .sort((a, b) => a.event.startsAt.localeCompare(b.event.startsAt));
+  },
+
+  async getJoinLink(eventId) {
+    // Row level security only returns this row to staff and members with a confirmed place.
+    const { data, error } = await db().from("event_links").select("online_url").eq("event_id", eventId).maybeSingle();
+    if (error) fail(error);
+    return (data as { online_url: string | null } | null)?.online_url ?? null;
+  },
+
   async myRegistrations(userId) {
     const { data, error } = await db()
       .from("event_registrations")

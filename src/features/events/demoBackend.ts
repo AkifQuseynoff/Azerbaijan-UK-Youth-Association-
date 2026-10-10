@@ -99,6 +99,31 @@ export const demoBackend: EventsBackend = {
       .map((e) => toItem(e, regs));
   },
 
+  async getBySlug(slug) {
+    const regs = loadRegs();
+    const event = loadEvents().find((e) => e.slug === slug && e.status !== "draft");
+    return event ? toItem(event, regs) : null;
+  },
+
+  async myUpcoming(userId) {
+    const regs = loadRegs();
+    const events = loadEvents();
+    const now = Date.now();
+    return regs
+      .filter((r) => r.userId === userId && (r.status === "confirmed" || r.status === "waitlisted"))
+      .flatMap(({ userId: _u, checkedInAt: _c, ...registration }) => {
+        const event = events.find((e) => e.id === registration.eventId);
+        return event && new Date(event.endsAt ?? event.startsAt).getTime() > now ? [{ registration, event: toItem(event, regs) }] : [];
+      })
+      .sort((a, b) => a.event.startsAt.localeCompare(b.event.startsAt));
+  },
+
+  async getJoinLink(eventId, userId) {
+    const event = loadEvents().find((e) => e.id === eventId);
+    const confirmed = loadRegs().some((r) => r.eventId === eventId && r.userId === userId && isTaken(r.status));
+    return confirmed && event?.onlineUrl ? event.onlineUrl : null;
+  },
+
   async myRegistrations(userId) {
     return loadRegs()
       .filter((r) => r.userId === userId && r.status !== "cancelled")

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { INTERESTS } from "../../constants";
 import { Field } from "../../components/ui/Field";
 import FlagDivider from "../../components/ui/FlagDivider";
+import MyRegistrations from "../events/MyRegistrations";
 import { useAuth } from "../auth/AuthContext";
 
 export default function AccountPage() {
@@ -55,6 +56,7 @@ export default function AccountPage() {
       </div>
       <FlagDivider />
       <div className="max-w-3xl mx-auto px-6 py-12">
+        <MyRegistrations />
         <form onSubmit={(e) => void handleSave(e)} className="bg-white rounded-2xl p-8 border border-gray-100 space-y-5">
           <div className="grid sm:grid-cols-2 gap-5">
             <div>

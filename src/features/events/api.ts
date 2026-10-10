@@ -11,7 +11,12 @@ import type { Attendee, EventInput, EventItem, EventRegistration, EventStatus } 
 export interface EventsBackend {
   /** Upcoming published and cancelled events, soonest first. */
   listUpcoming(): Promise<EventItem[]>;
+  getBySlug(slug: string): Promise<EventItem | null>;
   myRegistrations(userId: string): Promise<EventRegistration[]>;
+  /** The member's live registrations (confirmed or waitlisted) with their events, soonest first. */
+  myUpcoming(userId: string): Promise<{ registration: EventRegistration; event: EventItem }[]>;
+  /** Online joining link; only returned to staff and members with a confirmed place. */
+  getJoinLink(eventId: string, userId: string): Promise<string | null>;
   register(eventId: string, userId: string, answers?: Record<string, string>): Promise<EventRegistration>;
   cancel(eventId: string, userId: string): Promise<void>;
 
