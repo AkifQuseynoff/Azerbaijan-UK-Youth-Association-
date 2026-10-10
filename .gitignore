@@ -21,3 +21,6 @@ logs/
 
 # pnpm content store (local cache, ~100MB)
 .pnpm-store/
+
+# Generated design review file
+design-review/dist/
