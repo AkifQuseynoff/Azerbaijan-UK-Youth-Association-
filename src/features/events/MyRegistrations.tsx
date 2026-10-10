@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import { eventsApi } from "./api";
-import { downloadIcs } from "./ics";
+import AddToCalendar from "./AddToCalendar";
 import { formatEventDate, formatEventTime } from "./types";
 import type { EventItem, EventRegistration } from "./types";
 
@@ -73,9 +73,7 @@ export default function MyRegistrations() {
               </div>
               <div className="flex gap-3 text-sm">
                 {event.status !== "cancelled" && registration.status === "confirmed" && (
-                  <button type="button" onClick={() => downloadIcs(event, registration.ticketCode)} className="px-3 py-2 rounded-lg border border-gray-300 font-medium">
-                    Add to calendar
-                  </button>
+                  <AddToCalendar event={event} ticketCode={registration.ticketCode} align="right" />
                 )}
                 <button
                   type="button"

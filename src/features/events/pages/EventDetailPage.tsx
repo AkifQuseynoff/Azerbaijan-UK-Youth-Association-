@@ -4,7 +4,7 @@ import PageHeader from "../../../components/ui/PageHeader";
 import { categoryColors } from "../../../constants";
 import { useAuth } from "../../auth/AuthContext";
 import { eventsApi } from "../api";
-import { downloadIcs } from "../ics";
+import AddToCalendar from "../AddToCalendar";
 import RegistrationActions from "../RegistrationActions";
 import { formatEventDate, formatEventTime } from "../types";
 import type { EventItem, EventRegistration } from "../types";
@@ -109,13 +109,7 @@ export default function EventDetailPage() {
             </div>
           )}
           {event.status !== "cancelled" && (
-            <button
-              type="button"
-              onClick={() => downloadIcs(event, mine?.status === "confirmed" ? mine.ticketCode : undefined)}
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-sm font-semibold hover:bg-gray-50"
-            >
-              Add to calendar
-            </button>
+            <AddToCalendar event={event} ticketCode={mine?.status === "confirmed" ? mine.ticketCode : undefined} />
           )}
           {active && <p className="text-xs text-gray-400">You can manage all your bookings under Your membership.</p>}
           <Link to="/events" className="block text-sm text-[#003580] underline">← All events</Link>

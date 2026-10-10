@@ -24,3 +24,7 @@ enable_confirmations = true
 
 [storage]
 file_size_limit = "5MiB"
+
+# Called by pg_cron with a shared secret header, not by logged-in users.
+[functions.process-emails]
+verify_jwt = false

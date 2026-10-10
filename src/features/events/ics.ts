@@ -54,3 +54,40 @@ export function downloadIcs(event: EventItem, ticketCode?: string) {
   link.remove();
   URL.revokeObjectURL(url);
 }
+
+function eventWindow(event: EventItem) {
+  const end = event.endsAt ?? new Date(new Date(event.startsAt).getTime() + 60 * 60 * 1000).toISOString();
+  return { start: event.startsAt, end };
+}
+
+function details(event: EventItem, pageUrl: string, ticketCode?: string): string {
+  return [event.description, ticketCode ? `Ticket: ${ticketCode}` : "", pageUrl].filter(Boolean).join("\n\n");
+}
+
+/** Opens Google Calendar's "add event" screen pre-filled. */
+export function googleCalendarUrl(event: EventItem, pageUrl: string, ticketCode?: string): string {
+  const { start, end } = eventWindow(event);
+  const params = new URLSearchParams({
+    action: "TEMPLATE",
+    text: event.title,
+    dates: `${utc(start)}/${utc(end)}`,
+    details: details(event, pageUrl, ticketCode),
+    location: event.venue,
+  });
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
+}
+
+/** Opens Outlook on the web (outlook.live.com / Microsoft 365 redirect) pre-filled. */
+export function outlookCalendarUrl(event: EventItem, pageUrl: string, ticketCode?: string): string {
+  const { start, end } = eventWindow(event);
+  const params = new URLSearchParams({
+    path: "/calendar/action/compose",
+    rru: "addevent",
+    subject: event.title,
+    startdt: new Date(start).toISOString(),
+    enddt: new Date(end).toISOString(),
+    body: details(event, pageUrl, ticketCode),
+    location: event.venue,
+  });
+  return `https://outlook.live.com/calendar/0/deeplink/compose?${params.toString()}`;
+}
