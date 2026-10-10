@@ -24,7 +24,7 @@ type ArticleRow = {
   updated_at: string;
 };
 
-function coverPublicUrl(path: string | null, fallback = ""): string {
+export function coverPublicUrl(path: string | null, fallback = ""): string {
   if (!path) return fallback;
   if (path.startsWith("http") || path.startsWith("data:")) return path;
   if (!supabase) return fallback;
@@ -208,7 +208,7 @@ export async function getStaffArticle(id: string): Promise<Article | null> {
   return loadLocal().find((a) => a.id === id) ?? null;
 }
 
-async function uploadCover(file: File, slug: string): Promise<string> {
+export async function uploadCover(file: File, slug: string): Promise<string> {
   if (!supabase) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();

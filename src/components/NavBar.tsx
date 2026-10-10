@@ -23,11 +23,13 @@ export default function NavBar() {
           <NavLink to="/" end className={linkClass}>Home</NavLink>
           <NavLink to="/news" className={linkClass}>News</NavLink>
           <NavLink to="/events" className={linkClass}>Events</NavLink>
+          <NavLink to="/podcast" className={linkClass}>Podcast</NavLink>
           <NavLink to="/help" className={linkClass}>Help</NavLink>
           {isStaff && (
             <>
               <NavLink to="/admin/news" className={linkClass}>Newsroom</NavLink>
               <NavLink to="/admin/events" className={linkClass}>Manage events</NavLink>
+              <NavLink to="/admin/podcast" className={linkClass}>Manage podcast</NavLink>
               {isAdmin && <NavLink to="/admin/members" className={linkClass}>Members</NavLink>}
             </>
           )}
@@ -77,6 +79,7 @@ export default function NavBar() {
             { to: "/", label: "Home" },
             { to: "/news", label: "News" },
             { to: "/events", label: "Events" },
+            { to: "/podcast", label: "Podcast" },
             { to: "/help", label: "Help" },
           ].map((item) => (
             <NavLink
@@ -97,6 +100,9 @@ export default function NavBar() {
               </NavLink>
               <NavLink to="/admin/events" onClick={() => setMobileOpen(false)} className="px-4 py-3 rounded-lg text-sm text-blue-200">
                 Manage events
+              </NavLink>
+              <NavLink to="/admin/podcast" onClick={() => setMobileOpen(false)} className="px-4 py-3 rounded-lg text-sm text-blue-200">
+                Manage podcast
               </NavLink>
               {isAdmin && (
                 <NavLink to="/admin/members" onClick={() => setMobileOpen(false)} className="px-4 py-3 rounded-lg text-sm text-blue-200">
