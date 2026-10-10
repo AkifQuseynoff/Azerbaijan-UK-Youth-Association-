@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import ConfirmDialog from "../../components/ui/ConfirmDialog";
 import PageHeader from "../../components/ui/PageHeader";
 import { useAuth } from "../auth/AuthContext";
 import type { MemberRole } from "../../types";
@@ -13,6 +14,7 @@ export default function AdminMembersPage() {
   const [query, setQuery] = useState("");
   const [error, setError] = useState("");
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [pendingAction, setPendingAction] = useState<{ title: string; message: string; label: string; run: () => void } | null>(null);
 
   const refresh = async () => setMembers(await listMembers());
 
@@ -41,14 +43,24 @@ export default function AdminMembersPage() {
 
   const changeRole = (member: Member, role: MemberRole) => {
     const grant = role === "admin" ? " Admins can manage members, events and news." : "";
-    if (!window.confirm(`Change ${member.email} from ${member.role} to ${role}?${grant}`)) return;
-    void run(member, () => setMemberRole(member.id, role));
+    setPendingAction({
+      title: `Make ${member.email} ${role === "admin" ? "an" : "a"} ${role}?`,
+      message: `Change role from ${member.role} to ${role}.${grant}`,
+      label: "Change role",
+      run: () => void run(member, () => setMemberRole(member.id, role)),
+    });
   };
 
   const toggleStatus = (member: Member) => {
     const next = member.status === "active" ? "deactivated" : "active";
-    if (next === "deactivated" && !window.confirm(`Deactivate ${member.email}? They will be locked out immediately.`)) return;
-    void run(member, () => setMemberStatus(member.id, next));
+    const go = () => void run(member, () => setMemberStatus(member.id, next));
+    if (next === "active") return go();
+    setPendingAction({
+      title: `Deactivate ${member.email}?`,
+      message: "They will be locked out immediately. You can reactivate them later.",
+      label: "Deactivate",
+      run: go,
+    });
   };
 
   return (
@@ -114,6 +126,20 @@ export default function AdminMembersPage() {
           {visible.length === 0 && <p className="p-8 text-gray-400 text-center">No members found.</p>}
         </div>
       </div>
+      {pendingAction && (
+        <ConfirmDialog
+          danger
+          title={pendingAction.title}
+          message={pendingAction.message}
+          confirmLabel={pendingAction.label}
+          onCancel={() => setPendingAction(null)}
+          onConfirm={() => {
+            const action = pendingAction;
+            setPendingAction(null);
+            action.run();
+          }}
+        />
+      )}
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import ConfirmDialog from "../../../components/ui/ConfirmDialog";
 import PageHeader from "../../../components/ui/PageHeader";
 import { eventsApi } from "../api";
 import { formatEventDate, formatEventTime } from "../types";
@@ -11,6 +12,7 @@ export default function AdminEventsPage() {
   const [events, setEvents] = useState<EventItem[]>([]);
   const [filter, setFilter] = useState<(typeof FILTERS)[number]>("all");
   const [error, setError] = useState("");
+  const [confirming, setConfirming] = useState<EventItem | null>(null);
 
   const refresh = async () => setEvents(await eventsApi.listAll());
 
@@ -19,7 +21,6 @@ export default function AdminEventsPage() {
   }, []);
 
   const changeStatus = async (event: EventItem, status: EventStatus) => {
-    if (status === "cancelled" && !window.confirm(`Cancel "${event.title}"? Registered members will see it as cancelled.`)) return;
     setError("");
     try {
       await eventsApi.setStatus(event.id, status);
@@ -80,7 +81,7 @@ export default function AdminEventsPage() {
                   </button>
                 )}
                 {event.status === "published" && (
-                  <button type="button" className="px-3 py-2 text-sm rounded-lg border border-red-200 text-[#CC2229]" onClick={() => void changeStatus(event, "cancelled")}>
+                  <button type="button" className="px-3 py-2 text-sm rounded-lg border border-red-200 text-[#CC2229]" onClick={() => setConfirming(event)}>
                     Cancel event
                   </button>
                 )}
@@ -95,6 +96,20 @@ export default function AdminEventsPage() {
           {visible.length === 0 && <p className="p-8 text-gray-400 text-center">No events in this view.</p>}
         </div>
       </div>
+      {confirming && (
+        <ConfirmDialog
+          danger
+          title={`Cancel "${confirming.title}"?`}
+          message="Registered members will see the event as cancelled and can no longer register. You can reinstate it later."
+          confirmLabel="Cancel event"
+          onCancel={() => setConfirming(null)}
+          onConfirm={() => {
+            const target = confirming;
+            setConfirming(null);
+            void changeStatus(target, "cancelled");
+          }}
+        />
+      )}
     </div>
   );
 }
