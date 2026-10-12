@@ -13,6 +13,7 @@ export default function AdminEventsPage() {
   const [filter, setFilter] = useState<(typeof FILTERS)[number]>("all");
   const [error, setError] = useState("");
   const [confirming, setConfirming] = useState<EventItem | null>(null);
+  const [deleting, setDeleting] = useState<EventItem | null>(null);
 
   const refresh = async () => setEvents(await eventsApi.listAll());
 
@@ -27,6 +28,16 @@ export default function AdminEventsPage() {
       await refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not update the event.");
+    }
+  };
+
+  const remove = async (event: EventItem) => {
+    setError("");
+    try {
+      await eventsApi.remove(event.id);
+      await refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not delete the event.");
     }
   };
 
@@ -90,12 +101,33 @@ export default function AdminEventsPage() {
                     Reinstate
                   </button>
                 )}
+                <button type="button" className="btn btn-danger btn-sm" onClick={() => setDeleting(event)}>
+                  Delete
+                </button>
               </div>
             </div>
           ))}
           {visible.length === 0 && <p className="p-8 text-mute text-center">No events in this view.</p>}
         </div>
       </div>
+      {deleting && (
+        <ConfirmDialog
+          danger
+          title={`Delete "${deleting.title}"?`}
+          message={
+            deleting.taken + deleting.waitlisted > 0
+              ? `This permanently removes the event and its ${deleting.taken + deleting.waitlisted} registration${deleting.taken + deleting.waitlisted === 1 ? "" : "s"}. Registered members are not told. If the event has not happened yet, cancel it instead so they can see it was cancelled. This cannot be undone.`
+              : "This permanently removes the event. This cannot be undone."
+          }
+          confirmLabel="Delete event"
+          onCancel={() => setDeleting(null)}
+          onConfirm={() => {
+            const target = deleting;
+            setDeleting(null);
+            void remove(target);
+          }}
+        />
+      )}
       {confirming && (
         <ConfirmDialog
           danger

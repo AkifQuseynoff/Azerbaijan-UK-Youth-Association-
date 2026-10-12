@@ -287,10 +287,7 @@ export async function saveArticle(id: string | null, input: ArticleInput, author
     body: input.body,
     category: input.category,
     coverPath,
-    coverUrl:
-      coverPath && (coverPath.startsWith("http") || coverPath.startsWith("data:"))
-        ? coverPath
-        : "https://images.unsplash.com/photo-1612779361237-966485682855?w=800&h=500&fit=crop&auto=format",
+    coverUrl: coverPath && (coverPath.startsWith("http") || coverPath.startsWith("data:")) ? coverPath : "",
     authorName: input.authorName,
     authorId,
     status: input.status,

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import CoverImage from "../../../components/ui/CoverImage";
 import PageHeader from "../../../components/ui/PageHeader";
 import NewsCard from "../NewsCard";
 import { listPublishedArticles } from "../api";
@@ -84,7 +85,7 @@ export default function NewsPage() {
         {featured && page === 1 && activeCategory === "All" && !debounced && (
           <Link to={`/news/${featured.slug}`} className="card press group mb-10 grid overflow-hidden md:grid-cols-2">
             <div className="aspect-[16/10] overflow-hidden bg-mist md:aspect-auto">
-              <img src={featured.coverUrl} alt="" className="h-full w-full object-cover transition-transform duration-500 [@media(hover:hover)]:group-hover:scale-105" />
+              <CoverImage src={featured.coverUrl} imgClassName="h-full w-full object-cover transition-transform duration-500 [@media(hover:hover)]:group-hover:scale-105" />
             </div>
             <div className="flex flex-col justify-center p-7 sm:p-10">
               <div className="mb-4 flex items-center gap-3">

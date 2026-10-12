@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import CoverImage from "../../components/ui/CoverImage";
 import type { Article } from "../../types";
 import { categoryColors } from "../../constants";
 import { formatArticleDate, readTimeFromBody } from "../../types";
@@ -8,12 +9,7 @@ export default function NewsCard({ article }: { article: Article }) {
     <article className="card press group overflow-hidden transition-transform duration-200">
       <Link to={`/news/${article.slug}`} className="block h-full">
         <div className="aspect-[16/9] overflow-hidden bg-mist">
-          <img
-            src={article.coverUrl}
-            alt=""
-            loading="lazy"
-            className="h-full w-full object-cover transition-transform duration-500 [@media(hover:hover)]:group-hover:scale-105"
-          />
+          <CoverImage src={article.coverUrl} imgClassName="h-full w-full object-cover transition-transform duration-500 [@media(hover:hover)]:group-hover:scale-105" />
         </div>
         <div className="p-6">
           <div className="mb-3 flex items-center gap-3">

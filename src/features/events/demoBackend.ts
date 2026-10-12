@@ -214,6 +214,11 @@ export const demoBackend: EventsBackend = {
     write(REGS_KEY, regs);
   },
 
+  async remove(id) {
+    write(EVENTS_KEY, loadEvents().filter((e) => e.id !== id));
+    write(REGS_KEY, loadRegs().filter((r) => r.eventId !== id));
+  },
+
   async listAttendees(eventId) {
     const directory = userDirectory();
     return loadRegs()

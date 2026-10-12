@@ -219,6 +219,13 @@ export const supabaseBackend: EventsBackend = {
     if (error) fail(error);
   },
 
+  async remove(id) {
+    // A delete that row-level security refuses returns no error and no rows, so check what actually went.
+    const { data, error } = await db().from("events").delete().eq("id", id).select("id");
+    if (error) fail(error);
+    if (!data || data.length === 0) throw new Error("The event could not be deleted. If it is not a draft, the latest database update (009_event_delete) may not be applied yet.");
+  },
+
   async listAttendees(eventId) {
     const { data, error } = await db().rpc("event_attendees", { p_event_id: eventId });
     if (error) fail(error);

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import CoverImage from "../../../components/ui/CoverImage";
 import PageHeader from "../../../components/ui/PageHeader";
 import NewsCard from "../NewsCard";
 import { MarkdownBody } from "../markdown";
@@ -56,9 +57,11 @@ export default function ArticlePage() {
           <span className="mx-2" aria-hidden="true">/</span>
           {article.authorName} · {formatArticleDate(article.publishedAt)} · {readTimeFromBody(article.body)}
         </p>
-        <div className="mb-10 aspect-[16/9] overflow-hidden rounded-3xl bg-mist shadow-card">
-          <img src={article.coverUrl} alt="" className="h-full w-full object-cover" />
-        </div>
+        {article.coverUrl && (
+          <div className="mb-10 aspect-[16/9] overflow-hidden rounded-3xl bg-mist shadow-card">
+            <CoverImage src={article.coverUrl} />
+          </div>
+        )}
         <article className="card p-6 sm:p-10">
           <MarkdownBody source={article.body} />
         </article>

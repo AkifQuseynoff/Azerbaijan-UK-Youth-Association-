@@ -25,6 +25,8 @@ export interface EventsBackend {
   getForEdit(id: string): Promise<{ event: EventItem; onlineUrl: string } | null>;
   save(id: string | null, input: EventInput, userId: string | null): Promise<EventItem>;
   setStatus(id: string, status: EventStatus): Promise<void>;
+  /** Permanently removes the event together with its registrations and online link. */
+  remove(id: string): Promise<void>;
   listAttendees(eventId: string): Promise<Attendee[]>;
   setRegistrationStatus(registrationId: string, status: "cancelled" | "attended"): Promise<void>;
 }

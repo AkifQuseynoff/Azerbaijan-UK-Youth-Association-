@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { LogoMark } from "../../../components/brand/Logo";
+import CoverImage from "../../../components/ui/CoverImage";
 import PageHeader from "../../../components/ui/PageHeader";
 import { eventsApi } from "../../events/api";
 import { formatEventDate, formatEventTime } from "../../events/types";
@@ -61,12 +61,8 @@ export default function PodcastPage() {
           <div className="grid gap-5">
             {episodes.map((ep) => (
               <article key={ep.id} className="card press group grid overflow-hidden sm:grid-cols-[220px_1fr]">
-                <Link to={`/podcast/${ep.slug}`} tabIndex={-1} aria-hidden="true" className="block aspect-video bg-gradient-to-br from-mist to-[#f9e8df] sm:aspect-auto">
-                  {ep.coverUrl ? (
-                    <img src={ep.coverUrl} alt="" loading="lazy" className="h-full w-full object-cover" />
-                  ) : (
-                    <span className="grid h-full w-full place-items-center"><LogoMark className="h-16 w-auto opacity-90" decorative /></span>
-                  )}
+                <Link to={`/podcast/${ep.slug}`} tabIndex={-1} aria-hidden="true" className="block aspect-video bg-mist sm:aspect-auto">
+                  <CoverImage src={ep.coverUrl} />
                 </Link>
                 <div className="p-6">
                   <p className="eyebrow mb-1 !text-brand-green">
