@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { Field, SelectField, TextAreaField } from "../../../components/ui/Field";
 import PageHeader from "../../../components/ui/PageHeader";
 import { useAuth } from "../../auth/AuthContext";
+import BodyEditor from "./BodyEditor";
 import { getStaffArticle, saveArticle } from "../api";
 import { ARTICLE_CATEGORIES, slugify, toLocalInputValue, type ArticleCategory, type ArticleStatus } from "../../../types";
 
@@ -123,9 +124,7 @@ export default function AdminNewsEditorPage() {
           <div>
             <TextAreaField label="Excerpt" value={form.excerpt} onChange={(e) => setForm({ ...form, excerpt: e.target.value })} rows={3} />
           </div>
-          <div>
-            <TextAreaField label="Body (Markdown)" value={form.body} onChange={(e) => setForm({ ...form, body: e.target.value })} rows={12} className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm resize-y font-mono" />
-          </div>
+          <BodyEditor value={form.body} onChange={(body) => setForm((f) => ({ ...f, body }))} slug={form.slug || slugify(form.title)} />
           <div>
             <label htmlFor="cover-file" className="block text-sm font-medium mb-1.5">Cover image</label>
             <input id="cover-file" type="file" accept="image/*" onChange={(e) => setCoverFile(e.target.files?.[0] ?? null)} className="text-sm" />
