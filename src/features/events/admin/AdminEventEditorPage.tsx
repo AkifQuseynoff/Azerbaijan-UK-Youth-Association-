@@ -7,6 +7,7 @@ import { useAuth } from "../../auth/AuthContext";
 import { eventsApi } from "../api";
 import { EVENT_CATEGORIES } from "../types";
 import ActiveEvents from "./ActiveEvents";
+import { attendeesToCsv, downloadCsv } from "../attendeesCsv";
 import type { Attendee, EventCategory, EventKind, EventStatus } from "../types";
 
 const emptyForm = {
@@ -38,6 +39,12 @@ export default function AdminEventEditorPage() {
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [pending, setPending] = useState(false);
+  const [includeCancelled, setIncludeCancelled] = useState(false);
+
+  const exportAttendees = () => {
+    const day = form.startsAt ? form.startsAt.slice(0, 10) : new Date().toISOString().slice(0, 10);
+    downloadCsv(attendeesToCsv(attendees, includeCancelled), `${form.slug || "event"}-${day}-attendees.csv`);
+  };
 
   const loadAttendees = useCallback(async (eventId: string) => {
     setAttendees(await eventsApi.listAttendees(eventId));
@@ -229,9 +236,23 @@ export default function AdminEventEditorPage() {
 
         {!isNew && (
           <div className="card overflow-hidden">
-            <div className="px-6 py-4 border-b border-line">
+            <div className="flex flex-col gap-3 border-b border-line px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
               <h2 className="text-xl font-display text-ink">Registrations ({attendees.filter((a) => a.status !== "cancelled").length})</h2>
+              {attendees.length > 0 && (
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                  <label className="flex items-center gap-2 text-sm text-mute">
+                    <input type="checkbox" checked={includeCancelled} onChange={(e) => setIncludeCancelled(e.target.checked)} className="accent-brand-blue" />
+                    Include cancelled
+                  </label>
+                  <button type="button" className="btn btn-blue btn-sm" onClick={exportAttendees}>Download CSV</button>
+                </div>
+              )}
             </div>
+            {attendees.length > 0 && (
+              <p className="border-b border-line bg-mist px-6 py-2 text-xs text-mute">
+                The file contains names, emails and phone numbers. Keep it somewhere safe and delete it when you no longer need it.
+              </p>
+            )}
             {attendees.length === 0 ? (
               <p className="p-8 text-mute text-center">Nobody has registered yet.</p>
             ) : (
