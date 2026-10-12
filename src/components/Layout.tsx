@@ -28,7 +28,7 @@ export default function Layout() {
       <main id="main" tabIndex={-1} className={`flex-1 outline-none ${home ? "" : "pt-[72px]"}`}>
         <Outlet />
       </main>
-      <Footer />
+      <Footer skyline={!home} />
     </div>
   );
 }

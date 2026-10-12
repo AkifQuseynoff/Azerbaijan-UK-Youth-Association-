@@ -16,14 +16,16 @@ const resources = [
   { to: "/help", label: "Help & contact" },
 ];
 
-export default function Footer() {
+/** `skyline` is off on the home page, whose hero already carries the skyline. */
+export default function Footer({ skyline = true }: { skyline?: boolean }) {
   return (
-    <footer className="mt-20 bg-ink text-white">
-      {/* The skyline stands on the footer */}
-      <div className="foot-sky" aria-hidden="true">
-        <Skyline className="foot-city" nearFill="#0e1f45" farOpacity={0.08} towers="colour" ground />
-      </div>
-      <div className="mx-auto grid max-w-7xl gap-10 px-6 pb-10 pt-4 md:grid-cols-4">
+    <footer className={`${skyline ? "mt-20" : "mt-24"} bg-ink text-white`}>
+      {skyline && (
+        <div className="foot-sky" aria-hidden="true">
+          <Skyline className="foot-city" nearFill="#0e1f45" farOpacity={0.08} towers="colour" ground />
+        </div>
+      )}
+      <div className={`mx-auto grid max-w-7xl gap-10 px-6 pb-10 md:grid-cols-4 ${skyline ? "pt-4" : "pt-14"}`}>
         <div className="md:col-span-2">
           <div className="flex items-center gap-4">
             <BadgeLogo />
