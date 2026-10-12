@@ -6,6 +6,7 @@ import { slugify, toLocalInputValue } from "../../../types";
 import { useAuth } from "../../auth/AuthContext";
 import { eventsApi } from "../api";
 import { EVENT_CATEGORIES } from "../types";
+import ActiveEvents from "./ActiveEvents";
 import type { Attendee, EventCategory, EventKind, EventStatus } from "../types";
 
 const emptyForm = {
@@ -147,6 +148,7 @@ export default function AdminEventEditorPage() {
         action={<Link to="/admin/events" className="text-sm font-semibold text-brand-blue underline underline-offset-4">Back to events</Link>}
       />
       <div className="max-w-4xl mx-auto px-6 py-10 space-y-8">
+        <ActiveEvents excludeId={isNew ? undefined : id} />
         <div className="card p-6 sm:p-8 space-y-5">
           <div>
             <Field

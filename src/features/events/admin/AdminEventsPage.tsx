@@ -4,15 +4,25 @@ import ConfirmDialog from "../../../components/ui/ConfirmDialog";
 import PageHeader from "../../../components/ui/PageHeader";
 import { useNow } from "../../../lib/useNow";
 import { eventsApi } from "../api";
+import { isActive } from "./ActiveEvents";
 import LiveBadge from "../LiveBadge";
-import { formatEventDate, formatEventTime, isHappeningNow } from "../types";
+import { eventEnd, formatEventDate, formatEventTime, isHappeningNow } from "../types";
 import type { EventItem, EventStatus } from "../types";
 
-const FILTERS = ["all", "draft", "published", "cancelled"] as const;
+const FILTERS = ["active", "draft", "cancelled", "past", "all"] as const;
+type Filter = (typeof FILTERS)[number];
+const LABELS: Record<Filter, string> = { active: "Active", draft: "Drafts", cancelled: "Cancelled", past: "Past", all: "All" };
+const EMPTY: Record<Filter, string> = {
+  active: "No events are active on the site right now.",
+  draft: "No drafts.",
+  cancelled: "No cancelled events.",
+  past: "No past events yet.",
+  all: "No events yet.",
+};
 
 export default function AdminEventsPage() {
   const [events, setEvents] = useState<EventItem[]>([]);
-  const [filter, setFilter] = useState<(typeof FILTERS)[number]>("all");
+  const [filter, setFilter] = useState<Filter>("active");
   const [error, setError] = useState("");
   const [confirming, setConfirming] = useState<EventItem | null>(null);
   const [deleting, setDeleting] = useState<EventItem | null>(null);
@@ -45,7 +55,14 @@ export default function AdminEventsPage() {
   };
 
   const live = events.filter((e) => isHappeningNow(e, now));
-  const visible = (filter === "all" ? events : events.filter((e) => e.status === filter)).filter((e) => !isHappeningNow(e, now));
+  const matches: Record<Filter, (e: EventItem) => boolean> = {
+    active: (e) => isActive(e, now),
+    draft: (e) => e.status === "draft",
+    cancelled: (e) => e.status === "cancelled",
+    past: (e) => e.status === "published" && eventEnd(e) <= now,
+    all: () => true,
+  };
+  const visible = events.filter(matches[filter]).filter((e) => !isHappeningNow(e, now));
 
   return (
     <div className="page-transition">
@@ -94,9 +111,9 @@ export default function AdminEventsPage() {
               type="button"
               aria-pressed={filter === f}
               onClick={() => setFilter(f)}
-              className={`px-4 py-2 rounded-full text-sm font-semibold capitalize ${filter === f ? "bg-ink text-white" : "bg-mist text-ink hover:bg-line"}`}
+              className={`px-4 py-2 rounded-full text-sm font-semibold ${filter === f ? "bg-ink text-white" : "bg-mist text-ink hover:bg-line"}`}
             >
-              {f}
+              {LABELS[f]} <span className={filter === f ? "opacity-70" : "text-mute"}>{events.filter(matches[f]).length}</span>
             </button>
           ))}
         </div>
@@ -107,7 +124,7 @@ export default function AdminEventsPage() {
               <div className="flex-1">
                 <p className="font-semibold text-ink">{event.title}</p>
                 <p className="text-xs text-mute mt-1">
-                  {isHappeningNow(event) ? "live now" : event.status} · {event.category} · {formatEventDate(event.startsAt)} {formatEventTime(event.startsAt, event.endsAt)} ·{" "}
+                  {isHappeningNow(event, now) ? "live now" : event.status === "published" ? (eventEnd(event) <= now ? "past" : "active") : event.status} · {event.category} · {formatEventDate(event.startsAt)} {formatEventTime(event.startsAt, event.endsAt)} ·{" "}
                   {event.taken}
                   {event.capacity !== null ? ` / ${event.capacity}` : ""} registered
                   {event.waitlisted > 0 ? ` · ${event.waitlisted} waitlisted` : ""}
@@ -138,7 +155,7 @@ export default function AdminEventsPage() {
               </div>
             </div>
           ))}
-          {visible.length === 0 && <p className="p-8 text-mute text-center">No events in this view.</p>}
+          {visible.length === 0 && <p className="p-8 text-mute text-center">{live.length > 0 && filter === "active" ? "No other active events." : EMPTY[filter]}</p>}
         </div>
       </div>
       {deleting && (
