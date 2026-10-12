@@ -5,7 +5,9 @@ import { categoryColors } from "../../../constants";
 import { useAuth } from "../../auth/AuthContext";
 import { eventsApi } from "../api";
 import RegistrationActions from "../RegistrationActions";
-import { formatEventDate, formatEventTime, registrationState } from "../types";
+import LiveBadge from "../LiveBadge";
+import { useNow } from "../../../lib/useNow";
+import { formatEventDate, formatEventTime, isHappeningNow, registrationState } from "../types";
 import type { EventItem, EventRegistration } from "../types";
 
 const TONES = ["var(--color-brand-sky)", "var(--color-brand-green)", "var(--color-brand-red)"] as const;
@@ -17,6 +19,7 @@ export default function EventsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selected, setSelected] = useState("All");
+  const now = useNow();
 
   const userId = profile?.id ?? null;
 
@@ -37,7 +40,9 @@ export default function EventsPage() {
   }, [refresh]);
 
   const categories = useMemo(() => ["All", ...Array.from(new Set(events.map((e) => e.category)))], [events]);
-  const visible = selected === "All" ? events : events.filter((e) => e.category === selected);
+  const inCategory = selected === "All" ? events : events.filter((e) => e.category === selected);
+  const live = inCategory.filter((e) => isHappeningNow(e, now));
+  const visible = inCategory.filter((e) => !isHappeningNow(e, now));
 
   return (
     <div className="page-transition">
@@ -62,9 +67,22 @@ export default function EventsPage() {
 
         {error && <p role="alert" className="mb-6 rounded-2xl bg-brand-red/10 px-4 py-3 text-sm text-brand-red-dark">{error}</p>}
 
+        {live.length > 0 && (
+          <section aria-labelledby="live-now" className="mb-12">
+            <h2 id="live-now" className="sr-only">Happening now</h2>
+            <div className="flex flex-col gap-5">
+              {live.map((event) => (
+                <LiveEvent key={event.id} event={event} mine={mine.get(event.id)} onChanged={refresh} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {!loading && live.length > 0 && visible.length > 0 && <h2 className="display mb-5 text-3xl">Coming up</h2>}
+
         {loading ? (
           <p className="text-mute">Loading events…</p>
-        ) : visible.length === 0 ? (
+        ) : visible.length === 0 && live.length > 0 ? null : visible.length === 0 ? (
           <div className="card px-6 py-12 text-center">
             <p className="font-display text-2xl tracking-tight">No upcoming events right now</p>
             <p className="mt-1 text-mute">New dates are added here as soon as they are confirmed.</p>
@@ -135,6 +153,34 @@ function EventRow({
       <div className="flex min-w-44 flex-col items-start gap-3 sm:col-start-2 md:col-start-3 md:items-end">
         <RegistrationActions event={event} mine={mine} onChanged={onChanged} />
         <Link to={`/events/${event.slug}`} className="text-sm font-semibold text-brand-blue underline underline-offset-4">Details</Link>
+      </div>
+    </article>
+  );
+}
+
+/** An event that is on right now: set apart on a dark band, with the same register or details actions. */
+function LiveEvent({ event, mine, onChanged }: { event: EventItem; mine: EventRegistration | undefined; onChanged: () => Promise<void> }) {
+  const until = new Date(event.endsAt ?? new Date(event.startsAt).getTime() + 2 * 3600 * 1000).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/London" });
+  return (
+    <article className="rounded-[28px] bg-gradient-to-br from-ink to-[#14295a] p-6 text-[#eaf0ff] shadow-card sm:p-8">
+      <LiveBadge className="!bg-white/10 !text-[#ff9d95]" />
+      <div className="mt-4 grid gap-5 md:grid-cols-[1fr_auto] md:items-end">
+        <div>
+          <h3 className="display text-3xl text-white sm:text-4xl">
+            <Link to={`/events/${event.slug}`} className="transition-colors hover:text-[#cfe0ff]">{event.title}</Link>
+          </h3>
+          <p className="mt-2 text-[#c4d2f0]">
+            On until {until}
+            {event.venue ? ` · ${event.venue}` : ""}
+          </p>
+          {event.description && <p className="mt-3 line-clamp-2 max-w-2xl text-[#c4d2f0]">{event.description}</p>}
+        </div>
+        <div className="flex flex-col items-start gap-3 md:items-end">
+          <div className="[&_.chip]:bg-white/10 [&_.chip]:text-white [&_span.text-xs]:text-[#c4d2f0] [&_button.text-brand-red]:text-[#ff9d95] [&_p]:text-[#ff9d95] [&_.btn-blue]:bg-white [&_.btn-blue]:text-brand-blue">
+            <RegistrationActions event={event} mine={mine} onChanged={onChanged} />
+          </div>
+          <Link to={`/events/${event.slug}`} className="text-sm font-semibold text-white underline underline-offset-4">Details</Link>
+        </div>
       </div>
     </article>
   );

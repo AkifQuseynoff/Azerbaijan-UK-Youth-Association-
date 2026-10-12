@@ -1,4 +1,5 @@
 import type { EventsBackend } from "./api";
+import { eventEnd } from "./types";
 import type { Attendee, EventCategory, EventItem, EventKind, EventRegistration, RegistrationStatus } from "./types";
 
 // Demo mode only: a localStorage stand-in that mirrors the rules enforced by the
@@ -94,7 +95,7 @@ export const demoBackend: EventsBackend = {
     const regs = loadRegs();
     const now = Date.now();
     return loadEvents()
-      .filter((e) => e.status !== "draft" && new Date(e.endsAt ?? e.startsAt).getTime() > now)
+      .filter((e) => e.status !== "draft" && eventEnd(e) > now)
       .sort((a, b) => a.startsAt.localeCompare(b.startsAt))
       .map((e) => toItem(e, regs));
   },

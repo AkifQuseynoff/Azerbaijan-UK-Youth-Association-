@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import ConfirmDialog from "../../../components/ui/ConfirmDialog";
 import PageHeader from "../../../components/ui/PageHeader";
 import { eventsApi } from "../api";
-import { formatEventDate, formatEventTime } from "../types";
+import { formatEventDate, formatEventTime, isHappeningNow } from "../types";
 import type { EventItem, EventStatus } from "../types";
 
 const FILTERS = ["all", "draft", "published", "cancelled"] as const;
@@ -76,7 +76,7 @@ export default function AdminEventsPage() {
               <div className="flex-1">
                 <p className="font-semibold text-ink">{event.title}</p>
                 <p className="text-xs text-mute mt-1">
-                  {event.status} · {event.category} · {formatEventDate(event.startsAt)} {formatEventTime(event.startsAt, event.endsAt)} ·{" "}
+                  {isHappeningNow(event) ? "live now" : event.status} · {event.category} · {formatEventDate(event.startsAt)} {formatEventTime(event.startsAt, event.endsAt)} ·{" "}
                   {event.taken}
                   {event.capacity !== null ? ` / ${event.capacity}` : ""} registered
                   {event.waitlisted > 0 ? ` · ${event.waitlisted} waitlisted` : ""}

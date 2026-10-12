@@ -1,5 +1,6 @@
 import { supabase } from "../../lib/supabase";
 import type { EventsBackend } from "./api";
+import { eventEnd } from "./types";
 import type { Attendee, EventCategory, EventItem, EventKind, EventRegistration, EventStatus, RegistrationStatus } from "./types";
 
 type EventRow = {
@@ -101,7 +102,7 @@ export const supabaseBackend: EventsBackend = {
       .order("starts_at");
     if (error) fail(error);
     const now = Date.now();
-    const rows = ((data ?? []) as EventRow[]).filter((r) => new Date(r.ends_at ?? r.starts_at).getTime() > now);
+    const rows = ((data ?? []) as EventRow[]).filter((r) => eventEnd({ startsAt: r.starts_at, endsAt: r.ends_at }) > now);
     return withAvailability(rows);
   },
 

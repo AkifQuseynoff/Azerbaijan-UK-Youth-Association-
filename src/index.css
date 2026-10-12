@@ -201,6 +201,12 @@ details summary::-webkit-details-marker {
   }
 }
 
+/* "Happening now": a dot with a slow glow */
+.live-dot { position: relative; width: 8px; height: 8px; border-radius: 50%; background: var(--color-brand-red); }
+.live-dot::after { content: ""; position: absolute; inset: -4px; border-radius: 50%; background: var(--color-brand-red); opacity: 0.35; animation: live-glow 2.4s ease-in-out infinite; }
+@keyframes live-glow { 0%, 100% { transform: scale(0.7); opacity: 0.35; } 50% { transform: scale(1.25); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .live-dot::after { animation: none; opacity: 0.2; } }
+
 /* ---------- Dawn hero: sky, sun, skyline ---------- */
 .hero {
   --cw: clamp(960px, 100vw, 1800px);

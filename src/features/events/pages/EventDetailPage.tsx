@@ -6,7 +6,8 @@ import { useAuth } from "../../auth/AuthContext";
 import { eventsApi } from "../api";
 import AddToCalendar from "../AddToCalendar";
 import RegistrationActions from "../RegistrationActions";
-import { formatEventDate, formatEventTime } from "../types";
+import LiveBadge from "../LiveBadge";
+import { formatEventDate, formatEventTime, isHappeningNow } from "../types";
 import type { EventItem, EventRegistration } from "../types";
 
 export default function EventDetailPage() {
@@ -68,6 +69,7 @@ export default function EventDetailPage() {
       <PageHeader eyebrow={event.kind === "podcast_live" ? "Live podcast recording" : "Event"} title={event.title} width="max-w-4xl" />
       <div className="mx-auto grid max-w-4xl items-start gap-8 px-5 py-10 sm:px-8 md:grid-cols-[1fr_300px]">
         <div className="card space-y-6 p-6 sm:p-8">
+          {isHappeningNow(event) && <LiveBadge />}
           <span className={`chip ${categoryColors[event.category] || "bg-mist text-ink"}`}>
             {event.category}
           </span>

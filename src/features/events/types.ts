@@ -78,6 +78,18 @@ export type RegistrationState =
   | "join-waitlist"
   | "open";
 
+/** Events with no end time are treated as lasting two hours, so they can show as live and then drop off the list. */
+const DEFAULT_DURATION_MS = 2 * 3600 * 1000;
+
+export function eventEnd(event: Pick<EventItem, "startsAt" | "endsAt">): number {
+  return event.endsAt ? new Date(event.endsAt).getTime() : new Date(event.startsAt).getTime() + DEFAULT_DURATION_MS;
+}
+
+/** Published and in progress right now (started, not yet finished). */
+export function isHappeningNow(event: EventItem, now = Date.now()): boolean {
+  return event.status === "published" && new Date(event.startsAt).getTime() <= now && now < eventEnd(event);
+}
+
 export function registrationState(
   event: EventItem,
   mine: EventRegistration | undefined,
@@ -87,6 +99,7 @@ export function registrationState(
   if (mine?.status === "confirmed") return "registered";
   if (mine?.status === "attended") return "attended";
   if (mine?.status === "waitlisted") return "waitlisted";
+  // Registration follows the stored end time (the database applies the same rule); events without one close when they start.
   if (new Date(event.endsAt ?? event.startsAt).getTime() <= now) return "past";
   if (event.registrationOpensAt && now < new Date(event.registrationOpensAt).getTime()) return "not-open";
   if (event.registrationClosesAt && now > new Date(event.registrationClosesAt).getTime()) return "closed";

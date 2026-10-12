@@ -8,7 +8,10 @@ import { SITE } from "../config/site";
 import { useAuth } from "../features/auth/AuthContext";
 import { eventsApi } from "../features/events/api";
 import EventTicket from "../features/events/EventTicket";
+import LiveBadge from "../features/events/LiveBadge";
+import { isHappeningNow } from "../features/events/types";
 import type { EventItem } from "../features/events/types";
+import { useNow } from "../lib/useNow";
 import NewsCard from "../features/news/NewsCard";
 import { listLatestPublished } from "../features/news/api";
 import { listPublishedEpisodes } from "../features/podcasts/api";
@@ -28,9 +31,10 @@ export default function HomePage() {
   const [episode, setEpisode] = useState<Episode | null>(null);
   const [latest, setLatest] = useState<Article[]>([]);
   const hero = useRef<HTMLElement>(null);
+  const now = useNow();
 
   useEffect(() => {
-    eventsApi.listUpcoming().then((list) => setEvents(list.filter((e) => e.status === "published").slice(0, 3))).catch(() => setEvents([]));
+    eventsApi.listUpcoming().then((list) => setEvents(list.filter((e) => e.status === "published"))).catch(() => setEvents([]));
     listPublishedEpisodes().then((list) => setEpisode(list[0] ?? null)).catch(() => undefined);
     void listLatestPublished(3).then(setLatest).catch(() => undefined);
   }, []);
@@ -51,6 +55,9 @@ export default function HomePage() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  const liveNow = (events ?? []).filter((e) => isHappeningNow(e, now));
+  const upcoming = (events ?? []).filter((e) => !isHappeningNow(e, now)).slice(0, 3);
 
   return (
     <>
@@ -89,16 +96,34 @@ export default function HomePage() {
           <h2 id="events-title" className="display text-[2rem] sm:text-5xl">On the calendar</h2>
           <Link to="/events" className="link-u whitespace-nowrap">All events</Link>
         </div>
+        {liveNow.length > 0 && (
+          <div className="mb-8 grid gap-4">
+            {liveNow.map((event) => (
+              <Link
+                key={event.id}
+                to={`/events/${event.slug}`}
+                className="press flex flex-col gap-3 rounded-[24px] bg-gradient-to-br from-ink to-[#14295a] p-6 text-[#eaf0ff] shadow-card sm:flex-row sm:items-center sm:justify-between sm:p-7"
+              >
+                <div>
+                  <LiveBadge className="!bg-white/10 !text-[#ff9d95]" />
+                  <p className="mt-3 font-display text-2xl font-medium tracking-tight text-white sm:text-3xl">{event.title}</p>
+                  {event.venue && <p className="mt-1 text-[#c4d2f0]">{event.venue}</p>}
+                </div>
+                <span className="btn btn-light btn-sm self-start sm:self-center">See details</span>
+              </Link>
+            ))}
+          </div>
+        )}
         {events === null ? (
           <p className="text-mute">Loading events…</p>
-        ) : events.length === 0 ? (
+        ) : upcoming.length === 0 && liveNow.length > 0 ? null : upcoming.length === 0 ? (
           <div className="card px-6 py-10 text-center">
             <p className="font-display text-2xl tracking-tight">No events announced yet</p>
             <p className="mt-1 text-mute">New dates are added here as soon as they are confirmed.</p>
           </div>
         ) : (
           <Reveal className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-            {events.map((event, i) => (
+            {upcoming.map((event, i) => (
               <EventTicket key={event.id} event={event} index={i} />
             ))}
           </Reveal>
