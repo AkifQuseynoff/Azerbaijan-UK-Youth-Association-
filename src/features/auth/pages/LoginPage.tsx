@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Field } from "../../../components/ui/Field";
-import FlagDivider from "../../../components/ui/FlagDivider";
+import PageHeader from "../../../components/ui/PageHeader";
 import { useAuth } from "../AuthContext";
 
 export default function LoginPage() {
@@ -29,35 +29,29 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="page-transition min-h-screen bg-[#F4F6FB]">
-      <div className="bg-[#002060] py-16 px-6">
-        <div className="max-w-md mx-auto">
-          <p className="text-[#CC2229] font-semibold text-sm uppercase tracking-wider mb-3">Members</p>
-          <h1 className="text-5xl text-white" style={{ fontFamily: "'DM Serif Display', serif" }}>Log in</h1>
-        </div>
-      </div>
-      <FlagDivider />
+    <div className="page-transition">
+      <PageHeader eyebrow="Members" title="Log in" width="max-w-md" />
       <div className="max-w-md mx-auto px-6 py-12">
-        <form onSubmit={(e) => void handleSubmit(e)} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 space-y-5">
+        <form onSubmit={(e) => void handleSubmit(e)} className="card p-6 sm:p-8 space-y-5">
           <div>
             <Field label="Email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
           </div>
           <div>
             <Field label="Password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" />
           </div>
-          {error && <p className="text-[#CC2229] text-sm">{error}</p>}
-          <button type="submit" disabled={pending} className="w-full py-3 bg-[#003580] text-white font-semibold rounded-xl disabled:opacity-50">
+          {error && <p className="text-sm text-brand-red-dark">{error}</p>}
+          <button type="submit" disabled={pending} className="btn btn-blue w-full">
             {pending ? "Signing in…" : "Log in"}
           </button>
-          <p className="text-sm text-gray-500 text-center">
-            <Link to="/forgot-password" className="text-[#003580] font-semibold">Forgot password?</Link>
+          <p className="text-sm text-mute text-center">
+            <Link to="/forgot-password" className="text-brand-blue font-semibold">Forgot password?</Link>
           </p>
         </form>
-        <p className="text-sm text-gray-500 mt-6 text-center">
-          New here? <Link to="/register" className="text-[#003580] font-semibold">Join the Association</Link>
+        <p className="text-sm text-mute mt-6 text-center">
+          New here? <Link to="/register" className="text-brand-blue font-semibold">Join the Association</Link>
         </p>
         {demo && (
-          <p className="text-xs text-gray-400 mt-6 text-center">
+          <p className="text-xs text-mute mt-6 text-center">
             Preview mode: staff demo is editor@aukya.org.uk / Editor123!
           </p>
         )}

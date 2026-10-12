@@ -42,43 +42,44 @@ export default function RegistrationActions({
     }
   };
 
-  const primary = "px-6 py-3 text-white font-semibold rounded-xl transition-colors whitespace-nowrap shadow disabled:opacity-50";
-  const note = "px-4 py-2 rounded-xl text-sm font-semibold bg-gray-100 text-gray-500";
+  const note = "chip bg-mist text-mute !px-4 !py-2 !text-sm";
+  const good = "chip bg-brand-green/12 text-[#2c6638] !px-4 !py-2 !text-sm";
+  const textLink = "text-sm font-semibold text-brand-red underline underline-offset-4 disabled:opacity-50";
 
   let control;
   if (!profile && state !== "cancelled-event" && state !== "past") {
     control = (
-      <Link to="/login" state={{ from: location.pathname }} className={`${primary} bg-[#003580] hover:bg-[#002060]`}>
+      <Link to="/login" state={{ from: location.pathname }} className="btn btn-blue">
         Log in to register
       </Link>
     );
   } else {
     switch (state) {
       case "open":
-        control = <button type="button" disabled={busy} onClick={() => void run("register")} className={`${primary} bg-[#003580] hover:bg-[#002060]`}>{busy ? "Registering…" : "Register"}</button>;
+        control = <button type="button" disabled={busy} onClick={() => void run("register")} className="btn btn-primary">{busy ? "Registering…" : "Register"}</button>;
         break;
       case "join-waitlist":
-        control = <button type="button" disabled={busy} onClick={() => void run("register")} className={`${primary} bg-amber-600 hover:bg-amber-700`}>{busy ? "Joining…" : "Join waitlist"}</button>;
+        control = <button type="button" disabled={busy} onClick={() => void run("register")} className="btn bg-amber-600 text-white hover:bg-amber-700">{busy ? "Joining…" : "Join waitlist"}</button>;
         break;
       case "registered":
         control = (
           <>
-            <span className="px-4 py-2 rounded-xl text-sm font-semibold bg-teal-50 text-[#00997A]">✓ You're registered</span>
-            {mine && <span className="text-xs text-gray-500">Ticket {mine.ticketCode}</span>}
-            <button type="button" disabled={busy} onClick={() => void run("cancel")} className="text-sm text-[#CC2229] underline disabled:opacity-50">Cancel registration</button>
+            <span className={good}>✓ You&apos;re registered</span>
+            {mine && <span className="text-xs text-mute">Ticket {mine.ticketCode}</span>}
+            <button type="button" disabled={busy} onClick={() => void run("cancel")} className={textLink}>Cancel registration</button>
           </>
         );
         break;
       case "waitlisted":
         control = (
           <>
-            <span className="px-4 py-2 rounded-xl text-sm font-semibold bg-amber-50 text-amber-700">On the waitlist</span>
-            <button type="button" disabled={busy} onClick={() => void run("cancel")} className="text-sm text-[#CC2229] underline disabled:opacity-50">Leave waitlist</button>
+            <span className="chip bg-amber-100 text-amber-800 !px-4 !py-2 !text-sm">On the waitlist</span>
+            <button type="button" disabled={busy} onClick={() => void run("cancel")} className={textLink}>Leave waitlist</button>
           </>
         );
         break;
       case "attended":
-        control = <span className="px-4 py-2 rounded-xl text-sm font-semibold bg-teal-50 text-[#00997A]">✓ Attended</span>;
+        control = <span className={good}>✓ Attended</span>;
         break;
       case "full":
         control = <span className={note}>Event full</span>;
@@ -100,7 +101,7 @@ export default function RegistrationActions({
   return (
     <div className={`flex flex-col gap-2 ${items}`}>
       {control}
-      {error && <p role="alert" className="text-sm text-[#CC2229] max-w-xs">{error}</p>}
+      {error && <p role="alert" className="max-w-xs text-sm text-brand-red">{error}</p>}
     </div>
   );
 }

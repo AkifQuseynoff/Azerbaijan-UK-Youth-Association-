@@ -24,7 +24,7 @@ export function MarkdownBody({ source }: { source: string }) {
 
   return createElement(
     "div",
-    { className: "space-y-5 text-gray-700 leading-relaxed" },
+    { className: "space-y-5 leading-relaxed text-mute [&_strong]:text-ink" },
     blocks.map((block, index) => {
       const lines = block.split("\n");
       if (block.startsWith("## ")) {
@@ -32,8 +32,7 @@ export function MarkdownBody({ source }: { source: string }) {
           "h2",
           {
             key: index,
-            className: "text-2xl text-[#0D1B2A] mt-8 mb-2",
-            style: { fontFamily: "'DM Serif Display', serif" },
+            className: "display mb-2 mt-8 text-3xl text-ink",
           },
           block.replace(/^## /, ""),
         );

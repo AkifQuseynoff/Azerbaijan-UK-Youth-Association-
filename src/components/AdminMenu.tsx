@@ -35,20 +35,18 @@ export default function AdminMenu({ links }: { links: AdminLink[] }) {
         aria-expanded={open}
         aria-controls={menuId}
         onClick={() => setOpen((o) => !o)}
-        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-1.5 ${
-          active ? "bg-white/15 text-white" : "text-blue-200 hover:text-white hover:bg-white/10"
-        }`}
+        className={`flex items-center gap-1.5 rounded-md px-3 py-2 text-[0.94rem] font-semibold transition-colors duration-150 ${active ? "text-brand-blue" : "text-ink hover:text-brand-red"}`}
       >
         Admin <span aria-hidden="true" className="text-[10px]">▾</span>
       </button>
       {open && (
-        <div id={menuId} role="menu" className="absolute right-0 mt-2 w-48 bg-white rounded-xl border border-gray-200 shadow-lg py-1">
+        <div id={menuId} role="menu" className="absolute right-0 mt-2 w-52 rounded-2xl bg-white py-2 shadow-card ring-1 ring-line">
           {links.map((link) => (
             <NavLink
               key={link.to}
               to={link.to}
               role="menuitem"
-              className={({ isActive }) => `block px-4 py-2.5 text-sm hover:bg-gray-50 ${isActive ? "font-semibold text-[#003580]" : "text-[#0D1B2A]"}`}
+              className={({ isActive }) => `block px-4 py-2.5 text-sm transition-colors hover:bg-mist ${isActive ? "font-semibold text-brand-blue" : "text-ink"}`}
             >
               {link.label}
             </NavLink>

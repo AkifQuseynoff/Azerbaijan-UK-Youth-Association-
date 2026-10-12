@@ -46,15 +46,15 @@ export default function EventDetailPage() {
     if (event) document.title = `${event.title} · Azerbaijan UK Youth Association`;
   }, [event]);
 
-  if (loading) return <div className="min-h-screen pt-24 text-center text-gray-500">Loading…</div>;
+  if (loading) return <div className="min-h-[60vh] pt-24 text-center text-mute">Loading…</div>;
 
   if (!event) {
     return (
       <div className="page-transition min-h-[60vh] flex items-center justify-center px-6 py-24">
         <div className="text-center max-w-md">
-          <h1 className="text-3xl text-[#0D1B2A] font-display mb-3">Event not found</h1>
-          <p className="text-gray-600 mb-6">{error || "It may have been removed or is not published yet."}</p>
-          <Link to="/events" className="px-6 py-3 bg-[#003580] text-white font-semibold rounded-xl">All events</Link>
+          <h1 className="display mb-3 text-4xl">Event not found</h1>
+          <p className="mb-6 text-mute">{error || "It may have been removed or is not published yet."}</p>
+          <Link to="/events" className="btn btn-blue">All events</Link>
         </div>
       </div>
     );
@@ -64,46 +64,46 @@ export default function EventDetailPage() {
   const pctFull = event.capacity ? Math.round((event.taken / event.capacity) * 100) : 0;
 
   return (
-    <div className="page-transition min-h-screen bg-[#F4F6FB]">
+    <div className="page-transition">
       <PageHeader eyebrow={event.kind === "podcast_live" ? "Live podcast recording" : "Event"} title={event.title} width="max-w-4xl" />
-      <div className="max-w-4xl mx-auto px-6 py-10 grid md:grid-cols-[1fr_280px] gap-8 items-start">
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 space-y-6">
-          <span className={`inline-block text-xs font-semibold px-3 py-1 rounded-full ${categoryColors[event.category] || "bg-gray-200 text-gray-700"}`}>
+      <div className="mx-auto grid max-w-4xl items-start gap-8 px-5 py-10 sm:px-8 md:grid-cols-[1fr_300px]">
+        <div className="card space-y-6 p-6 sm:p-8">
+          <span className={`chip ${categoryColors[event.category] || "bg-mist text-ink"}`}>
             {event.category}
           </span>
           {event.status === "cancelled" && (
-            <p role="status" className="rounded-xl bg-red-50 text-[#CC2229] text-sm px-4 py-3">This event has been cancelled.</p>
+            <p role="status" className="rounded-2xl bg-brand-red/10 px-4 py-3 text-sm text-brand-red-dark">This event has been cancelled.</p>
           )}
           <dl className="grid sm:grid-cols-2 gap-5 text-sm">
             <div>
-              <dt className="text-gray-400 text-xs uppercase tracking-wider mb-1">When</dt>
-              <dd className="text-[#0D1B2A] font-medium">{formatEventDate(event.startsAt)}<br />{formatEventTime(event.startsAt, event.endsAt)} (UK time)</dd>
+              <dt className="eyebrow !text-mute mb-1">When</dt>
+              <dd className="font-semibold text-ink">{formatEventDate(event.startsAt)}<br />{formatEventTime(event.startsAt, event.endsAt)} (UK time)</dd>
             </div>
             {event.venue && (
               <div>
-                <dt className="text-gray-400 text-xs uppercase tracking-wider mb-1">Where</dt>
-                <dd className="text-[#0D1B2A] font-medium">{event.venue}</dd>
+                <dt className="eyebrow !text-mute mb-1">Where</dt>
+                <dd className="font-semibold text-ink">{event.venue}</dd>
               </div>
             )}
           </dl>
-          {event.description && <p className="text-gray-700 leading-relaxed whitespace-pre-line">{event.description}</p>}
+          {event.description && <p className="whitespace-pre-line leading-relaxed text-mute">{event.description}</p>}
 
           {joinLink && (
-            <div className="rounded-xl bg-teal-50 border border-teal-100 p-4 text-sm">
-              <p className="font-semibold text-[#00997A] mb-1">Joining online</p>
-              <a href={joinLink} target="_blank" rel="noopener noreferrer" className="text-[#003580] underline break-all">{joinLink}</a>
+            <div className="rounded-2xl bg-brand-green/10 p-4 text-sm ring-1 ring-brand-green/20">
+              <p className="mb-1 font-semibold text-[#2c6638]">Joining online</p>
+              <a href={joinLink} target="_blank" rel="noopener noreferrer" className="text-brand-blue underline break-all">{joinLink}</a>
             </div>
           )}
         </div>
 
-        <aside className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5">
+        <aside className="card space-y-5 p-6 md:sticky md:top-24">
           <RegistrationActions event={event} mine={mine} onChanged={load} align="start" />
           {event.capacity !== null && (
             <div>
-              <div className="bg-gray-100 rounded-full h-2" role="img" aria-label={`${pctFull}% of places taken`}>
-                <div className="h-2 rounded-full bg-[#003580]" style={{ width: `${pctFull}%` }} />
+              <div className="h-2 rounded-full bg-mist" role="img" aria-label={`${pctFull}% of places taken`}>
+                <div className="h-2 rounded-full bg-brand-sky" style={{ width: `${pctFull}%` }} />
               </div>
-              <p className="text-xs text-gray-400 mt-2">
+              <p className="mt-2 text-xs text-mute">
                 {event.spotsLeft === 0 ? (event.waitlistEnabled ? `Full · ${event.waitlisted} on waitlist` : "Full") : `${event.spotsLeft} of ${event.capacity} places left`}
               </p>
             </div>
@@ -111,8 +111,8 @@ export default function EventDetailPage() {
           {event.status !== "cancelled" && (
             <AddToCalendar event={event} ticketCode={mine?.status === "confirmed" ? mine.ticketCode : undefined} />
           )}
-          {active && <p className="text-xs text-gray-400">You can manage all your bookings under Your membership.</p>}
-          <Link to="/events" className="block text-sm text-[#003580] underline">← All events</Link>
+          {active && <p className="text-xs text-mute">You can manage all your bookings under Your membership.</p>}
+          <Link to="/events" className="block text-sm font-semibold text-brand-blue underline underline-offset-4">← All events</Link>
         </aside>
       </div>
     </div>

@@ -1,11 +1,20 @@
-import { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "../features/auth/AuthContext";
 import AdminMenu from "./AdminMenu";
-import Logo from "./Logo";
+import Logo from "./brand/Logo";
+
+const LINKS = [
+  { to: "/news", label: "News" },
+  { to: "/events", label: "Events" },
+  { to: "/podcast", label: "Podcast" },
+  { to: "/help", label: "Help" },
+];
 
 export default function NavBar() {
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const { pathname } = useLocation();
   const { profile, isStaff, isAdmin, signOut } = useAuth();
 
   const adminLinks = [
@@ -15,127 +24,124 @@ export default function NavBar() {
     ...(isAdmin ? [{ to: "/admin/members", label: "Members" }] : []),
   ];
 
+  useEffect(() => setOpen(false), [pathname]);
+
+  useEffect(() => {
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        ticking = false;
+        setScrolled(window.scrollY > 24);
+      });
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
+
   const linkClass = ({ isActive }: { isActive: boolean }) =>
-    `px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-      isActive ? "bg-white/15 text-white" : "text-blue-200 hover:text-white hover:bg-white/10"
+    `relative rounded-md px-3 py-2 text-[0.94rem] font-semibold transition-colors duration-150 after:absolute after:inset-x-3 after:-bottom-0.5 after:h-0.5 after:origin-left after:rounded after:bg-brand-red after:transition-transform after:duration-200 ${
+      isActive ? "text-brand-blue after:scale-x-100" : "text-ink after:scale-x-0 hover:text-brand-red"
     }`;
 
+  const solid = scrolled || open;
+
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-[#002060] border-b border-[#003580]/60 shadow-lg">
-      <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-        <Link to="/" onClick={() => setMobileOpen(false)}>
+    <header
+      className={`fixed inset-x-0 top-0 z-50 h-[72px] transition-[background-color,box-shadow] duration-200 ${
+        solid ? "bg-white/85 shadow-[0_1px_0_var(--color-line)] backdrop-blur-md [@media(prefers-reduced-transparency:reduce)]:bg-white" : ""
+      }`}
+    >
+      <nav className="mx-auto flex h-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6" aria-label="Main">
+        <Link to="/" className="rounded-md" onClick={() => setOpen(false)}>
           <Logo />
         </Link>
 
-        <div className="hidden md:flex items-center gap-1">
-          <NavLink to="/" end className={linkClass}>Home</NavLink>
-          <NavLink to="/news" className={linkClass}>News</NavLink>
-          <NavLink to="/events" className={linkClass}>Events</NavLink>
-          <NavLink to="/podcast" className={linkClass}>Podcast</NavLink>
-          <NavLink to="/help" className={linkClass}>Help</NavLink>
+        <div className="hidden items-center gap-1 md:flex">
+          {LINKS.map((l) => (
+            <NavLink key={l.to} to={l.to} className={linkClass}>{l.label}</NavLink>
+          ))}
           {isStaff && <AdminMenu links={adminLinks} />}
+        </div>
+
+        <div className="hidden items-center gap-2 md:flex">
           {profile ? (
             <>
               <NavLink to="/account" className={linkClass}>{profile.firstName || "Account"}</NavLink>
-              <button
-                type="button"
-                onClick={() => void signOut()}
-                className="px-4 py-2 rounded-lg text-sm font-medium text-blue-200 hover:text-white hover:bg-white/10"
-              >
+              <button type="button" onClick={() => void signOut()} className="rounded-md px-3 py-2 text-[0.94rem] font-semibold text-mute transition-colors hover:text-ink">
                 Log out
               </button>
             </>
           ) : (
             <>
               <NavLink to="/login" className={linkClass}>Log in</NavLink>
-              <Link
-                to="/register"
-                className="ml-4 px-5 py-2 rounded-full bg-[#CC2229] hover:bg-[#e83038] text-white font-semibold text-sm transition-all duration-200 shadow-md hover:shadow-lg"
-              >
-                Join Us
-              </Link>
+              <Link to="/register" className="btn btn-primary btn-sm">Join us</Link>
             </>
           )}
         </div>
 
         <button
-          className="md:hidden text-white p-2 rounded-lg hover:bg-white/10"
-          onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label="Toggle menu"
-          aria-expanded={mobileOpen}
+          type="button"
+          className="grid h-11 w-11 place-items-center rounded-full text-ink transition-colors hover:bg-ink/5 md:hidden"
+          onClick={() => setOpen((o) => !o)}
+          aria-label={open ? "Close menu" : "Open menu"}
+          aria-expanded={open}
+          aria-controls="mobile-menu"
         >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            {mobileOpen ? (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            ) : (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            )}
+          <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" viewBox="0 0 24 24" aria-hidden="true">
+            {open ? <path d="M6 18L18 6M6 6l12 12" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
           </svg>
         </button>
-      </div>
+      </nav>
 
-      {mobileOpen && (
-        <div className="md:hidden bg-[#002060] border-t border-[#003580]/40 px-4 py-3 flex flex-col gap-1">
-          {[
-            { to: "/", label: "Home" },
-            { to: "/news", label: "News" },
-            { to: "/events", label: "Events" },
-            { to: "/podcast", label: "Podcast" },
-            { to: "/help", label: "Help" },
-          ].map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              onClick={() => setMobileOpen(false)}
-              className={({ isActive }) =>
-                `w-full text-left px-4 py-3 rounded-lg text-sm font-medium ${isActive ? "bg-white/15 text-white" : "text-blue-200"}`
-              }
-            >
-              {item.label}
-            </NavLink>
-          ))}
+      {open && (
+        <div id="mobile-menu" className="absolute inset-x-0 top-full max-h-[calc(100svh-72px)] overflow-y-auto border-b border-line bg-white px-4 pb-6 pt-2 shadow-card md:hidden">
+          <ul className="flex flex-col">
+            {LINKS.map((l) => (
+              <li key={l.to}>
+                <NavLink
+                  to={l.to}
+                  className={({ isActive }) => `block rounded-xl px-3 py-3.5 font-display text-2xl tracking-tight ${isActive ? "text-brand-blue" : "text-ink"}`}
+                >
+                  {l.label}
+                </NavLink>
+              </li>
+            ))}
+          </ul>
           {isStaff && (
-            <div className="mt-2 pt-2 border-t border-white/10">
-              <p className="px-4 pb-1 text-[11px] uppercase tracking-wider text-blue-300/70">Admin</p>
+            <div className="mt-2 border-t border-line pt-3">
+              <p className="eyebrow px-3 pb-1 !text-mute">Admin</p>
               {adminLinks.map((link) => (
-                <NavLink key={link.to} to={link.to} onClick={() => setMobileOpen(false)} className="block px-4 py-3 rounded-lg text-sm text-blue-200">
+                <NavLink key={link.to} to={link.to} className="block rounded-xl px-3 py-3 text-base font-semibold text-ink">
                   {link.label}
                 </NavLink>
               ))}
             </div>
           )}
-          {profile ? (
-            <>
-              <NavLink to="/account" onClick={() => setMobileOpen(false)} className="px-4 py-3 rounded-lg text-sm text-blue-200">
-                Account
-              </NavLink>
-              <button
-                type="button"
-                className="px-4 py-3 rounded-lg text-sm text-left text-blue-200"
-                onClick={() => {
-                  setMobileOpen(false);
-                  void signOut();
-                }}
-              >
-                Log out
-              </button>
-            </>
-          ) : (
-            <>
-              <NavLink to="/login" onClick={() => setMobileOpen(false)} className="px-4 py-3 rounded-lg text-sm text-blue-200">
-                Log in
-              </NavLink>
-              <Link
-                to="/register"
-                onClick={() => setMobileOpen(false)}
-                className="mt-2 bg-[#CC2229] text-white text-center px-4 py-3 rounded-lg text-sm font-medium"
-              >
-                Join Us Free
-              </Link>
-            </>
-          )}
+          <div className="mt-4 flex flex-col gap-3 border-t border-line pt-5">
+            {profile ? (
+              <>
+                <Link to="/account" className="btn btn-outline">Your account</Link>
+                <button type="button" className="btn btn-outline" onClick={() => void signOut()}>Log out</button>
+              </>
+            ) : (
+              <>
+                <Link to="/register" className="btn btn-primary btn-lg">Join us, it&apos;s free</Link>
+                <Link to="/login" className="btn btn-outline">Log in</Link>
+              </>
+            )}
+          </div>
         </div>
       )}
-    </nav>
+    </header>
   );
 }

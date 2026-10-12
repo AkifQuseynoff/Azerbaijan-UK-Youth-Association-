@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Field, SelectField, TextAreaField } from "../../../components/ui/Field";
-import FlagDivider from "../../../components/ui/FlagDivider";
+import PageHeader from "../../../components/ui/PageHeader";
 import { useAuth } from "../../auth/AuthContext";
 import { getStaffArticle, saveArticle } from "../api";
 import { ARTICLE_CATEGORIES, slugify, toLocalInputValue, type ArticleCategory, type ArticleStatus } from "../../../types";
@@ -97,18 +97,15 @@ export default function AdminNewsEditorPage() {
   };
 
   return (
-    <div className="page-transition min-h-screen bg-[#F4F6FB]">
-      <div className="bg-[#002060] py-12 px-6">
-        <div className="max-w-4xl mx-auto">
-          <Link to="/admin/news" className="text-blue-200 text-sm">Back to newsroom</Link>
-          <h1 className="text-4xl text-white mt-3" style={{ fontFamily: "'DM Serif Display', serif" }}>
-            {isNew ? "New article" : "Edit article"}
-          </h1>
-        </div>
-      </div>
-      <FlagDivider />
+    <div className="page-transition">
+      <PageHeader
+        eyebrow="Staff only"
+        title={isNew ? "New article" : "Edit article"}
+        width="max-w-4xl"
+        action={<Link to="/admin/news" className="text-sm font-semibold text-brand-blue underline underline-offset-4">Back to newsroom</Link>}
+      />
       <div className="max-w-4xl mx-auto px-6 py-10">
-        <div className="bg-white rounded-2xl p-8 border border-gray-100 space-y-5">
+        <div className="card p-6 sm:p-8 space-y-5">
           <div>
             <Field label="Title" value={form.title} onChange={(e) => handleTitle(e.target.value)} />
           </div>
@@ -140,18 +137,18 @@ export default function AdminNewsEditorPage() {
             <Field label="Publish at (for scheduling)" type="datetime-local" value={form.publishedAt} onChange={(e) => setForm({ ...form, publishedAt: e.target.value })} />
           </div>
           <label className="flex items-center gap-2 text-sm">
-            <input type="checkbox" checked={form.featured} onChange={(e) => setForm({ ...form, featured: e.target.checked })} className="accent-[#003580]" />
+            <input type="checkbox" checked={form.featured} onChange={(e) => setForm({ ...form, featured: e.target.checked })} className="accent-brand-blue" />
             Featured on the news homepage
           </label>
-          {error && <p className="text-[#CC2229] text-sm">{error}</p>}
+          {error && <p className="text-brand-red text-sm">{error}</p>}
           <div className="flex flex-wrap gap-3">
-            <button type="button" disabled={pending} onClick={() => void persist("draft")} className="px-5 py-3 border border-gray-300 rounded-xl font-semibold disabled:opacity-50">
+            <button type="button" disabled={pending} onClick={() => void persist("draft")} className="btn btn-outline">
               Save draft
             </button>
-            <button type="button" disabled={pending || !form.publishedAt} onClick={() => void persist("scheduled")} className="px-5 py-3 bg-amber-600 text-white rounded-xl font-semibold disabled:opacity-50">
+            <button type="button" disabled={pending || !form.publishedAt} onClick={() => void persist("scheduled")} className="btn bg-amber-600 text-white hover:bg-amber-700">
               Schedule
             </button>
-            <button type="button" disabled={pending} onClick={() => void persist("published")} className="px-5 py-3 bg-[#CC2229] text-white rounded-xl font-semibold disabled:opacity-50">
+            <button type="button" disabled={pending} onClick={() => void persist("published")} className="btn btn-primary">
               Publish
             </button>
           </div>

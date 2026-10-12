@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { LogoMark } from "../../../components/brand/Logo";
 import PageHeader from "../../../components/ui/PageHeader";
 import { eventsApi } from "../../events/api";
 import { formatEventDate, formatEventTime } from "../../events/types";
@@ -28,49 +29,56 @@ export default function PodcastPage() {
   }, []);
 
   return (
-    <div className="page-transition min-h-screen bg-[#F4F6FB]">
+    <div className="page-transition">
       <PageHeader eyebrow="Listen" title="The Podcast" subtitle="Conversations with and for young Azerbaijanis across the UK." />
-      <div className="max-w-5xl mx-auto px-6 py-12 space-y-10">
+      <div className="mx-auto max-w-5xl space-y-10 px-5 py-10 sm:px-8">
         {live.length > 0 && (
-          <section aria-labelledby="live-heading" className="rounded-2xl bg-[#002060] text-white p-7">
-            <h2 id="live-heading" className="text-xl font-display mb-4">Join a live recording</h2>
-            <ul className="space-y-3">
+          <section aria-labelledby="live-heading" className="rounded-3xl bg-gradient-to-b from-ink to-[#14295a] p-6 text-[#eaf0ff] sm:p-8">
+            <h2 id="live-heading" className="display mb-4 text-2xl text-white">Join a live recording</h2>
+            <ul className="space-y-4">
               {live.map((e) => (
-                <li key={e.id} className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6">
+                <li key={e.id} className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
                   <div className="flex-1">
-                    <Link to={`/events/${e.slug}`} className="font-semibold underline">{e.title}</Link>
-                    <p className="text-blue-200 text-sm">{formatEventDate(e.startsAt)} · {formatEventTime(e.startsAt, e.endsAt)}{e.venue ? ` · ${e.venue}` : ""}</p>
+                    <Link to={`/events/${e.slug}`} className="font-semibold text-white underline underline-offset-4">{e.title}</Link>
+                    <p className="text-sm text-[#c4d2f0]">{formatEventDate(e.startsAt)} · {formatEventTime(e.startsAt, e.endsAt)}{e.venue ? ` · ${e.venue}` : ""}</p>
                   </div>
-                  <Link to={`/events/${e.slug}`} className="px-4 py-2 rounded-xl bg-[#CC2229] font-semibold text-sm text-center">Reserve a place</Link>
+                  <Link to={`/events/${e.slug}`} className="btn btn-light btn-sm">Reserve a place</Link>
                 </li>
               ))}
             </ul>
           </section>
         )}
 
-        {error && <p role="alert" className="text-[#CC2229]">{error}</p>}
+        {error && <p role="alert" className="text-brand-red-dark">{error}</p>}
         {episodes === null ? (
-          <p className="text-gray-500">Loading episodes…</p>
+          <p className="text-mute">Loading episodes…</p>
         ) : episodes.length === 0 ? (
-          <p className="text-gray-500">No episodes yet. Check back soon.</p>
+          <div className="card px-6 py-12 text-center">
+            <p className="font-display text-2xl tracking-tight">No episodes yet</p>
+            <p className="mt-1 text-mute">The first conversations are on their way.</p>
+          </div>
         ) : (
           <div className="grid gap-5">
             {episodes.map((ep) => (
-              <article key={ep.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow overflow-hidden grid sm:grid-cols-[200px_1fr]">
-                <div className="bg-gray-100 aspect-video sm:aspect-auto">
-                  {ep.coverUrl ? <img src={ep.coverUrl} alt="" className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-4xl" aria-hidden="true">🎙️</div>}
-                </div>
+              <article key={ep.id} className="card press group grid overflow-hidden sm:grid-cols-[220px_1fr]">
+                <Link to={`/podcast/${ep.slug}`} tabIndex={-1} aria-hidden="true" className="block aspect-video bg-gradient-to-br from-mist to-[#f9e8df] sm:aspect-auto">
+                  {ep.coverUrl ? (
+                    <img src={ep.coverUrl} alt="" loading="lazy" className="h-full w-full object-cover" />
+                  ) : (
+                    <span className="grid h-full w-full place-items-center"><LogoMark className="h-16 w-auto opacity-90" decorative /></span>
+                  )}
+                </Link>
                 <div className="p-6">
-                  <p className="text-xs font-semibold text-[#00997A] uppercase tracking-wider mb-1">
+                  <p className="eyebrow mb-1 !text-brand-green">
                     {episodeLabel(ep)}
                     {ep.publishedAt ? `${episodeLabel(ep) ? " · " : ""}${formatArticleDate(ep.publishedAt)}` : ""}
                     {ep.durationMinutes ? ` · ${ep.durationMinutes} min` : ""}
                   </p>
-                  <h2 className="text-xl font-bold text-[#0D1B2A] font-display mb-2">
-                    <Link to={`/podcast/${ep.slug}`} className="hover:text-[#003580]">{ep.title}</Link>
+                  <h2 className="mb-2 font-display text-[1.5rem] font-medium leading-tight tracking-tight">
+                    <Link to={`/podcast/${ep.slug}`} className="transition-colors hover:text-brand-blue">{ep.title}</Link>
                   </h2>
-                  {ep.guests && <p className="text-sm text-gray-500 mb-2">With {ep.guests}</p>}
-                  <p className="text-gray-600 text-sm leading-relaxed line-clamp-3">{ep.description}</p>
+                  {ep.guests && <p className="mb-2 text-sm font-semibold text-mute">With {ep.guests}</p>}
+                  <p className="line-clamp-3 text-[0.96rem] text-mute">{ep.description}</p>
                 </div>
               </article>
             ))}

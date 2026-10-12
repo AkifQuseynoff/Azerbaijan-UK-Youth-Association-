@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import FlagDivider from "../../../components/ui/FlagDivider";
+import PageHeader from "../../../components/ui/PageHeader";
 import NewsCard from "../NewsCard";
 import { MarkdownBody } from "../markdown";
 import { getPublishedArticle, getRelatedArticles } from "../api";
 import type { Article } from "../../../types";
-import { categoryColors } from "../../../constants";
 import { formatArticleDate, readTimeFromBody } from "../../../types";
 
 export default function ArticlePage() {
@@ -31,54 +30,43 @@ export default function ArticlePage() {
   }, [slug]);
 
   if (loading) {
-    return <p className="text-center py-32 text-gray-400">Loading article…</p>;
+    return <p className="py-32 text-center text-mute">Loading article…</p>;
   }
 
   if (!article) {
     return (
-      <div className="min-h-screen bg-[#F4F6FB] py-24 text-center">
-        <h1 className="text-3xl mb-4" style={{ fontFamily: "'DM Serif Display', serif" }}>Article not found</h1>
-        <Link to="/news" className="text-[#003580] font-semibold">Back to news</Link>
+      <div className="px-6 py-24 text-center">
+        <h1 className="display mb-4 text-4xl">Article not found</h1>
+        <Link to="/news" className="btn btn-blue">Back to news</Link>
       </div>
     );
   }
 
   return (
-    <div className="page-transition min-h-screen bg-[#F4F6FB]">
-      <div className="bg-[#002060] py-16 px-6">
-        <div className="max-w-3xl mx-auto">
-          <p className="text-blue-200 text-sm mb-4">
-            <Link to="/news" className="hover:text-white">News</Link>
-            <span className="mx-2">/</span>
-            {article.category}
-          </p>
-          <span className={`text-xs font-semibold px-3 py-1 rounded-full ${categoryColors[article.category]}`}>
-            {article.category}
-          </span>
-          <h1 className="text-4xl md:text-5xl text-white mt-5 leading-tight" style={{ fontFamily: "'DM Serif Display', serif" }}>
-            {article.title}
-          </h1>
-          <p className="text-blue-200 mt-6 text-lg">{article.excerpt}</p>
-          <p className="text-blue-300 text-sm mt-6">
-            {article.authorName} · {formatArticleDate(article.publishedAt)} · {readTimeFromBody(article.body)}
-          </p>
+    <div className="page-transition">
+      <PageHeader
+        eyebrow={article.category}
+        title={article.title}
+        subtitle={article.excerpt}
+        width="max-w-3xl"
+      />
+      <div className="mx-auto max-w-3xl px-5 sm:px-8">
+        <p className="-mt-6 mb-6 text-sm text-mute">
+          <Link to="/news" className="font-semibold text-brand-blue underline underline-offset-4">News</Link>
+          <span className="mx-2" aria-hidden="true">/</span>
+          {article.authorName} · {formatArticleDate(article.publishedAt)} · {readTimeFromBody(article.body)}
+        </p>
+        <div className="mb-10 aspect-[16/9] overflow-hidden rounded-3xl bg-mist shadow-card">
+          <img src={article.coverUrl} alt="" className="h-full w-full object-cover" />
         </div>
-      </div>
-      <FlagDivider />
-      <div className="max-w-3xl mx-auto px-6 -mt-8 mb-10">
-        <div className="rounded-2xl overflow-hidden shadow-xl aspect-[16/9] bg-gray-100">
-          <img src={article.coverUrl} alt="" className="w-full h-full object-cover" />
-        </div>
-      </div>
-      <article className="max-w-3xl mx-auto px-6 pb-8">
-        <div className="bg-white rounded-2xl p-8 md:p-12 shadow-sm border border-gray-100">
+        <article className="card p-6 sm:p-10">
           <MarkdownBody source={article.body} />
-        </div>
-      </article>
+        </article>
+      </div>
       {related.length > 0 && (
-        <section className="max-w-7xl mx-auto px-6 py-16">
-          <h2 className="text-2xl mb-6" style={{ fontFamily: "'DM Serif Display', serif" }}>Related stories</h2>
-          <div className="grid md:grid-cols-3 gap-6">
+        <section className="mx-auto max-w-7xl px-5 py-16 sm:px-8">
+          <h2 className="display mb-6 text-3xl">Related stories</h2>
+          <div className="grid gap-6 md:grid-cols-3">
             {related.map((item) => (
               <NewsCard key={item.id} article={item} />
             ))}

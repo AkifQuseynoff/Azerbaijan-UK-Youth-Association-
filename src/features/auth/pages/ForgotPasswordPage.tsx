@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Field } from "../../../components/ui/Field";
-import FlagDivider from "../../../components/ui/FlagDivider";
+import PageHeader from "../../../components/ui/PageHeader";
 import { useAuth } from "../AuthContext";
 
 export default function ForgotPasswordPage() {
@@ -22,29 +22,24 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="page-transition min-h-screen bg-[#F4F6FB]">
-      <div className="bg-[#002060] py-16 px-6">
-        <div className="max-w-md mx-auto">
-          <h1 className="text-4xl text-white" style={{ fontFamily: "'DM Serif Display', serif" }}>Reset password</h1>
-        </div>
-      </div>
-      <FlagDivider />
+    <div className="page-transition">
+      <PageHeader title="Reset password" width="max-w-md" />
       <div className="max-w-md mx-auto px-6 py-12">
         {sent ? (
-          <div className="bg-white rounded-2xl p-8 border border-gray-100">
-            <p className="text-gray-600 mb-4">If that email is registered, we have sent reset instructions.</p>
+          <div className="card p-6 sm:p-8">
+            <p className="text-mute mb-4">If that email is registered, we have sent reset instructions.</p>
             {!configured && (
-              <p className="text-sm text-gray-500 mb-4">
-                Preview mode: continue to <Link to="/reset-password" className="text-[#003580] font-semibold">set a new password</Link>.
+              <p className="text-sm text-mute mb-4">
+                Preview mode: continue to <Link to="/reset-password" className="text-brand-blue font-semibold">set a new password</Link>.
               </p>
             )}
-            <Link to="/login" className="text-[#003580] font-semibold">Back to log in</Link>
+            <Link to="/login" className="text-brand-blue font-semibold">Back to log in</Link>
           </div>
         ) : (
-          <form onSubmit={(e) => void handleSubmit(e)} className="bg-white rounded-2xl p-8 border border-gray-100 space-y-5">
+          <form onSubmit={(e) => void handleSubmit(e)} className="card p-6 sm:p-8 space-y-5">
             <div><Field label="Email address" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" /></div>
-            {error && <p className="text-[#CC2229] text-sm">{error}</p>}
-            <button type="submit" className="w-full py-3 bg-[#003580] text-white font-semibold rounded-xl">Send reset link</button>
+            {error && <p className="text-sm text-brand-red-dark">{error}</p>}
+            <button type="submit" className="btn btn-blue w-full">Send reset link</button>
           </form>
         )}
       </div>

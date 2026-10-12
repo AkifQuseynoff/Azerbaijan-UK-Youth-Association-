@@ -23,24 +23,24 @@ export default function ConfirmDialog({
   }, [onCancel]);
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 px-6" onClick={onCancel}>
+    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-ink/55 px-5 backdrop-blur-[2px]" onClick={onCancel}>
       <div
         role="alertdialog"
         aria-modal="true"
         aria-labelledby="confirm-title"
-        className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full"
+        className="card w-full max-w-md p-7 sm:p-8"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 id="confirm-title" className="text-xl font-bold text-[#0D1B2A] mb-2">{title}</h2>
-        <p className="text-gray-600 text-sm leading-relaxed mb-6">{message}</p>
+        <h2 id="confirm-title" className="display mb-2 text-2xl">{title}</h2>
+        <p className="mb-6 text-sm leading-relaxed text-mute">{message}</p>
         <div className="flex justify-end gap-3">
-          <button type="button" autoFocus onClick={onCancel} className="px-5 py-2.5 rounded-xl border border-gray-300 font-semibold">
+          <button type="button" autoFocus onClick={onCancel} className="btn btn-outline btn-sm">
             Keep as is
           </button>
           <button
             type="button"
             onClick={onConfirm}
-            className={`px-5 py-2.5 rounded-xl text-white font-semibold ${danger ? "bg-[#CC2229]" : "bg-[#003580]"}`}
+            className={`btn btn-sm ${danger ? "btn-primary" : "btn-blue"}`}
           >
             {confirmLabel}
           </button>

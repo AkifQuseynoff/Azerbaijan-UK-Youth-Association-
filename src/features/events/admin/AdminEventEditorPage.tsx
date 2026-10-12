@@ -139,15 +139,15 @@ export default function AdminEventEditorPage() {
   };
 
   return (
-    <div className="page-transition min-h-screen bg-[#F4F6FB]">
+    <div className="page-transition">
       <PageHeader
         eyebrow="Staff only"
         title={isNew ? "New event" : "Edit event"}
         width="max-w-4xl"
-        action={<Link to="/admin/events" className="text-blue-200 text-sm">Back to events</Link>}
+        action={<Link to="/admin/events" className="text-sm font-semibold text-brand-blue underline underline-offset-4">Back to events</Link>}
       />
       <div className="max-w-4xl mx-auto px-6 py-10 space-y-8">
-        <div className="bg-white rounded-2xl p-8 border border-gray-100 space-y-5">
+        <div className="card p-6 sm:p-8 space-y-5">
           <div>
             <Field
               label="Title"
@@ -190,7 +190,7 @@ export default function AdminEventEditorPage() {
             </div>
             <div className="flex items-end pb-1">
               <label className="flex items-center gap-2 text-sm">
-                <input type="checkbox" checked={form.waitlistEnabled} onChange={(e) => set("waitlistEnabled", e.target.checked)} className="accent-[#003580]" />
+                <input type="checkbox" checked={form.waitlistEnabled} onChange={(e) => set("waitlistEnabled", e.target.checked)} className="accent-brand-blue" />
                 Offer a waitlist when full
               </label>
             </div>
@@ -211,14 +211,14 @@ export default function AdminEventEditorPage() {
             />
           </div>
 
-          {error && <p role="alert" className="text-[#CC2229] text-sm">{error}</p>}
-          {notice && <p className="text-[#00997A] text-sm">{notice}</p>}
+          {error && <p role="alert" className="text-brand-red text-sm">{error}</p>}
+          {notice && <p className="text-brand-green text-sm">{notice}</p>}
           <div className="flex flex-wrap gap-3">
-            <button type="button" disabled={pending} onClick={() => void persist(isNew ? "draft" : form.status)} className="px-5 py-3 border border-gray-300 rounded-xl font-semibold disabled:opacity-50">
+            <button type="button" disabled={pending} onClick={() => void persist(isNew ? "draft" : form.status)} className="btn btn-outline">
               {isNew ? "Save draft" : "Save changes"}
             </button>
             {form.status !== "published" && (
-              <button type="button" disabled={pending} onClick={() => void persist("published")} className="px-5 py-3 bg-[#CC2229] text-white rounded-xl font-semibold disabled:opacity-50">
+              <button type="button" disabled={pending} onClick={() => void persist("published")} className="btn btn-primary">
                 Publish
               </button>
             )}
@@ -226,16 +226,16 @@ export default function AdminEventEditorPage() {
         </div>
 
         {!isNew && (
-          <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-100">
-              <h2 className="text-xl font-display text-[#0D1B2A]">Registrations ({attendees.filter((a) => a.status !== "cancelled").length})</h2>
+          <div className="card overflow-hidden">
+            <div className="px-6 py-4 border-b border-line">
+              <h2 className="text-xl font-display text-ink">Registrations ({attendees.filter((a) => a.status !== "cancelled").length})</h2>
             </div>
             {attendees.length === 0 ? (
-              <p className="p-8 text-gray-400 text-center">Nobody has registered yet.</p>
+              <p className="p-8 text-mute text-center">Nobody has registered yet.</p>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
-                  <thead className="text-left text-gray-500 bg-gray-50">
+                  <thead className="text-left text-mute bg-mist">
                     <tr>
                       <th className="px-6 py-3 font-medium">Name</th>
                       <th className="px-6 py-3 font-medium">Email</th>
@@ -246,19 +246,19 @@ export default function AdminEventEditorPage() {
                   </thead>
                   <tbody>
                     {attendees.map((a) => (
-                      <tr key={a.registrationId} className="border-t border-gray-100">
+                      <tr key={a.registrationId} className="border-t border-line">
                         <td className="px-6 py-3">{a.firstName} {a.lastName}</td>
-                        <td className="px-6 py-3 text-gray-500">{a.email}</td>
+                        <td className="px-6 py-3 text-mute">{a.email}</td>
                         <td className="px-6 py-3 capitalize">{a.status}</td>
                         <td className="px-6 py-3 font-mono text-xs">{a.ticketCode}</td>
                         <td className="px-6 py-3 text-right space-x-3 whitespace-nowrap">
                           {a.status === "confirmed" && (
-                            <button type="button" className="text-[#00997A] font-medium" onClick={() => void updateRegistration(a.registrationId, "attended")}>
+                            <button type="button" className="text-brand-green font-medium" onClick={() => void updateRegistration(a.registrationId, "attended")}>
                               Check in
                             </button>
                           )}
                           {(a.status === "confirmed" || a.status === "waitlisted") && (
-                            <button type="button" className="text-[#CC2229]" onClick={() => void updateRegistration(a.registrationId, "cancelled")}>
+                            <button type="button" className="text-brand-red" onClick={() => void updateRegistration(a.registrationId, "cancelled")}>
                               Remove
                             </button>
                           )}

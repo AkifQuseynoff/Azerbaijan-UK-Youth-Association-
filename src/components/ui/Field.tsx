@@ -1,8 +1,9 @@
 import { useId } from "react";
 import type { InputHTMLAttributes, SelectHTMLAttributes, TextareaHTMLAttributes } from "react";
 
-export const inputClass = "w-full border border-gray-300 rounded-xl px-4 py-3 text-sm";
-const labelClass = "block text-sm font-medium text-gray-700 mb-1.5";
+export const inputClass =
+  "w-full rounded-2xl border border-line bg-white px-4 py-3 text-base text-ink transition-colors placeholder:text-mute/60 hover:border-brand-sky/50 focus:border-brand-sky";
+const labelClass = "mb-1.5 block text-sm font-semibold text-ink";
 
 type FieldProps = { label: string; hint?: string };
 
@@ -13,7 +14,7 @@ export function Field({ label, hint, className, ...input }: FieldProps & InputHT
     <>
       <label htmlFor={id} className={labelClass}>{label}</label>
       <input id={id} aria-describedby={hint ? `${id}-hint` : undefined} className={className ?? inputClass} {...input} />
-      {hint && <p id={`${id}-hint`} className="text-xs text-gray-400 mt-1">{hint}</p>}
+      {hint && <p id={`${id}-hint`} className="mt-1 text-xs text-mute">{hint}</p>}
     </>
   );
 }
@@ -24,7 +25,7 @@ export function TextAreaField({ label, hint, className, ...input }: FieldProps &
     <>
       <label htmlFor={id} className={labelClass}>{label}</label>
       <textarea id={id} aria-describedby={hint ? `${id}-hint` : undefined} className={className ?? `${inputClass} resize-y`} {...input} />
-      {hint && <p id={`${id}-hint`} className="text-xs text-gray-400 mt-1">{hint}</p>}
+      {hint && <p id={`${id}-hint`} className="mt-1 text-xs text-mute">{hint}</p>}
     </>
   );
 }
@@ -41,13 +42,13 @@ export function SelectField({
   return (
     <>
       <label htmlFor={id} className={labelClass}>{label}</label>
-      <select id={id} aria-describedby={hint ? `${id}-hint` : undefined} className={className ?? `${inputClass} bg-white`} {...select}>
+      <select id={id} aria-describedby={hint ? `${id}-hint` : undefined} className={className ?? inputClass} {...select}>
         {placeholder !== undefined && <option value="">{placeholder}</option>}
         {options.map((o) => (
           <option key={o}>{o}</option>
         ))}
       </select>
-      {hint && <p id={`${id}-hint`} className="text-xs text-gray-400 mt-1">{hint}</p>}
+      {hint && <p id={`${id}-hint`} className="mt-1 text-xs text-mute">{hint}</p>}
     </>
   );
 }

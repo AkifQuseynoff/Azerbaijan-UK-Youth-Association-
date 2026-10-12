@@ -1,49 +1,64 @@
 import { Link } from "react-router-dom";
 import { SITE } from "../config/site";
-import Logo from "./Logo";
+import { BadgeLogo } from "./brand/Logo";
+import Skyline from "./brand/Skyline";
+
+const nav = [
+  { to: "/news", label: "News" },
+  { to: "/events", label: "Events" },
+  { to: "/podcast", label: "Podcast" },
+  { to: "/register", label: "Join us" },
+  { to: "/help", label: "Help" },
+];
+const resources = [
+  { to: "/privacy", label: "Privacy policy" },
+  { to: "/terms", label: "Terms of membership" },
+  { to: "/help", label: "Help & contact" },
+];
 
 export default function Footer() {
   return (
-    <footer className="bg-[#0D1B2A] text-white">
-      <div className="h-1 flex">
-        <div className="flex-1 bg-[#003580]" />
-        <div className="flex-1 bg-[#CC2229]" />
-        <div className="flex-1 bg-[#00997A]" />
+    <footer className="mt-20 bg-ink text-white">
+      {/* The skyline stands on the footer */}
+      <div className="foot-sky" aria-hidden="true">
+        <Skyline className="foot-city" nearFill="#0e1f45" farOpacity={0.08} towers="colour" ground />
       </div>
-      <div className="max-w-7xl mx-auto px-6 py-14 grid md:grid-cols-4 gap-10">
+      <div className="mx-auto grid max-w-7xl gap-10 px-6 pb-10 pt-4 md:grid-cols-4">
         <div className="md:col-span-2">
-          <Logo />
-          <p className="text-gray-400 mt-5 leading-relaxed text-sm max-w-xs">
+          <div className="flex items-center gap-4">
+            <BadgeLogo />
+            <p className="font-label text-[0.8rem] font-semibold uppercase leading-relaxed tracking-[0.14em]">
+              Azerbaijan–UK
+              <br />
+              Youth Association
+            </p>
+          </div>
+          <p className="mt-5 max-w-xs text-sm leading-relaxed text-white/70">
             A community for young people of Azerbaijani heritage across the United Kingdom.
           </p>
           {SITE.charityNumber && (
-            <p className="text-gray-500 text-xs mt-6">
-              Registered charity in England and Wales · No. {SITE.charityNumber}
-            </p>
+            <p className="mt-6 text-xs text-white/60">Registered charity in England and Wales · No. {SITE.charityNumber}</p>
           )}
         </div>
-        <div>
-          <h4 className="font-bold text-sm uppercase tracking-wider text-gray-400 mb-5">Navigate</h4>
-          <ul className="space-y-3">
-            <li><Link to="/" className="text-gray-300 hover:text-white text-sm transition-colors">Home</Link></li>
-            <li><Link to="/news" className="text-gray-300 hover:text-white text-sm transition-colors">News</Link></li>
-            <li><Link to="/events" className="text-gray-300 hover:text-white text-sm transition-colors">Events</Link></li>
-            <li><Link to="/podcast" className="text-gray-300 hover:text-white text-sm transition-colors">Podcast</Link></li>
-            <li><Link to="/register" className="text-gray-300 hover:text-white text-sm transition-colors">Join Us</Link></li>
-            <li><Link to="/help" className="text-gray-300 hover:text-white text-sm transition-colors">Help</Link></li>
+        <nav aria-label="Footer">
+          <h2 className="eyebrow !text-white/60">Navigate</h2>
+          <ul className="mt-5 space-y-3">
+            {nav.map((l) => (
+              <li key={l.to}><Link to={l.to} className="text-sm text-white/85 transition-colors hover:text-white">{l.label}</Link></li>
+            ))}
           </ul>
-        </div>
+        </nav>
         <div>
-          <h4 className="font-bold text-sm uppercase tracking-wider text-gray-400 mb-5">Resources</h4>
-          <ul className="space-y-3 text-sm text-gray-300">
-            <li><Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
-            <li><Link to="/terms" className="hover:text-white transition-colors">Terms of Membership</Link></li>
-            <li><Link to="/help" className="hover:text-white transition-colors">Help &amp; contact</Link></li>
+          <h2 className="eyebrow !text-white/60">Resources</h2>
+          <ul className="mt-5 space-y-3">
+            {resources.map((l) => (
+              <li key={l.label}><Link to={l.to} className="text-sm text-white/85 transition-colors hover:text-white">{l.label}</Link></li>
+            ))}
           </ul>
         </div>
       </div>
-      <div className="border-t border-white/10 py-5 text-center text-xs text-gray-500 px-6">
-        © 2026 Azerbaijan UK Youth Association. All rights reserved. · Designed with pride in London
+      <div className="border-t border-white/10 px-6 py-5 text-center text-xs text-white/60">
+        © {new Date().getFullYear()} Azerbaijan UK Youth Association. All rights reserved.
       </div>
     </footer>
   );

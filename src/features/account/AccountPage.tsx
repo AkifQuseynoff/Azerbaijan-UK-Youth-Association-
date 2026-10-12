@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { INTERESTS } from "../../constants";
 import { Field } from "../../components/ui/Field";
-import FlagDivider from "../../components/ui/FlagDivider";
+import PageHeader from "../../components/ui/PageHeader";
 import MyRegistrations from "../events/MyRegistrations";
 import { useAuth } from "../auth/AuthContext";
 
@@ -45,19 +45,11 @@ export default function AccountPage() {
   };
 
   return (
-    <div className="page-transition min-h-screen bg-[#F4F6FB]">
-      <div className="bg-[#002060] py-16 px-6">
-        <div className="max-w-3xl mx-auto">
-          <p className="text-blue-200 text-sm mb-2">Signed in as {profile.email}</p>
-          <h1 className="text-5xl text-white" style={{ fontFamily: "'DM Serif Display', serif" }}>
-            Your membership
-          </h1>
-        </div>
-      </div>
-      <FlagDivider />
-      <div className="max-w-3xl mx-auto px-6 py-12">
+    <div className="page-transition">
+      <PageHeader eyebrow="Your account" title="Your membership" subtitle={`Signed in as ${profile.email}`} width="max-w-3xl" />
+      <div className="mx-auto max-w-3xl px-5 py-10 sm:px-8">
         <MyRegistrations />
-        <form onSubmit={(e) => void handleSave(e)} className="bg-white rounded-2xl p-8 border border-gray-100 space-y-5">
+        <form onSubmit={(e) => void handleSave(e)} className="card p-6 sm:p-8 space-y-5">
           <div className="grid sm:grid-cols-2 gap-5">
             <div>
               <Field label="First name" value={form.firstName} onChange={(e) => setForm({ ...form, firstName: e.target.value })} />
@@ -79,31 +71,31 @@ export default function AccountPage() {
             </div>
           </div>
           <div>
-            <p className="text-sm font-medium mb-3">Interests</p>
+            <p className="mb-3 text-sm font-semibold">Interests</p>
             <div className="grid sm:grid-cols-2 gap-2">
               {INTERESTS.map((interest) => (
                 <label key={interest} className="flex items-center gap-2 text-sm">
-                  <input type="checkbox" checked={form.interests.includes(interest)} onChange={() => toggleInterest(interest)} className="accent-[#003580]" />
+                  <input type="checkbox" checked={form.interests.includes(interest)} onChange={() => toggleInterest(interest)} className="accent-brand-blue" />
                   {interest}
                 </label>
               ))}
             </div>
           </div>
           <label className="flex items-center gap-2 text-sm">
-            <input type="checkbox" checked={form.newsletter} onChange={(e) => setForm({ ...form, newsletter: e.target.checked })} className="accent-[#003580]" />
+            <input type="checkbox" checked={form.newsletter} onChange={(e) => setForm({ ...form, newsletter: e.target.checked })} className="accent-brand-blue" />
             Receive the weekly newsletter
           </label>
-          {error && <p className="text-[#CC2229] text-sm">{error}</p>}
-          {saved && <p className="text-[#00997A] text-sm">Saved.</p>}
+          {error && <p className="text-sm text-brand-red-dark">{error}</p>}
+          {saved && <p role="status" className="text-sm font-semibold text-[#2c6638]">Saved.</p>}
           <div className="flex flex-wrap gap-3">
-            <button type="submit" className="px-6 py-3 bg-[#003580] text-white font-semibold rounded-xl">Save changes</button>
+            <button type="submit" className="btn btn-blue">Save changes</button>
             {isStaff && (
               <>
-                <Link to="/admin/news" className="px-6 py-3 bg-[#00997A] text-white font-semibold rounded-xl">Open newsroom</Link>
-                <Link to="/admin/events" className="px-6 py-3 bg-[#00997A] text-white font-semibold rounded-xl">Manage events</Link>
+                <Link to="/admin/news" className="btn btn-outline">Open newsroom</Link>
+                <Link to="/admin/events" className="btn btn-outline">Manage events</Link>
               </>
             )}
-            <button type="button" onClick={() => void signOut()} className="px-6 py-3 border border-gray-300 rounded-xl font-semibold">
+            <button type="button" onClick={() => void signOut()} className="btn btn-outline">
               Log out
             </button>
           </div>

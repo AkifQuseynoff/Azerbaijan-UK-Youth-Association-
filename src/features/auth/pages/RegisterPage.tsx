@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import FlagDivider from "../../../components/ui/FlagDivider";
+import PageHeader from "../../../components/ui/PageHeader";
 import { useAuth } from "../AuthContext";
 import { CITIES, HEARD_FROM_OPTIONS, INTERESTS } from "../../../constants";
 import { Field, SelectField } from "../../../components/ui/Field";
@@ -106,56 +106,47 @@ export default function RegisterPage() {
 
   if (confirmation) {
     return (
-      <div className="page-transition min-h-screen bg-[#F4F6FB] flex items-center justify-center px-6 py-24">
-        <div className="bg-white rounded-3xl shadow-xl p-12 max-w-md w-full text-center">
-          <h2 className="text-3xl text-[#0D1B2A] mb-4" style={{ fontFamily: "'DM Serif Display', serif" }}>
+      <div className="page-transition flex min-h-[60vh] items-center justify-center px-5 py-24">
+        <div className="card w-full max-w-md p-10 text-center">
+          <h2 className="display mb-4 text-3xl">
             Check your inbox
           </h2>
-          <p className="text-gray-600 leading-relaxed mb-8">
+          <p className="text-mute leading-relaxed mb-8">
             We sent a confirmation email to <strong>{form.email}</strong>. Confirm your address, then log in to open your member account.
           </p>
-          <Link to="/login" className="text-[#003580] font-semibold">Go to log in</Link>
+          <Link to="/login" className="text-brand-blue font-semibold">Go to log in</Link>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="page-transition min-h-screen bg-[#F4F6FB]">
-      <div className="bg-[#002060] py-16 px-6">
-        <div className="max-w-3xl mx-auto">
-          <p className="text-[#CC2229] font-semibold text-sm uppercase tracking-wider mb-3">Membership</p>
-          <h1 className="text-5xl text-white" style={{ fontFamily: "'DM Serif Display', serif" }}>
-            Join our community
-          </h1>
-          <p className="text-blue-200 mt-3 text-lg">Free membership · Takes 3 minutes</p>
-        </div>
-      </div>
-      <FlagDivider />
+    <div className="page-transition">
+      <PageHeader eyebrow="Membership" title="Join our community" subtitle="Free membership · Takes 3 minutes" width="max-w-3xl" />
 
-      <div className="max-w-3xl mx-auto px-6 py-12">
+      <div className="mx-auto max-w-3xl px-5 py-10 sm:px-8">
         <div className="flex items-center gap-3 mb-10">
           {([1, 2, 3] as const).map((s) => (
             <div key={s} className="flex items-center gap-3">
               <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold ${
-                step === s ? "bg-[#003580] text-white shadow-md" :
-                step > s ? "bg-[#00997A] text-white" : "bg-gray-200 text-gray-500"
+                step === s ? "bg-brand-blue text-white" :
+                step > s ? "bg-brand-green text-white" : "bg-mist text-mute"
               }`}>
                 {s}
               </div>
-              <span className={`text-sm font-medium ${step >= s ? "text-[#003580]" : "text-gray-400"} hidden sm:block`}>
+              <span className={`text-sm font-medium ${step >= s ? "text-brand-blue" : "text-mute"} hidden sm:block`}>
                 {s === 1 ? "Personal details" : s === 2 ? "Your interests" : "Confirm"}
               </span>
-              {s < 3 && <div className={`flex-1 h-0.5 w-10 ${step > s ? "bg-[#00997A]" : "bg-gray-200"}`} />}
+              {s < 3 && <div className={`flex-1 h-0.5 w-10 ${step > s ? "bg-brand-green" : "bg-line"}`} />}
             </div>
           ))}
         </div>
 
         <form onSubmit={(e) => void handleSubmit(e)}>
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+          <div className="card p-6 sm:p-8">
             {step === 1 && (
               <div>
-                <h2 className="text-2xl font-bold text-[#0D1B2A] mb-6" style={{ fontFamily: "'DM Serif Display', serif" }}>
+                <h2 className="display mb-6 text-3xl">
                   Personal details
                 </h2>
                 <div className="grid sm:grid-cols-2 gap-5">
@@ -170,7 +161,7 @@ export default function RegisterPage() {
                   </div>
                   <div>
                     <Field label="Password *" required type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} autoComplete="new-password" />
-                    <p className="text-xs text-gray-400 mt-1">At least 8 characters, with upper, lower, and a number.</p>
+                    <p className="text-xs text-mute mt-1">At least 8 characters, with upper, lower, and a number.</p>
                   </div>
                   <div>
                     <Field label="Confirm password *" required type="password" value={form.confirmPassword} onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })} autoComplete="new-password" />
@@ -180,7 +171,7 @@ export default function RegisterPage() {
                   </div>
                   <div>
                     <Field label="Date of birth *" required type="date" value={form.dob} onChange={(e) => setForm({ ...form, dob: e.target.value })} />
-                    <p className="text-xs text-gray-400 mt-1">You must be 16 or over. If you are 16 or 17, a parent or guardian should review our privacy notice with you.</p>
+                    <p className="text-xs text-mute mt-1">You must be 16 or over. If you are 16 or 17, a parent or guardian should review our privacy notice with you.</p>
                   </div>
                   <div>
                     <SelectField label="City in the UK *" required value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} options={CITIES} placeholder="Select city" />
@@ -197,20 +188,20 @@ export default function RegisterPage() {
 
             {step === 2 && (
               <div>
-                <h2 className="text-2xl font-bold text-[#0D1B2A] mb-2" style={{ fontFamily: "'DM Serif Display', serif" }}>
+                <h2 className="display mb-2 text-3xl">
                   Your interests
                 </h2>
-                <p className="text-gray-500 text-sm mb-6">Select all that apply — helps us tailor what we send you.</p>
+                <p className="text-mute text-sm mb-6">Select all that apply — helps us tailor what we send you.</p>
                 <div className="grid sm:grid-cols-2 gap-3 mb-8">
                   {INTERESTS.map((interest) => (
                     <label
                       key={interest}
-                      className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer ${
-                        form.interests.includes(interest) ? "border-[#00997A] bg-teal-50" : "border-gray-200"
+                      className={`flex cursor-pointer items-center gap-3 rounded-2xl border-2 p-4 transition-colors ${
+                        form.interests.includes(interest) ? "border-brand-green bg-brand-green/10" : "border-line hover:border-brand-sky/50"
                       }`}
                     >
-                      <input type="checkbox" className="accent-[#00997A]" checked={form.interests.includes(interest)} onChange={() => handleInterest(interest)} />
-                      <span className="text-sm font-medium text-gray-700">{interest}</span>
+                      <input type="checkbox" className="accent-brand-green" checked={form.interests.includes(interest)} onChange={() => handleInterest(interest)} />
+                      <span className="text-sm font-semibold text-ink">{interest}</span>
                     </label>
                   ))}
                 </div>
@@ -220,10 +211,10 @@ export default function RegisterPage() {
 
             {step === 3 && (
               <div>
-                <h2 className="text-2xl font-bold text-[#0D1B2A] mb-6" style={{ fontFamily: "'DM Serif Display', serif" }}>
+                <h2 className="display mb-6 text-3xl">
                   Confirm your registration
                 </h2>
-                <div className="bg-[#F4F6FB] rounded-xl p-6 mb-6 space-y-3">
+                <div className="mb-6 space-y-3 rounded-2xl bg-paper p-6">
                   {[
                     { label: "Name", value: `${form.firstName} ${form.lastName}` },
                     { label: "Email", value: form.email },
@@ -232,21 +223,21 @@ export default function RegisterPage() {
                     { label: "Interests", value: form.interests.length > 0 ? form.interests.join(", ") : "None selected" },
                   ].map(({ label, value }) => (
                     <div key={label} className="flex gap-4 text-sm">
-                      <span className="text-gray-500 w-28 flex-shrink-0">{label}</span>
-                      <span className="text-[#0D1B2A] font-medium">{value}</span>
+                      <span className="text-mute w-28 flex-shrink-0">{label}</span>
+                      <span className="font-semibold text-ink">{value}</span>
                     </div>
                   ))}
                 </div>
                 <div className="space-y-4">
                   <label className="flex items-start gap-3 cursor-pointer">
-                    <input type="checkbox" checked={form.newsletter} onChange={(e) => setForm({ ...form, newsletter: e.target.checked })} className="mt-0.5 accent-[#003580]" />
-                    <span className="text-sm text-gray-600">Send me our newsletter with events, news, and opportunities (max once per week).</span>
+                    <input type="checkbox" checked={form.newsletter} onChange={(e) => setForm({ ...form, newsletter: e.target.checked })} className="mt-0.5 accent-brand-blue" />
+                    <span className="text-sm text-mute">Send me our newsletter with events, news, and opportunities (max once per week).</span>
                   </label>
                   <label className="flex items-start gap-3 cursor-pointer">
-                    <input type="checkbox" required checked={form.terms} onChange={(e) => setForm({ ...form, terms: e.target.checked })} className="mt-0.5 accent-[#003580]" />
-                    <span className="text-sm text-gray-600">
-                      I agree to the <Link to="/terms" className="text-[#003580] underline">Terms of Membership</Link> and{" "}
-                      <Link to="/privacy" className="text-[#003580] underline">Privacy Policy</Link>.
+                    <input type="checkbox" required checked={form.terms} onChange={(e) => setForm({ ...form, terms: e.target.checked })} className="mt-0.5 accent-brand-blue" />
+                    <span className="text-sm text-mute">
+                      I agree to the <Link to="/terms" className="text-brand-blue underline">Terms of Membership</Link> and{" "}
+                      <Link to="/privacy" className="text-brand-blue underline">Privacy Policy</Link>.
                     </span>
                   </label>
                 </div>
@@ -254,33 +245,33 @@ export default function RegisterPage() {
             )}
           </div>
 
-          {error && <p className="text-[#CC2229] text-sm mt-4">{error}</p>}
+          {error && <p className="text-sm text-brand-red-dark mt-4">{error}</p>}
 
           <div className="flex justify-between mt-6">
             {step > 1 ? (
-              <button type="button" onClick={() => setStep((s) => (s - 1) as 1 | 2 | 3)} className="px-6 py-3 rounded-xl border border-gray-300 text-gray-600 font-semibold">
+              <button type="button" onClick={() => setStep((s) => (s - 1) as 1 | 2 | 3)} className="btn btn-outline">
                 Back
               </button>
             ) : <div />}
             {step === 1 && (
-              <button type="button" onClick={goNext} className="px-8 py-3 bg-[#003580] text-white font-semibold rounded-xl">
+              <button type="button" onClick={goNext} className="btn btn-blue">
                 Continue
               </button>
             )}
             {step === 2 && (
-              <button type="button" onClick={() => setStep(3)} className="px-8 py-3 bg-[#003580] text-white font-semibold rounded-xl">
+              <button type="button" onClick={() => setStep(3)} className="btn btn-blue">
                 Continue
               </button>
             )}
             {step === 3 && (
-              <button type="submit" disabled={pending} className="px-8 py-3 bg-[#CC2229] text-white font-semibold rounded-xl disabled:opacity-50">
+              <button type="submit" disabled={pending} className="btn btn-primary">
                 {pending ? "Submitting…" : "Complete Registration"}
               </button>
             )}
           </div>
         </form>
-        <p className="text-sm text-gray-500 mt-8">
-          Already a member? <Link to="/login" className="text-[#003580] font-semibold">Log in</Link>
+        <p className="mt-8 text-sm text-mute">
+          Already a member? <Link to="/login" className="text-brand-blue font-semibold">Log in</Link>
         </p>
       </div>
     </div>

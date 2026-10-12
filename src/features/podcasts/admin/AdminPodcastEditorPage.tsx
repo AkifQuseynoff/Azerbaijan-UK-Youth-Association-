@@ -80,10 +80,10 @@ export default function AdminPodcastEditorPage() {
   };
 
   return (
-    <div className="page-transition min-h-screen bg-[#F4F6FB]">
-      <PageHeader eyebrow="Staff only" title={isNew ? "New episode" : "Edit episode"} width="max-w-4xl" action={<Link to="/admin/podcast" className="text-blue-200 text-sm">Back to podcast</Link>} />
+    <div className="page-transition">
+      <PageHeader eyebrow="Staff only" title={isNew ? "New episode" : "Edit episode"} width="max-w-4xl" action={<Link to="/admin/podcast" className="text-sm font-semibold text-brand-blue underline underline-offset-4">Back to podcast</Link>} />
       <div className="max-w-4xl mx-auto px-6 py-10">
-        <div className="bg-white rounded-2xl p-8 border border-gray-100 space-y-5">
+        <div className="card p-6 sm:p-8 space-y-5">
           <div><Field label="Title" value={form.title} onChange={(e) => setForm((f) => ({ ...f, title: e.target.value, slug: isNew || !f.slug ? slugify(e.target.value) : f.slug }))} /></div>
           <div><Field label="Web address (slug)" value={form.slug} onChange={(e) => set("slug", slugify(e.target.value))} /></div>
           <div className="grid sm:grid-cols-3 gap-5">
@@ -97,18 +97,18 @@ export default function AdminPodcastEditorPage() {
           <div><Field label="Player link" value={form.embedLink} onChange={(e) => set("embedLink", e.target.value)} hint="Paste the normal episode link from Spotify, YouTube, Apple Podcasts or SoundCloud. We turn it into a player." /></div>
           <div><Field label="Direct audio file link (optional)" type="url" value={form.audioUrl} onChange={(e) => set("audioUrl", e.target.value)} hint="An https:// link to an .mp3 you host elsewhere." /></div>
           <div>
-            <label htmlFor="ep-cover" className="block text-sm font-medium text-gray-700 mb-1.5">Cover image</label>
+            <label htmlFor="ep-cover" className="mb-1.5 block text-sm font-semibold text-ink">Cover image</label>
             <input id="ep-cover" type="file" accept="image/*" onChange={(e) => setCoverFile(e.target.files?.[0] ?? null)} className="text-sm" />
             {form.coverUrl && !coverFile && <img src={form.coverUrl} alt="" className="mt-3 h-28 rounded-xl object-cover" />}
           </div>
           <div><Field label="Publish at (for scheduling)" type="datetime-local" value={form.publishedAt} onChange={(e) => set("publishedAt", e.target.value)} /></div>
 
-          {error && <p role="alert" className="text-[#CC2229] text-sm">{error}</p>}
-          {notice && <p className="text-[#00997A] text-sm">{notice}</p>}
+          {error && <p role="alert" className="text-brand-red text-sm">{error}</p>}
+          {notice && <p className="text-brand-green text-sm">{notice}</p>}
           <div className="flex flex-wrap gap-3">
-            <button type="button" disabled={pending} onClick={() => void persist("draft")} className="px-5 py-3 border border-gray-300 rounded-xl font-semibold disabled:opacity-50">Save draft</button>
-            <button type="button" disabled={pending || !form.publishedAt} onClick={() => void persist("scheduled")} className="px-5 py-3 bg-amber-600 text-white rounded-xl font-semibold disabled:opacity-50">Schedule</button>
-            <button type="button" disabled={pending} onClick={() => void persist("published")} className="px-5 py-3 bg-[#CC2229] text-white rounded-xl font-semibold disabled:opacity-50">Publish</button>
+            <button type="button" disabled={pending} onClick={() => void persist("draft")} className="btn btn-outline">Save draft</button>
+            <button type="button" disabled={pending || !form.publishedAt} onClick={() => void persist("scheduled")} className="btn bg-amber-600 text-white hover:bg-amber-700">Schedule</button>
+            <button type="button" disabled={pending} onClick={() => void persist("published")} className="btn btn-primary">Publish</button>
           </div>
         </div>
       </div>

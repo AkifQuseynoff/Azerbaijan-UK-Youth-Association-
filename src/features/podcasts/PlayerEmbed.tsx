@@ -15,7 +15,7 @@ export default function PlayerEmbed({ embedUrl, audioUrl, title }: { embedUrl: s
           allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
           referrerPolicy="strict-origin-when-cross-origin"
           sandbox="allow-scripts allow-same-origin allow-popups allow-presentation"
-          className="rounded-xl border-0 w-full"
+          className="w-full rounded-2xl border-0"
         />
       )}
       {audioUrl && (

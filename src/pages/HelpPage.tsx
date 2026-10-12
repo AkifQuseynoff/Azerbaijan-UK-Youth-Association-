@@ -1,72 +1,66 @@
-import { useState } from "react";
+import { useId, useState } from "react";
+import PageHeader from "../components/ui/PageHeader";
 import { SITE, hasContact } from "../config/site";
-import FlagDivider from "../components/ui/FlagDivider";
 import { FAQ } from "../data/faq";
 
 export default function HelpPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const base = useId();
 
   return (
-    <div className="page-transition min-h-screen bg-[#F4F6FB]">
-      <div className="bg-[#002060] py-16 px-6">
-        <div className="max-w-7xl mx-auto">
-          <p className="text-[#00997A] font-semibold text-sm uppercase tracking-wider mb-3">Support</p>
-          <h1 className="text-5xl text-white" style={{ fontFamily: "'DM Serif Display', serif" }}>
-            Help & Resources
-          </h1>
-          <p className="text-blue-200 mt-3 text-lg max-w-xl">
-            Everything you need to make the most of your membership.
-          </p>
-        </div>
-      </div>
-      <FlagDivider />
+    <div className="page-transition">
+      <PageHeader eyebrow="Support" title="Help & resources" subtitle="Everything you need to make the most of your membership." />
 
-      <div className="max-w-7xl mx-auto px-6 py-14">
+      <div className="mx-auto max-w-7xl px-5 py-12 sm:px-8">
         {SITE.programmes.length > 0 && (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-14">
+          <div className="mb-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {SITE.programmes.map((item) => (
-              <div key={item.title} className="bg-white rounded-2xl p-6 border-t-4 border-[#003580] shadow-sm">
-                <h3 className="text-lg font-bold text-[#0D1B2A] mb-1" style={{ fontFamily: "'DM Serif Display', serif" }}>
-                  {item.title}
-                </h3>
-                <p className="text-gray-500 text-sm">{item.description}</p>
+              <div key={item.title} className="card border-t-4 border-brand-sky p-6">
+                <h3 className="mb-1 font-display text-lg font-medium tracking-tight">{item.title}</h3>
+                <p className="text-sm text-mute">{item.description}</p>
               </div>
             ))}
           </div>
         )}
 
-        <div className="grid lg:grid-cols-[1fr_360px] gap-10">
+        <div className="grid gap-10 lg:grid-cols-[1fr_360px]">
           <div>
-            <h2 className="text-3xl text-[#0D1B2A] mb-6" style={{ fontFamily: "'DM Serif Display', serif" }}>
-              Frequently asked questions
-            </h2>
+            <h2 className="display mb-6 text-3xl sm:text-4xl">Frequently asked questions</h2>
             <div className="space-y-3">
-              {FAQ.map((item, i) => (
-                <div key={i} className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
-                  <button
-                    type="button"
-                    className="w-full flex items-center justify-between text-left px-6 py-5 hover:bg-gray-50"
-                    onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                  >
-                    <span className="font-semibold text-[#0D1B2A] text-base pr-4">{item.q}</span>
-                    <svg className={`w-5 h-5 text-[#003580] flex-shrink-0 transition-transform ${openFaq === i ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-                  {openFaq === i && (
-                    <div className="px-6 pb-5">
-                      <div className="h-px bg-gray-100 mb-4" />
-                      <p className="text-gray-600 leading-relaxed text-sm">{item.a}</p>
-                    </div>
-                  )}
-                </div>
-              ))}
+              {FAQ.map((item, i) => {
+                const open = openFaq === i;
+                return (
+                  <div key={i} className="card overflow-hidden">
+                    <h3>
+                      <button
+                        type="button"
+                        id={`${base}-q${i}`}
+                        aria-expanded={open}
+                        aria-controls={`${base}-a${i}`}
+                        className="flex w-full items-center justify-between px-6 py-5 text-left transition-colors hover:bg-mist/60"
+                        onClick={() => setOpenFaq(open ? null : i)}
+                      >
+                        <span className="pr-4 text-base font-semibold">{item.q}</span>
+                        <svg className={`h-5 w-5 flex-shrink-0 text-brand-blue transition-transform duration-200 ${open ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </button>
+                    </h3>
+                    {open && (
+                      <div id={`${base}-a${i}`} role="region" aria-labelledby={`${base}-q${i}`} className="px-6 pb-5">
+                        <div className="mb-4 h-px bg-line" />
+                        <p className="text-[0.96rem] leading-relaxed text-mute">{item.a}</p>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
 
           <div className="space-y-5">
-            <div className="bg-[#002060] rounded-2xl p-7 text-white">
-              <h3 className="text-2xl mb-4" style={{ fontFamily: "'DM Serif Display', serif" }}>Contact us</h3>
+            <div className="rounded-3xl bg-gradient-to-b from-ink to-[#14295a] p-7 text-white">
+              <h3 className="display mb-4 text-2xl text-white">Contact us</h3>
               {hasContact ? (
                 <div className="space-y-4 text-sm">
                   {[
@@ -78,13 +72,13 @@ export default function HelpPage() {
                     .filter((c) => c.value)
                     .map((c) => (
                       <div key={c.label}>
-                        <p className="text-blue-300 text-xs">{c.label}</p>
-                        <p className="text-white">{c.value}</p>
+                        <p className="text-xs text-white/60">{c.label}</p>
+                        <p>{c.value}</p>
                       </div>
                     ))}
                 </div>
               ) : (
-                <p className="text-blue-200 text-sm leading-relaxed">Contact details will be published here soon.</p>
+                <p className="text-sm leading-relaxed text-[#c4d2f0]">Contact details will be published here soon.</p>
               )}
             </div>
           </div>

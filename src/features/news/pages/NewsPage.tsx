@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import FlagDivider from "../../../components/ui/FlagDivider";
+import PageHeader from "../../../components/ui/PageHeader";
 import NewsCard from "../NewsCard";
 import { listPublishedArticles } from "../api";
 import type { Article, NewsCategory } from "../../../types";
@@ -51,29 +51,20 @@ export default function NewsPage() {
   const pageCount = Math.max(1, Math.ceil(total / pageSize));
 
   return (
-    <div className="page-transition min-h-screen bg-[#F4F6FB]">
-      <div className="bg-[#002060] py-16 px-6">
-        <div className="max-w-7xl mx-auto">
-          <p className="text-[#CC2229] font-semibold text-sm uppercase tracking-wider mb-3">Community News</p>
-          <h1 className="text-5xl text-white" style={{ fontFamily: "'DM Serif Display', serif" }}>
-            Stories from our community
-          </h1>
-        </div>
-      </div>
-      <FlagDivider />
+    <div className="page-transition">
+      <PageHeader eyebrow="Community news" title="Stories from our community" />
 
-      <div className="max-w-7xl mx-auto px-6 py-12">
-        <div className="flex flex-col md:flex-row md:items-center gap-4 mb-10">
-          <div className="flex flex-wrap gap-2 flex-1">
+      <div className="mx-auto max-w-7xl px-5 py-10 sm:px-8">
+        <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-center">
+          <div className="flex flex-1 flex-wrap gap-2" role="group" aria-label="Filter by category">
             {NEWS_CATEGORIES.map((cat) => (
               <button
                 key={cat}
                 type="button"
+                aria-pressed={activeCategory === cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
-                  activeCategory === cat
-                    ? "bg-[#003580] text-white shadow-md"
-                    : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200"
+                className={`rounded-full px-5 py-2 text-sm font-semibold transition-[background-color,color,transform] duration-150 active:scale-95 ${
+                  activeCategory === cat ? "bg-ink text-white" : "bg-mist text-ink hover:bg-line"
                 }`}
               >
                 {cat}
@@ -86,30 +77,23 @@ export default function NewsPage() {
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search articles"
             aria-label="Search articles"
-            className="w-full md:w-72 border border-gray-300 rounded-xl px-4 py-2.5 text-sm bg-white"
+            className="w-full rounded-full border border-line bg-white px-5 py-2.5 text-base md:w-72"
           />
         </div>
 
         {featured && page === 1 && activeCategory === "All" && !debounced && (
-          <Link
-            to={`/news/${featured.slug}`}
-            className="grid md:grid-cols-2 gap-0 bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 mb-10 group"
-          >
-            <div className="aspect-[16/10] md:aspect-auto overflow-hidden bg-gray-100">
-              <img src={featured.coverUrl} alt={featured.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+          <Link to={`/news/${featured.slug}`} className="card press group mb-10 grid overflow-hidden md:grid-cols-2">
+            <div className="aspect-[16/10] overflow-hidden bg-mist md:aspect-auto">
+              <img src={featured.coverUrl} alt="" className="h-full w-full object-cover transition-transform duration-500 [@media(hover:hover)]:group-hover:scale-105" />
             </div>
-            <div className="p-8 flex flex-col justify-center">
-              <div className="flex items-center gap-3 mb-4">
-                <span className="text-xs font-semibold uppercase tracking-wider text-[#CC2229]">Featured</span>
-                <span className={`text-xs font-semibold px-3 py-1 rounded-full ${categoryColors[featured.category]}`}>
-                  {featured.category}
-                </span>
+            <div className="flex flex-col justify-center p-7 sm:p-10">
+              <div className="mb-4 flex items-center gap-3">
+                <span className="eyebrow">Featured</span>
+                <span className={`chip ${categoryColors[featured.category] || "bg-mist text-ink"}`}>{featured.category}</span>
               </div>
-              <h2 className="text-3xl text-[#0D1B2A] mb-3 leading-tight" style={{ fontFamily: "'DM Serif Display', serif" }}>
-                {featured.title}
-              </h2>
-              <p className="text-gray-600 leading-relaxed mb-6">{featured.excerpt}</p>
-              <p className="text-xs text-gray-400">
+              <h2 className="display mb-3 text-3xl">{featured.title}</h2>
+              <p className="mb-6 text-mute">{featured.excerpt}</p>
+              <p className="text-xs text-mute">
                 {featured.authorName} · {formatArticleDate(featured.publishedAt)} · {readTimeFromBody(featured.body)}
               </p>
             </div>
@@ -117,36 +101,24 @@ export default function NewsPage() {
         )}
 
         {loading ? (
-          <p className="text-center py-20 text-gray-400">Loading stories…</p>
+          <p className="py-20 text-center text-mute">Loading stories…</p>
         ) : (
           <>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {gridArticles.map((article) => (
                 <NewsCard key={article.id} article={article} />
               ))}
             </div>
-            {gridArticles.length === 0 && (
-              <p className="text-center py-20 text-gray-400">No articles match this search.</p>
-            )}
+            {gridArticles.length === 0 && <p className="py-20 text-center text-mute">No articles match this search.</p>}
             {pageCount > 1 && (
-              <div className="flex justify-center gap-3 mt-12">
-                <button
-                  type="button"
-                  disabled={page <= 1}
-                  onClick={() => setPage((p) => p - 1)}
-                  className="px-4 py-2 rounded-xl border border-gray-200 bg-white text-sm disabled:opacity-40"
-                >
+              <div className="mt-12 flex items-center justify-center gap-3">
+                <button type="button" disabled={page <= 1} onClick={() => setPage((p) => p - 1)} className="btn btn-outline btn-sm">
                   Previous
                 </button>
-                <span className="px-4 py-2 text-sm text-gray-500">
+                <span className="px-2 text-sm text-mute">
                   {page} / {pageCount}
                 </span>
-                <button
-                  type="button"
-                  disabled={page >= pageCount}
-                  onClick={() => setPage((p) => p + 1)}
-                  className="px-4 py-2 rounded-xl border border-gray-200 bg-white text-sm disabled:opacity-40"
-                >
+                <button type="button" disabled={page >= pageCount} onClick={() => setPage((p) => p + 1)} className="btn btn-outline btn-sm">
                   Next
                 </button>
               </div>

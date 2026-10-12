@@ -33,7 +33,7 @@ export default function AddToCalendar({
   }, [open]);
 
   const pageUrl = `${window.location.origin}/events/${event.slug}`;
-  const item = "block w-full text-left px-4 py-2.5 text-sm text-[#0D1B2A] hover:bg-gray-50";
+  const item = "block w-full text-left px-4 py-2.5 text-sm text-ink transition-colors hover:bg-mist";
 
   return (
     <div ref={root} className={`relative ${className}`}>
@@ -43,7 +43,7 @@ export default function AddToCalendar({
         aria-expanded={open}
         aria-controls={menuId}
         onClick={() => setOpen((o) => !o)}
-        className="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-sm font-semibold hover:bg-gray-50 flex items-center justify-center gap-2"
+        className="btn btn-outline btn-sm w-full"
       >
         Add to calendar <span aria-hidden="true" className="text-xs">▾</span>
       </button>
@@ -51,7 +51,7 @@ export default function AddToCalendar({
         <div
           id={menuId}
           role="menu"
-          className={`absolute z-20 mt-2 w-56 bg-white rounded-xl border border-gray-200 shadow-lg py-1 ${align === "right" ? "right-0" : "left-0"}`}
+          className={`absolute z-20 mt-2 w-60 rounded-2xl bg-white py-2 shadow-card ring-1 ring-line ${align === "right" ? "right-0" : "left-0"}`}
         >
           <a role="menuitem" className={item} href={googleCalendarUrl(event, pageUrl, ticketCode)} target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)}>
             Google Calendar

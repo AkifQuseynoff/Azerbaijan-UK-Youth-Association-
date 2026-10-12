@@ -1,9 +1,10 @@
-export default function FlagDivider() {
+/** A thin rule in the three colours of the logo. */
+export default function FlagDivider({ className = "" }: { className?: string }) {
   return (
-    <div className="h-1.5 flex">
-      <div className="flex-1 bg-[#003580]" />
-      <div className="flex-1 bg-[#CC2229]" />
-      <div className="flex-1 bg-[#00997A]" />
+    <div className={`flex gap-1.5 ${className}`} aria-hidden="true">
+      <i className="h-1 flex-1 rounded-full bg-brand-sky" />
+      <i className="h-1 flex-1 rounded-full bg-brand-red" />
+      <i className="h-1 flex-1 rounded-full bg-brand-green" />
     </div>
   );
 }

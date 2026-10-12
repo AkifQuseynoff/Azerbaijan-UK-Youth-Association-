@@ -1,214 +1,186 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import NewsCard from "../features/news/NewsCard";
-import FlagDivider from "../components/ui/FlagDivider";
+import HeroMark from "../components/brand/HeroMark";
+import Skyline from "../components/brand/Skyline";
+import Reveal from "../components/ui/Reveal";
+import Waveform from "../components/ui/Waveform";
 import { SITE } from "../config/site";
+import { useAuth } from "../features/auth/AuthContext";
+import { eventsApi } from "../features/events/api";
+import EventTicket from "../features/events/EventTicket";
+import type { EventItem } from "../features/events/types";
+import NewsCard from "../features/news/NewsCard";
 import { listLatestPublished } from "../features/news/api";
+import { listPublishedEpisodes } from "../features/podcasts/api";
+import { episodeLabel } from "../features/podcasts/types";
+import type { Episode } from "../features/podcasts/types";
 import type { Article } from "../types";
 
+const PILLARS = [
+  { n: "01", tone: "bg-brand-sky", title: "Culture & heritage", desc: "Celebrating Azerbaijani culture through events, music, art and language, keeping traditions alive in the diaspora." },
+  { n: "02", tone: "bg-brand-red", title: "Education & careers", desc: "Talks, workshops and networking to help young people develop their skills and careers." },
+  { n: "03", tone: "bg-brand-green", title: "Community & belonging", desc: "A welcoming home for every Azerbaijani in the UK: new arrivals, long-term residents and second-generation members alike." },
+];
+
 export default function HomePage() {
+  const { profile } = useAuth();
+  const [events, setEvents] = useState<EventItem[] | null>(null);
+  const [episode, setEpisode] = useState<Episode | null>(null);
   const [latest, setLatest] = useState<Article[]>([]);
+  const hero = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    void listLatestPublished(3).then(setLatest);
+    eventsApi.listUpcoming().then((list) => setEvents(list.filter((e) => e.status === "published").slice(0, 3))).catch(() => setEvents([]));
+    listPublishedEpisodes().then((list) => setEpisode(list[0] ?? null)).catch(() => undefined);
+    void listLatestPublished(3).then(setLatest).catch(() => undefined);
+  }, []);
+
+  // The skyline drifts a little as the page scrolls. Bound to scroll, not to the pointer, so it works on a phone too.
+  useEffect(() => {
+    const node = hero.current;
+    if (!node || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        ticking = false;
+        node.style.setProperty("--sy", String(Math.min(window.scrollY, 1400)));
+      });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   return (
-    <div className="page-transition">
-      <section className="relative min-h-[92vh] flex items-center overflow-hidden bg-[#0D1B2A]">
-        <div
-          className="absolute inset-0 bg-cover bg-center opacity-25"
-          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1654356813524-2dd96f479a1b?w=1600&h=900&fit=crop&auto=format')" }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-[#002060]/90 via-[#0D1B2A]/70 to-[#001830]/80" />
-        <div className="absolute left-0 top-0 bottom-0 w-2 flex flex-col">
-          <div className="flex-1 bg-[#003580]" />
-          <div className="flex-1 bg-[#CC2229]" />
-          <div className="flex-1 bg-[#00997A]" />
-        </div>
-
-        <div className="relative max-w-7xl mx-auto px-8 py-24 grid md:grid-cols-2 gap-16 items-center">
-          <div>
-            <h1
-              className="text-5xl md:text-6xl lg:text-7xl text-white leading-[1.05] mb-6"
-              style={{ fontFamily: "'DM Serif Display', serif" }}
-            >
-              Connecting
+    <>
+      <section ref={hero} className="hero" aria-labelledby="home-title">
+        <div className="hero-sun" aria-hidden="true" />
+        <Skyline className="hero-city" nearFill="#0e1f45" farOpacity={0.09} towers="colour" ground />
+        <div className="hero-ground" aria-hidden="true" />
+        <div className="hero-inner">
+          <div className="hero-copy">
+            <p className="eyebrow mb-4">Azərbaycan · United Kingdom</p>
+            <h1 id="home-title" className="display text-[2.5rem] sm:text-6xl lg:text-[5.2rem] lg:leading-none">
+              Two homes.
               <br />
-              <span className="text-[#CC2229]">Azerbaijani</span>
-              <br />
-              Youth in the{" "}
-              <span className="text-[#00997A]">UK</span>
+              <em className="font-medium text-brand-blue">One community.</em>
             </h1>
-            <p className="text-blue-200 text-lg leading-relaxed mb-10 max-w-lg">
-              The Azerbaijan UK Youth Association is a community for young people of Azerbaijani heritage across the United Kingdom — sharing culture, building connections, and shaping the future together.
+            <p className="mb-7 mt-5 max-w-[30em] text-[1.14rem] text-mute">
+              A free community for young Azerbaijanis in the UK: events worth turning up to, a podcast, and people who get it.
             </p>
-            <div className="flex flex-wrap gap-4">
-              <Link
-                to="/register"
-                className="px-8 py-4 bg-[#CC2229] hover:bg-[#e83038] text-white font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
-              >
-                Join the Association
-              </Link>
-              <Link
-                to="/news"
-                className="px-8 py-4 bg-white/10 hover:bg-white/20 border border-white/30 text-white font-semibold rounded-xl transition-all duration-200 backdrop-blur-sm"
-              >
-                Read Latest News →
-              </Link>
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-4 max-md:justify-center">
+              {profile ? (
+                <Link to="/events" className="btn btn-primary btn-lg">Browse events</Link>
+              ) : (
+                <Link to="/register" className="btn btn-primary btn-lg max-sm:w-full max-sm:max-w-80">Join the community</Link>
+              )}
+              <a href="#events" className="link-u">See what&apos;s on</a>
             </div>
           </div>
-
-          {SITE.stats.length > 0 ? (
-            <div className="grid grid-cols-2 gap-4">
-              {SITE.stats.map((stat) => (
-                <div key={stat.label} className="bg-white/8 backdrop-blur-sm border-t-2 border-[#003580] rounded-2xl p-6">
-                  <p className="text-4xl font-bold text-white mb-1" style={{ fontFamily: "'DM Serif Display', serif" }}>{stat.value}</p>
-                  <p className="text-blue-200 text-sm leading-snug">{stat.label}</p>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="grid gap-4">
-              {[
-                { to: "/events", title: "Upcoming events", desc: "Register for talks, socials and live podcast recordings.", color: "border-[#003580]" },
-                { to: "/podcast", title: "The podcast", desc: "Listen to conversations with and for young Azerbaijanis.", color: "border-[#CC2229]" },
-                { to: "/news", title: "Community news", desc: "Announcements and stories from the Association.", color: "border-[#00997A]" },
-              ].map((card) => (
-                <Link key={card.to} to={card.to} className={`block bg-white/8 hover:bg-white/12 backdrop-blur-sm border-t-2 ${card.color} rounded-2xl p-6 transition-colors`}>
-                  <p className="text-2xl font-bold text-white mb-1" style={{ fontFamily: "'DM Serif Display', serif" }}>{card.title}</p>
-                  <p className="text-blue-200 text-sm leading-snug">{card.desc}</p>
-                </Link>
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
-
-      <FlagDivider />
-
-      <section className="bg-white py-20">
-        <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-16 items-center">
-          <div>
-            <p className="text-[#CC2229] font-semibold text-sm uppercase tracking-wider mb-3">About Us</p>
-            <h2 className="text-4xl md:text-5xl text-[#0D1B2A] mb-6 leading-tight" style={{ fontFamily: "'DM Serif Display', serif" }}>
-              A bridge between two nations, one generation at a time
-            </h2>
-            <p className="text-gray-600 leading-relaxed mb-5">
-              {SITE.story ?? "The Azerbaijan UK Youth Association brings together young people of Azerbaijani heritage, and anyone interested in Azerbaijani culture, who live in the United Kingdom."}
-            </p>
-            <p className="text-gray-600 leading-relaxed mb-8">
-              We aim to support cultural exchange, learning and community — helping the Azerbaijani diaspora stay connected to its roots while thriving in British society.
-            </p>
-            <div className="flex gap-6">
-              <Link
-                to="/register"
-                className="px-6 py-3 bg-[#003580] hover:bg-[#002060] text-white font-semibold rounded-xl transition-colors"
-              >
-                Become a member
-              </Link>
-              <Link to="/help" className="px-6 py-3 text-[#003580] font-semibold hover:underline">
-                Learn more →
-              </Link>
-            </div>
-          </div>
-          <div className="relative">
-            <div className="rounded-2xl overflow-hidden shadow-2xl aspect-[4/3]">
-              <img
-                src="https://images.unsplash.com/photo-1650222833514-bd19bc2f8665?w=700&h=500&fit=crop&auto=format"
-                alt=""
-                className="w-full h-full object-cover"
-              />
-            </div>
+          <div className="hero-mark">
+            <HeroMark />
           </div>
         </div>
       </section>
 
-      <section className="bg-[#F4F6FB] py-20">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-14">
-            <p className="text-[#003580] font-semibold text-sm uppercase tracking-wider mb-3">What We Do</p>
-            <h2 className="text-4xl text-[#0D1B2A]" style={{ fontFamily: "'DM Serif Display', serif" }}>
-              Three pillars of our mission
-            </h2>
+      <section id="events" className="mx-auto max-w-7xl scroll-mt-20 px-5 pb-8 pt-20 sm:px-8" aria-labelledby="events-title">
+        <div className="mb-8 flex items-baseline justify-between gap-4">
+          <h2 id="events-title" className="display text-[2rem] sm:text-5xl">On the calendar</h2>
+          <Link to="/events" className="link-u whitespace-nowrap">All events</Link>
+        </div>
+        {events === null ? (
+          <p className="text-mute">Loading events…</p>
+        ) : events.length === 0 ? (
+          <div className="card px-6 py-10 text-center">
+            <p className="font-display text-2xl tracking-tight">No events announced yet</p>
+            <p className="mt-1 text-mute">New dates are added here as soon as they are confirmed.</p>
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              {
-                icon: "🎭",
-                color: "bg-[#003580]",
-                title: "Culture & Heritage",
-                desc: "Celebrating Azerbaijani culture through events, music, art and language — keeping traditions alive in the diaspora.",
-              },
-              {
-                icon: "🎓",
-                color: "bg-[#CC2229]",
-                title: "Education & Careers",
-                desc: "Talks, workshops and networking to help young people develop their skills and careers.",
-              },
-              {
-                icon: "🤝",
-                color: "bg-[#00997A]",
-                title: "Community & Belonging",
-                desc: "A welcoming home for every Azerbaijani in the UK — new arrivals, long-term residents, and second-generation community members alike.",
-              },
-            ].map((pillar) => (
-              <div key={pillar.title} className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-md transition-shadow border border-gray-100">
-                <div className={`w-14 h-14 ${pillar.color} rounded-2xl flex items-center justify-center text-2xl mb-6 shadow-md`}>
-                  {pillar.icon}
-                </div>
-                <h3 className="text-xl font-bold text-[#0D1B2A] mb-3" style={{ fontFamily: "'DM Serif Display', serif" }}>
-                  {pillar.title}
-                </h3>
-                <p className="text-gray-600 leading-relaxed">{pillar.desc}</p>
-              </div>
+        ) : (
+          <Reveal className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+            {events.map((event, i) => (
+              <EventTicket key={event.id} event={event} index={i} />
             ))}
-          </div>
-        </div>
+          </Reveal>
+        )}
       </section>
 
-      <section className="bg-white py-20">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex items-end justify-between mb-10">
+      {episode && (
+        <section className="mt-16 bg-gradient-to-b from-ink to-[#14295a] text-[#eaf0ff]" aria-labelledby="podcast-title">
+          <Reveal className="mx-auto grid max-w-7xl items-center gap-10 px-5 py-16 sm:px-8 lg:grid-cols-[1.1fr_1fr]">
             <div>
-              <p className="text-[#CC2229] font-semibold text-sm uppercase tracking-wider mb-2">Latest</p>
-              <h2 className="text-4xl text-[#0D1B2A]" style={{ fontFamily: "'DM Serif Display', serif" }}>
-                Community news
-              </h2>
+              <p className="eyebrow mb-3 !text-[#ff8a80]">
+                The podcast{episodeLabel(episode) ? ` · ${episodeLabel(episode)}` : ""}
+                {episode.durationMinutes ? ` · ${episode.durationMinutes} min` : ""}
+              </p>
+              <h2 id="podcast-title" className="display text-[2rem] text-white sm:text-5xl">{episode.title}</h2>
+              {episode.guests && <p className="mt-2 font-bold text-[#8fd29c]">With {episode.guests}</p>}
+              <p className="mt-3 max-w-[34em] text-[#c4d2f0] line-clamp-4">{episode.description}</p>
+              <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
+                <Link to={`/podcast/${episode.slug}`} className="btn btn-light btn-lg">Listen to this episode</Link>
+                <Link to="/podcast" className="font-bold text-white underline decoration-white/40 underline-offset-4 hover:decoration-white">All episodes</Link>
+              </div>
             </div>
-            <Link to="/news" className="text-[#003580] font-semibold hover:underline hidden sm:block">
-              View all news →
-            </Link>
+            <div className="rounded-3xl bg-white/[0.07] p-6 ring-1 ring-white/12">
+              <Waveform />
+            </div>
+          </Reveal>
+        </section>
+      )}
+
+      {latest.length > 0 && (
+        <section className="mx-auto max-w-7xl px-5 pt-20 sm:px-8" aria-labelledby="news-title">
+          <div className="mb-8 flex items-baseline justify-between gap-4">
+            <h2 id="news-title" className="display text-[2rem] sm:text-5xl">Community news</h2>
+            <Link to="/news" className="link-u whitespace-nowrap">All news</Link>
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
+          <Reveal className="grid gap-6 md:grid-cols-3">
             {latest.map((article) => (
               <NewsCard key={article.id} article={article} />
             ))}
-          </div>
-          <div className="mt-8 sm:hidden text-center">
-            <Link to="/news" className="text-[#003580] font-semibold hover:underline">
-              View all news →
-            </Link>
-          </div>
+          </Reveal>
+        </section>
+      )}
+
+      <section className="mx-auto max-w-7xl px-5 pt-20 sm:px-8" aria-labelledby="about-title">
+        <div className="mb-8 max-w-2xl">
+          <p className="eyebrow mb-3">What we do</p>
+          <h2 id="about-title" className="display text-[2rem] sm:text-5xl">A bridge between two nations, one generation at a time</h2>
+          <p className="mt-4 text-lg text-mute">
+            {SITE.story ?? "We bring together young people of Azerbaijani heritage, and anyone interested in Azerbaijani culture, who live in the United Kingdom."}
+          </p>
         </div>
+        {SITE.stats.length > 0 && (
+          <dl className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
+            {SITE.stats.map((s) => (
+              <div key={s.label} className="card px-5 py-4">
+                <dt className="order-2 text-sm text-mute">{s.label}</dt>
+                <dd className="font-display text-3xl tracking-tight">{s.value}</dd>
+              </div>
+            ))}
+          </dl>
+        )}
+        <Reveal className="grid gap-5 md:grid-cols-3">
+          {PILLARS.map((p) => (
+            <article key={p.title} className="relative overflow-hidden rounded-[22px] bg-gradient-to-b from-mist to-white px-7 pb-8 pt-9 ring-1 ring-line">
+              <span aria-hidden="true" className={`absolute left-7 top-0 h-1 w-14 rounded-b ${p.tone}`} />
+              <p className="font-label text-xs font-semibold tracking-[0.18em] text-mute">{p.n}</p>
+              <h3 className="mt-2 font-display text-[1.6rem] font-medium tracking-tight">{p.title}</h3>
+              <p className="mt-2 text-mute">{p.desc}</p>
+            </article>
+          ))}
+        </Reveal>
       </section>
 
-      <section className="bg-[#002060] py-16">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <h2 className="text-4xl text-white mb-4" style={{ fontFamily: "'DM Serif Display', serif" }}>
-            Ready to be part of the community?
-          </h2>
-          <p className="text-blue-200 text-lg mb-8">
-            Membership is free. Join the community today.
-          </p>
-          <Link
-            to="/register"
-            className="inline-block px-10 py-4 bg-[#CC2229] hover:bg-[#e83038] text-white font-bold text-lg rounded-xl transition-all duration-200 shadow-xl hover:shadow-2xl hover:-translate-y-0.5"
-          >
-            Register for Free
-          </Link>
-        </div>
-      </section>
-    </div>
+      {!profile && (
+        <section className="mx-auto max-w-7xl px-5 pt-20 sm:px-8">
+          <Reveal className="rounded-[28px] bg-gradient-to-br from-mist via-white to-[#f9e8df] px-6 py-12 text-center ring-1 ring-line sm:py-16">
+            <h2 className="display text-[2rem] sm:text-5xl">Membership is free.</h2>
+            <p className="mx-auto mb-7 mt-3 max-w-xl text-lg text-mute">Make an account, register for events in one tap, and keep your tickets on your phone.</p>
+            <Link to="/register" className="btn btn-primary btn-lg">Join the community</Link>
+          </Reveal>
+        </section>
+      )}
+    </>
   );
 }

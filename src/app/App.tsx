@@ -23,9 +23,6 @@ import NotFoundPage from "../pages/NotFoundPage";
 import PrivacyPage from "../pages/PrivacyPage";
 import TermsPage from "../pages/TermsPage";
 
-// Design prototypes exist in dev builds only and are removed from production bundles.
-const HomePrototype = import.meta.env.DEV ? lazy(() => import("../prototypes/HomePrototype")) : null;
-
 // Staff screens are split out so ordinary visitors never download them.
 const AdminNewsPage = lazy(() => import("../features/news/admin/AdminNewsPage"));
 const AdminNewsEditorPage = lazy(() => import("../features/news/admin/AdminNewsEditorPage"));
@@ -42,9 +39,8 @@ export default function App() {
     <ErrorBoundary>
       <AuthProvider>
         <BrowserRouter>
-          <Suspense fallback={<div className="min-h-screen pt-24 text-center text-gray-500">Loading…</div>}>
+          <Suspense fallback={<div className="min-h-screen pt-28 text-center text-mute">Loading…</div>}>
             <Routes>
-              {HomePrototype && <Route path="/prototypes/home" element={<HomePrototype />} />}
               <Route element={<Layout />}>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/news" element={<NewsPage />} />

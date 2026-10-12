@@ -6,7 +6,7 @@ export default function RequireAuth({ staff = false, admin = false }: { staff?: 
   const location = useLocation();
 
   if (loading) {
-    return <div className="min-h-screen pt-24 text-center text-gray-500">Loading…</div>;
+    return <div className="min-h-[60vh] pt-24 text-center text-mute">Loading…</div>;
   }
   if (!profile) {
     return <Navigate to="/login" replace state={{ from: location.pathname }} />;

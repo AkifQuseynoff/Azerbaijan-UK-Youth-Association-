@@ -64,7 +64,7 @@ export default function AdminMembersPage() {
   };
 
   return (
-    <div className="page-transition min-h-screen bg-[#F4F6FB]">
+    <div className="page-transition">
       <PageHeader eyebrow="Admins only" title="Members" width="max-w-6xl" subtitle="Promote members to editor or admin, or deactivate accounts." />
       <div className="max-w-6xl mx-auto px-6 py-10">
         <input
@@ -73,12 +73,12 @@ export default function AdminMembersPage() {
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search by name, email or city"
           aria-label="Search members"
-          className="w-full md:w-96 border border-gray-300 rounded-xl px-4 py-2.5 text-sm bg-white mb-6"
+          className="mb-6 w-full rounded-full border border-line bg-white px-5 py-2.5 text-base md:w-96"
         />
-        {error && <p role="alert" className="text-[#CC2229] mb-4">{error}</p>}
-        <div className="bg-white rounded-2xl border border-gray-100 overflow-x-auto">
+        {error && <p role="alert" className="text-brand-red mb-4">{error}</p>}
+        <div className="card overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="text-left text-gray-500 bg-gray-50">
+            <thead className="text-left text-mute bg-mist">
               <tr>
                 <th className="px-6 py-3 font-medium">Name</th>
                 <th className="px-6 py-3 font-medium">Email</th>
@@ -90,16 +90,16 @@ export default function AdminMembersPage() {
               {visible.map((m) => {
                 const isSelf = m.id === profile?.id;
                 return (
-                  <tr key={m.id} className="border-t border-gray-100">
+                  <tr key={m.id} className="border-t border-line">
                     <td className="px-6 py-3">{m.firstName} {m.lastName}{isSelf ? " (you)" : ""}</td>
-                    <td className="px-6 py-3 text-gray-500">{m.email}</td>
+                    <td className="px-6 py-3 text-mute">{m.email}</td>
                     <td className="px-6 py-3">
                       <select
                         aria-label={`Role for ${m.email}`}
                         value={m.role}
                         disabled={isSelf || busyId === m.id}
                         onChange={(e) => changeRole(m, e.target.value as MemberRole)}
-                        className="border border-gray-300 rounded-lg px-3 py-1.5 bg-white disabled:opacity-50"
+                        className="rounded-xl border border-line bg-white px-3 py-1.5 text-sm disabled:opacity-50"
                       >
                         {ROLES.map((r) => (
                           <option key={r}>{r}</option>
@@ -112,7 +112,7 @@ export default function AdminMembersPage() {
                         disabled={isSelf || busyId === m.id}
                         onClick={() => toggleStatus(m)}
                         className={`px-3 py-1.5 rounded-lg text-xs font-semibold disabled:opacity-50 ${
-                          m.status === "active" ? "bg-teal-50 text-[#00997A]" : "bg-red-50 text-[#CC2229]"
+                          m.status === "active" ? "bg-brand-green/10 text-brand-green" : "bg-red-50 text-brand-red"
                         }`}
                       >
                         {m.status === "active" ? "Active · deactivate" : "Deactivated · reactivate"}
@@ -123,7 +123,7 @@ export default function AdminMembersPage() {
               })}
             </tbody>
           </table>
-          {visible.length === 0 && <p className="p-8 text-gray-400 text-center">No members found.</p>}
+          {visible.length === 0 && <p className="p-8 text-mute text-center">No members found.</p>}
         </div>
       </div>
       {pendingAction && (

@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
-import FlagDivider from "./FlagDivider";
+import Skyline from "../brand/Skyline";
 
+/** The header of every inner page: dawn sky with a quiet skyline, an eyebrow, a display title and an optional action. */
 export default function PageHeader({
   eyebrow,
   title,
@@ -15,18 +16,16 @@ export default function PageHeader({
   width?: string;
 }) {
   return (
-    <>
-      <div className="bg-[#002060] py-16 px-6">
-        <div className={`${width} mx-auto flex flex-col md:flex-row md:items-end md:justify-between gap-4`}>
-          <div>
-            {eyebrow && <p className="text-[#00997A] font-semibold text-sm uppercase tracking-wider mb-3">{eyebrow}</p>}
-            <h1 className="text-5xl text-white font-display">{title}</h1>
-            {subtitle && <p className="text-blue-200 mt-3 text-lg max-w-xl">{subtitle}</p>}
-          </div>
-          {action}
+    <header className="page-head px-5 pb-14 pt-12 sm:px-8 sm:pt-16 sm:pb-20">
+      <Skyline className="page-head-city" nearFill="#1b4793" nearOpacity={0.2} farOpacity={0.06} towers="same" />
+      <div className={`${width} mx-auto flex flex-col gap-5 md:flex-row md:items-end md:justify-between`}>
+        <div>
+          {eyebrow && <p className="eyebrow mb-3">{eyebrow}</p>}
+          <h1 className="display text-[2.4rem] sm:text-5xl lg:text-6xl">{title}</h1>
+          {subtitle && <p className="mt-4 max-w-xl text-lg text-mute">{subtitle}</p>}
         </div>
+        {action}
       </div>
-      <FlagDivider />
-    </>
+    </header>
   );
 }

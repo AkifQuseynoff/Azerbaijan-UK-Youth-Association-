@@ -32,39 +32,39 @@ export default function AdminPodcastPage() {
 
   const visible = filter === "all" ? episodes : episodes.filter((e) => e.status === filter);
   const statusButton = (ep: Episode, status: EpisodeStatus, label: string, cls: string) => (
-    <button type="button" className={`px-3 py-2 text-sm rounded-lg ${cls}`} onClick={() => void run(() => setEpisodeStatus(ep.id, status))}>{label}</button>
+    <button type="button" className={`btn btn-sm ${cls}`} onClick={() => void run(() => setEpisodeStatus(ep.id, status))}>{label}</button>
   );
 
   return (
-    <div className="page-transition min-h-screen bg-[#F4F6FB]">
+    <div className="page-transition">
       <PageHeader
         eyebrow="Staff only"
         title="Podcast"
         width="max-w-6xl"
-        action={<Link to="/admin/podcast/new" className="px-5 py-3 bg-[#CC2229] text-white font-semibold rounded-xl text-center">New episode</Link>}
+        action={<Link to="/admin/podcast/new" className="btn btn-primary">New episode</Link>}
       />
       <div className="max-w-6xl mx-auto px-6 py-10">
         <div className="flex flex-wrap gap-2 mb-6">
           {FILTERS.map((f) => (
-            <button key={f} type="button" aria-pressed={filter === f} onClick={() => setFilter(f)} className={`px-4 py-2 rounded-full text-sm font-semibold capitalize ${filter === f ? "bg-[#003580] text-white" : "bg-white border border-gray-200"}`}>{f}</button>
+            <button key={f} type="button" aria-pressed={filter === f} onClick={() => setFilter(f)} className={`px-4 py-2 rounded-full text-sm font-semibold capitalize ${filter === f ? "bg-ink text-white" : "bg-mist text-ink hover:bg-line"}`}>{f}</button>
           ))}
         </div>
-        {error && <p role="alert" className="text-[#CC2229] mb-4">{error}</p>}
-        <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+        {error && <p role="alert" className="text-brand-red mb-4">{error}</p>}
+        <div className="card overflow-hidden">
           {visible.map((ep) => (
-            <div key={ep.id} className="flex flex-col md:flex-row md:items-center gap-3 px-6 py-4 border-b border-gray-100 last:border-0">
+            <div key={ep.id} className="flex flex-col md:flex-row md:items-center gap-3 px-6 py-4 border-b border-line last:border-0">
               <div className="flex-1">
-                <p className="font-semibold text-[#0D1B2A]">{ep.title}</p>
-                <p className="text-xs text-gray-400 mt-1">{[ep.status, episodeLabel(ep), ep.publishedAt ? formatArticleDate(ep.publishedAt) : ""].filter(Boolean).join(" · ")}</p>
+                <p className="font-semibold text-ink">{ep.title}</p>
+                <p className="text-xs text-mute mt-1">{[ep.status, episodeLabel(ep), ep.publishedAt ? formatArticleDate(ep.publishedAt) : ""].filter(Boolean).join(" · ")}</p>
               </div>
               <div className="flex flex-wrap gap-2">
-                <Link to={`/admin/podcast/${ep.id}`} className="px-3 py-2 text-sm rounded-lg bg-[#F4F6FB] font-medium">Edit</Link>
-                {ep.status !== "published" ? statusButton(ep, "published", "Publish", "bg-[#00997A] text-white") : statusButton(ep, "draft", "Unpublish", "border border-gray-200")}
-                <button type="button" className="px-3 py-2 text-sm rounded-lg border border-red-200 text-[#CC2229]" onClick={() => setDeleting(ep)}>Delete</button>
+                <Link to={`/admin/podcast/${ep.id}`} className="btn btn-outline btn-sm">Edit</Link>
+                {ep.status !== "published" ? statusButton(ep, "published", "Publish", "btn-green") : statusButton(ep, "draft", "Unpublish", "btn-outline")}
+                <button type="button" className="btn btn-danger btn-sm" onClick={() => setDeleting(ep)}>Delete</button>
               </div>
             </div>
           ))}
-          {visible.length === 0 && <p className="p-8 text-gray-400 text-center">No episodes in this view.</p>}
+          {visible.length === 0 && <p className="p-8 text-mute text-center">No episodes in this view.</p>}
         </div>
       </div>
       {deleting && (
