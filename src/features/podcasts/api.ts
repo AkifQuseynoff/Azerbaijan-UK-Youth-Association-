@@ -1,4 +1,4 @@
-import { coverPublicUrl, uploadCover } from "../news/api";
+import { coverPublicUrl, removeCoverFile, uploadCover } from "../news/api";
 import { isSupabaseConfigured, supabase } from "../../lib/supabase";
 import type { Episode, EpisodeInput, EpisodeStatus } from "./types";
 
@@ -191,8 +191,11 @@ export async function setEpisodeStatus(id: string, status: EpisodeStatus): Promi
 
 export async function deleteEpisode(id: string): Promise<void> {
   if (supabase && useSupabase) {
-    const { error } = await supabase.from("podcast_episodes").delete().eq("id", id);
+    const { data: row } = await supabase.from("podcast_episodes").select("cover_path").eq("id", id).maybeSingle();
+    const { data, error } = await supabase.from("podcast_episodes").delete().eq("id", id).select("id");
     if (error) fail(error);
+    if (!data || data.length === 0) throw new Error("The episode could not be deleted.");
+    await removeCoverFile((row as { cover_path: string | null } | null)?.cover_path ?? null);
     return;
   }
   saveLocal(loadLocal().filter((e) => e.id !== id));

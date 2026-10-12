@@ -300,6 +300,25 @@ export async function saveArticle(id: string | null, input: ArticleInput, author
   return created;
 }
 
+/** Best effort: removes a cover picture from storage. A failure here must never stop the delete itself. */
+export async function removeCoverFile(path: string | null): Promise<void> {
+  if (!supabase || !path || path.startsWith("http") || path.startsWith("data:")) return;
+  await supabase.storage.from("news-covers").remove([path]).catch(() => undefined);
+}
+
+export async function deleteArticle(id: string): Promise<void> {
+  if (supabase && isSupabaseConfigured) {
+    const { data: row } = await supabase.from("articles").select("cover_path").eq("id", id).maybeSingle();
+    // A delete that row-level security refuses returns no error and no rows, so check what actually went.
+    const { data, error } = await supabase.from("articles").delete().eq("id", id).select("id");
+    if (error) throw error;
+    if (!data || data.length === 0) throw new Error("The article could not be deleted.");
+    await removeCoverFile((row as { cover_path: string | null } | null)?.cover_path ?? null);
+    return;
+  }
+  saveLocal(loadLocal().filter((a) => a.id !== id));
+}
+
 export async function setArticleStatus(id: string, status: Article["status"]): Promise<void> {
   const publishedAt = status === "published" ? new Date().toISOString() : undefined;
   if (supabase && isSupabaseConfigured) {

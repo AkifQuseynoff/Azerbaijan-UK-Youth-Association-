@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import ConfirmDialog from "../../../components/ui/ConfirmDialog";
 import PageHeader from "../../../components/ui/PageHeader";
-import { listStaffArticles, setArticleStatus } from "../api";
+import { deleteArticle, listStaffArticles, setArticleStatus } from "../api";
 import type { Article } from "../../../types";
 import { formatArticleDate } from "../../../types";
 
@@ -9,6 +10,7 @@ export default function AdminNewsPage() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [filter, setFilter] = useState<"all" | Article["status"]>("all");
   const [error, setError] = useState("");
+  const [deleting, setDeleting] = useState<Article | null>(null);
 
   const refresh = async () => {
     setArticles(await listStaffArticles());
@@ -75,12 +77,36 @@ export default function AdminNewsPage() {
                     Unpublish
                   </button>
                 )}
+                <button type="button" className="btn btn-danger btn-sm" onClick={() => setDeleting(article)}>
+                  Delete
+                </button>
               </div>
             </div>
           ))}
           {visible.length === 0 && <p className="p-8 text-mute text-center">No articles in this view.</p>}
         </div>
       </div>
+      {deleting && (
+        <ConfirmDialog
+          danger
+          title={`Delete "${deleting.title}"?`}
+          message={
+            deleting.status === "published"
+              ? "This article is live on the site. Deleting it permanently removes it and its cover picture, and its web address stops working. Pictures placed inside the text stay in storage. To hide it but keep it, use Unpublish instead. This cannot be undone."
+              : "This permanently removes the article and its cover picture. Pictures placed inside the text stay in storage. This cannot be undone."
+          }
+          confirmLabel="Delete article"
+          onCancel={() => setDeleting(null)}
+          onConfirm={() => {
+            const target = deleting;
+            setDeleting(null);
+            setError("");
+            void deleteArticle(target.id)
+              .then(refresh)
+              .catch((err) => setError(err instanceof Error ? err.message : "Could not delete the article."));
+          }}
+        />
+      )}
     </div>
   );
 }

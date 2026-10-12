@@ -71,7 +71,7 @@ export default function AdminPodcastPage() {
         <ConfirmDialog
           danger
           title={`Delete "${deleting.title}"?`}
-          message="This permanently removes the episode. This cannot be undone."
+          message={deleting.status === "published" ? "This episode is live on the site. Deleting it permanently removes it and its cover picture, and its web address stops working. To hide it but keep it, use Unpublish instead. This cannot be undone." : "This permanently removes the episode and its cover picture. This cannot be undone."}
           confirmLabel="Delete episode"
           onCancel={() => setDeleting(null)}
           onConfirm={() => {
