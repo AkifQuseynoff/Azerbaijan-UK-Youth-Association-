@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import ConfirmDialog from "../../../components/ui/ConfirmDialog";
 import PageHeader from "../../../components/ui/PageHeader";
+import { useNow } from "../../../lib/useNow";
 import { eventsApi } from "../api";
+import LiveBadge from "../LiveBadge";
 import { formatEventDate, formatEventTime, isHappeningNow } from "../types";
 import type { EventItem, EventStatus } from "../types";
 
@@ -14,6 +16,7 @@ export default function AdminEventsPage() {
   const [error, setError] = useState("");
   const [confirming, setConfirming] = useState<EventItem | null>(null);
   const [deleting, setDeleting] = useState<EventItem | null>(null);
+  const now = useNow();
 
   const refresh = async () => setEvents(await eventsApi.listAll());
 
@@ -41,7 +44,8 @@ export default function AdminEventsPage() {
     }
   };
 
-  const visible = filter === "all" ? events : events.filter((e) => e.status === filter);
+  const live = events.filter((e) => isHappeningNow(e, now));
+  const visible = (filter === "all" ? events : events.filter((e) => e.status === filter)).filter((e) => !isHappeningNow(e, now));
 
   return (
     <div className="page-transition">
@@ -56,6 +60,33 @@ export default function AdminEventsPage() {
         }
       />
       <div className="max-w-6xl mx-auto px-6 py-10">
+        {live.length > 0 && (
+          <section aria-labelledby="admin-live" className="mb-8">
+            <h2 id="admin-live" className="sr-only">Happening now</h2>
+            <div className="grid gap-4">
+              {live.map((event) => {
+                const until = new Date(event.endsAt ?? new Date(event.startsAt).getTime() + 2 * 3600 * 1000).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/London" });
+                return (
+                  <article key={event.id} className="flex flex-col gap-4 rounded-[24px] bg-gradient-to-br from-ink to-[#14295a] p-6 text-[#eaf0ff] shadow-card md:flex-row md:items-center md:justify-between">
+                    <div>
+                      <LiveBadge className="!bg-white/10 !text-[#ff9d95]" />
+                      <p className="mt-3 font-display text-2xl font-medium tracking-tight text-white">{event.title}</p>
+                      <p className="mt-1 text-sm text-[#c4d2f0]">
+                        On until {until} · {event.taken}
+                        {event.capacity !== null ? ` / ${event.capacity}` : ""} registered
+                        {event.waitlisted > 0 ? ` · ${event.waitlisted} waitlisted` : ""}
+                      </p>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <Link to={`/admin/events/${event.id}`} className="btn btn-light btn-sm">Attendees &amp; check-in</Link>
+                      <button type="button" className="btn btn-sm bg-white/10 text-white hover:bg-white/20" onClick={() => setConfirming(event)}>Cancel event</button>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          </section>
+        )}
         <div className="flex flex-wrap gap-2 mb-6">
           {FILTERS.map((f) => (
             <button
