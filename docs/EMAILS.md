@@ -23,11 +23,18 @@ supabase db push
 
 ## 3. Set the secrets (you run this; the key never goes in the website code)
 
-Generate a long random value for `EMAIL_WEBHOOK_SECRET` (for example `openssl rand -hex 32`).
+Paste this whole block into your terminal. It asks for the Resend API key without showing it, makes a
+random webhook secret, saves everything in Supabase, and prints the secret once so you can use it in step 5.
 
 ```bash
-supabase secrets set RESEND_API_KEY=re_xxxxxxxx EMAIL_FROM="Azerbaijan UK Youth Association <events@yourdomain.org>" SITE_URL=https://azerbaijan-uk-youth-association.vercel.app EMAIL_WEBHOOK_SECRET=PASTE_THE_RANDOM_VALUE
+read -s RESEND_KEY
+SECRET=$(openssl rand -hex 32)
+supabase secrets set RESEND_API_KEY="$RESEND_KEY" EMAIL_FROM="Azerbaijan UK Youth Association <events@azukyouthassociation.com>" SITE_URL=https://www.azukyouthassociation.com EMAIL_WEBHOOK_SECRET="$SECRET"
+echo "$SECRET"
 ```
+
+After `read -s`, paste the key and press Enter (nothing appears on screen; that is normal).
+Running `supabase secrets set` again simply replaces the earlier values.
 
 ## 4. Deploy the function
 
@@ -35,7 +42,14 @@ supabase secrets set RESEND_API_KEY=re_xxxxxxxx EMAIL_FROM="Azerbaijan UK Youth 
 supabase functions deploy process-emails --use-api
 ```
 
-## 5. Schedule it
+## 5. Empty the queue, then schedule it
+
+Triggers keep queueing rows while nothing is processing them, so test registrations made earlier would be
+emailed the moment you switch this on. Empty the queue first (SQL editor or `supabase db query --linked`):
+
+```sql
+delete from public.email_outbox;
+```
 
 In the Supabase dashboard, open **Database → Extensions** and enable `pg_cron` and `pg_net`.
 Then run this in the SQL editor, replacing `PASTE_THE_RANDOM_VALUE` with the same secret:
