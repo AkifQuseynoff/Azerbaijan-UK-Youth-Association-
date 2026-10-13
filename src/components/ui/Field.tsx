@@ -2,7 +2,7 @@ import { useId } from "react";
 import type { InputHTMLAttributes, SelectHTMLAttributes, TextareaHTMLAttributes } from "react";
 
 export const inputClass =
-  "w-full rounded-2xl border border-line bg-white px-4 py-3 text-base text-ink transition-colors placeholder:text-mute/60 hover:border-brand-sky/50 focus:border-brand-sky";
+  "w-full min-w-0 rounded-2xl border border-line bg-white px-4 py-3 text-base text-ink transition-colors placeholder:text-mute/60 hover:border-brand-sky/50 focus:border-brand-sky";
 const labelClass = "mb-1.5 block text-sm font-semibold text-ink";
 
 type FieldProps = { label: string; hint?: string };

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Field, TextAreaField } from "../../../components/ui/Field";
+import DateTimeField from "../../../components/ui/DateTimeField";
 import PageHeader from "../../../components/ui/PageHeader";
 import { slugify, toLocalInputValue } from "../../../types";
 import { useAuth } from "../../auth/AuthContext";
@@ -101,7 +102,7 @@ export default function AdminPodcastEditorPage() {
             <input id="ep-cover" type="file" accept="image/*" onChange={(e) => setCoverFile(e.target.files?.[0] ?? null)} className="text-sm" />
             {form.coverUrl && !coverFile && <img src={form.coverUrl} alt="" className="mt-3 h-28 rounded-xl object-cover" />}
           </div>
-          <div><Field label="Publish at (for scheduling)" type="datetime-local" value={form.publishedAt} onChange={(e) => set("publishedAt", e.target.value)} /></div>
+          <div><DateTimeField label="Publish at (for scheduling)" value={form.publishedAt} onChange={(v) => set("publishedAt", v)} defaultTime="09:00" optional /></div>
 
           {error && <p role="alert" className="text-brand-red text-sm">{error}</p>}
           {notice && <p className="text-brand-green text-sm">{notice}</p>}

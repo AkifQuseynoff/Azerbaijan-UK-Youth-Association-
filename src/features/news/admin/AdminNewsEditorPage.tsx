@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Field, SelectField, TextAreaField } from "../../../components/ui/Field";
+import DateTimeField from "../../../components/ui/DateTimeField";
 import PageHeader from "../../../components/ui/PageHeader";
 import { useAuth } from "../../auth/AuthContext";
 import BodyEditor from "./BodyEditor";
@@ -133,7 +134,7 @@ export default function AdminNewsEditorPage() {
             )}
           </div>
           <div>
-            <Field label="Publish at (for scheduling)" type="datetime-local" value={form.publishedAt} onChange={(e) => setForm({ ...form, publishedAt: e.target.value })} />
+            <DateTimeField label="Publish at (for scheduling)" value={form.publishedAt} onChange={(v) => setForm({ ...form, publishedAt: v })} defaultTime="09:00" optional />
           </div>
           <label className="flex items-center gap-2 text-sm">
             <input type="checkbox" checked={form.featured} onChange={(e) => setForm({ ...form, featured: e.target.checked })} className="accent-brand-blue" />

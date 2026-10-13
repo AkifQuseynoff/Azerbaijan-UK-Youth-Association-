@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Field, SelectField, TextAreaField } from "../../../components/ui/Field";
+import DateTimeField from "../../../components/ui/DateTimeField";
 import PageHeader from "../../../components/ui/PageHeader";
 import { slugify, toLocalInputValue } from "../../../types";
 import { useAuth } from "../../auth/AuthContext";
@@ -175,10 +176,10 @@ export default function AdminEventEditorPage() {
               <SelectField label="Category" value={form.category} onChange={(e) => set("category", e.target.value as EventCategory)} options={EVENT_CATEGORIES} />
             </div>
             <div>
-              <Field label="Starts" type="datetime-local" value={form.startsAt} onChange={(e) => set("startsAt", e.target.value)} />
+              <DateTimeField label="Starts" value={form.startsAt} onChange={(v) => set("startsAt", v)} defaultTime="18:00" />
             </div>
             <div>
-              <Field label="Ends" type="datetime-local" value={form.endsAt} onChange={(e) => set("endsAt", e.target.value)} />
+              <DateTimeField label="Ends" value={form.endsAt} onChange={(v) => set("endsAt", v)} defaultTime="20:00" optional />
             </div>
           </div>
           <div>
@@ -204,10 +205,10 @@ export default function AdminEventEditorPage() {
               </label>
             </div>
             <div>
-              <Field label="Registration opens" type="datetime-local" value={form.registrationOpensAt} onChange={(e) => set("registrationOpensAt", e.target.value)} />
+              <DateTimeField label="Registration opens" value={form.registrationOpensAt} onChange={(v) => set("registrationOpensAt", v)} defaultTime="09:00" optional />
             </div>
             <div>
-              <Field label="Registration closes" type="datetime-local" value={form.registrationClosesAt} onChange={(e) => set("registrationClosesAt", e.target.value)} />
+              <DateTimeField label="Registration closes" value={form.registrationClosesAt} onChange={(v) => set("registrationClosesAt", v)} defaultTime="18:00" optional />
             </div>
           </div>
           <div>
