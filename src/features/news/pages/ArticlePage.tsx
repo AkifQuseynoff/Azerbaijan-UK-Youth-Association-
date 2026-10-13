@@ -30,6 +30,10 @@ export default function ArticlePage() {
     };
   }, [slug]);
 
+  useEffect(() => {
+    if (article) document.title = `${article.title} · News · Azerbaijan UK Youth Association`;
+  }, [article]);
+
   if (loading) {
     return <p className="py-32 text-center text-mute">Loading article…</p>;
   }

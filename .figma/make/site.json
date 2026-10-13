@@ -1,11 +1,15 @@
 {
   "title": "Azerbaijan UK Youth Association",
-  "description": "Connect with the Azerbaijan UK Youth Association to register, share news, and access resources, fostering community engagement and support.",
+  "description": "The Azerbaijan UK Youth Association is a free community for young people of Azerbaijani heritage in the UK: events, a podcast, news and a place to belong.",
   "robots": {
-    "index": false
+    "index": true
   },
   "accessibility": {
     "addBypassLinks": false,
     "ignoreReducedMotion": false
-  }
+  },
+  "openGraph": {
+    "image": "https://www.azukyouthassociation.com/og-image.png"
+  },
+  "language": "en"
 }

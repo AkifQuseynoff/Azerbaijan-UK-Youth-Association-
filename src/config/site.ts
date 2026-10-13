@@ -4,6 +4,9 @@
  * Only put confirmed information here. Every empty value is hidden from the public site,
  * so nothing invented is ever shown. Fill these in once the Association confirms them.
  */
+/** The one canonical address of the public site (used for canonical links and search engines). */
+export const SITE_ORIGIN = "https://www.azukyouthassociation.com";
+
 export interface SiteConfig {
   name: string;
   /** Registered charity number, e.g. "1234567". Leave null if not a registered charity. */
