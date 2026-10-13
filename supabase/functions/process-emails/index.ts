@@ -2,8 +2,8 @@
 //
 // Secrets (set with `supabase secrets set`):
 //   RESEND_API_KEY        Resend API key
-//   EMAIL_FROM            e.g. "Azerbaijan UK Youth Association <events@yourdomain.org>"
-//   SITE_URL              e.g. https://azerbaijan-uk-youth-association.vercel.app
+//   EMAIL_FROM            e.g. "Azerbaijan UK Youth Association <events@azukyouthassociation.com>"
+//   SITE_URL              e.g. https://www.azukyouthassociation.com
 //   EMAIL_WEBHOOK_SECRET  long random string; callers send it as the x-webhook-secret header
 // SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are provided to every function automatically.
 
