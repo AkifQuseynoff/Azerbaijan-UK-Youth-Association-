@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
-import { SITE } from "../config/site";
+import ContactCard from "../features/site/ContactCard";
+import { useSite } from "../features/site/SiteContext";
 import { BadgeLogo } from "./brand/Logo";
 import Skyline from "./brand/Skyline";
 
 const nav = [
+  { to: "/about", label: "About us" },
   { to: "/news", label: "News" },
   { to: "/events", label: "Events" },
   { to: "/podcast", label: "Podcast" },
@@ -18,6 +20,7 @@ const resources = [
 
 /** `skyline` is off on the home page, whose hero already carries the skyline. */
 export default function Footer({ skyline = true }: { skyline?: boolean }) {
+  const { settings } = useSite();
   return (
     <footer className={`${skyline ? "mt-20" : "mt-24"} bg-ink text-white`}>
       {skyline && (
@@ -38,8 +41,9 @@ export default function Footer({ skyline = true }: { skyline?: boolean }) {
           <p className="mt-5 max-w-xs text-sm leading-relaxed text-white/70">
             A community for young people of Azerbaijani heritage across the United Kingdom.
           </p>
-          {SITE.charityNumber && (
-            <p className="mt-6 text-xs text-white/60">Registered charity in England and Wales · No. {SITE.charityNumber}</p>
+          <div className="mt-6 max-w-sm text-sm"><ContactCard tone="dark" hideEmpty /></div>
+          {settings.charityNumber && (
+            <p className="mt-6 text-xs text-white/60">Registered charity in England and Wales · No. {settings.charityNumber}</p>
           )}
         </div>
         <nav aria-label="Footer">

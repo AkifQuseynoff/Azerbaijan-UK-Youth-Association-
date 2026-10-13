@@ -5,6 +5,12 @@ import Skyline from "../components/brand/Skyline";
 import Reveal from "../components/ui/Reveal";
 import Waveform from "../components/ui/Waveform";
 import { SITE } from "../config/site";
+import { DEFAULT_ABOUT, PILLARS } from "../data/pillars";
+import ActivityCard from "../features/activities/ActivityCard";
+import { listPublishedActivities } from "../features/activities/api";
+import type { Activity } from "../features/activities/api";
+import ContactCard from "../features/site/ContactCard";
+import { useSite } from "../features/site/SiteContext";
 import { useAuth } from "../features/auth/AuthContext";
 import { eventsApi } from "../features/events/api";
 import EventTicket from "../features/events/EventTicket";
@@ -19,17 +25,14 @@ import { episodeLabel } from "../features/podcasts/types";
 import type { Episode } from "../features/podcasts/types";
 import type { Article } from "../types";
 
-const PILLARS = [
-  { n: "01", tone: "bg-brand-sky", title: "Culture & heritage", desc: "Celebrating Azerbaijani culture through events, music, art and language, keeping traditions alive in the diaspora." },
-  { n: "02", tone: "bg-brand-red", title: "Education & careers", desc: "Talks, workshops and networking to help young people develop their skills and careers." },
-  { n: "03", tone: "bg-brand-green", title: "Community & belonging", desc: "A welcoming home for every Azerbaijani in the UK: new arrivals, long-term residents and second-generation members alike." },
-];
 
 export default function HomePage() {
   const { profile } = useAuth();
   const [events, setEvents] = useState<EventItem[] | null>(null);
   const [episode, setEpisode] = useState<Episode | null>(null);
   const [latest, setLatest] = useState<Article[]>([]);
+  const [activities, setActivities] = useState<Activity[]>([]);
+  const { settings } = useSite();
   const hero = useRef<HTMLElement>(null);
   const now = useNow();
 
@@ -37,6 +40,7 @@ export default function HomePage() {
     eventsApi.listUpcoming().then((list) => setEvents(list.filter((e) => e.status === "published"))).catch(() => setEvents([]));
     listPublishedEpisodes().then((list) => setEpisode(list[0] ?? null)).catch(() => undefined);
     void listLatestPublished(3).then(setLatest).catch(() => undefined);
+    listPublishedActivities(3).then(setActivities).catch(() => undefined);
   }, []);
 
   // The skyline drifts a little as the page scrolls. Bound to scroll, not to the pointer, so it works on a phone too.
@@ -169,11 +173,10 @@ export default function HomePage() {
 
       <section className="mx-auto max-w-7xl px-5 pt-20 sm:px-8" aria-labelledby="about-title">
         <div className="mb-8 max-w-2xl">
-          <p className="eyebrow mb-3">What we do</p>
+          <p className="eyebrow mb-3">About us</p>
           <h2 id="about-title" className="display text-[2rem] sm:text-5xl">A bridge between two nations, one generation at a time</h2>
-          <p className="mt-4 text-lg text-mute">
-            {SITE.story ?? "We bring together young people of Azerbaijani heritage, and anyone interested in Azerbaijani culture, who live in the United Kingdom."}
-          </p>
+          <p className="mt-4 text-lg text-mute">{(settings.about || DEFAULT_ABOUT).split(/\n{2,}/)[0]}</p>
+          <p className="mt-4"><Link to="/about" className="link-u">More about us</Link></p>
         </div>
         {SITE.stats.length > 0 && (
           <dl className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
@@ -195,6 +198,30 @@ export default function HomePage() {
             </article>
           ))}
         </Reveal>
+      </section>
+
+      {activities.length > 0 && (
+        <section className="mx-auto max-w-7xl px-5 pt-20 sm:px-8" aria-labelledby="activities-title">
+          <div className="mb-8 flex items-baseline justify-between gap-4">
+            <h2 id="activities-title" className="display text-[2rem] sm:text-5xl">What we&apos;ve been doing</h2>
+            <Link to="/about#activities" className="link-u whitespace-nowrap">See all</Link>
+          </div>
+          <Reveal className="grid gap-6 md:grid-cols-3">
+            {activities.map((a) => (
+              <ActivityCard key={a.id} activity={a} />
+            ))}
+          </Reveal>
+        </section>
+      )}
+
+      <section className="mx-auto max-w-7xl px-5 pt-20 sm:px-8" aria-labelledby="contact-title">
+        <div className="grid gap-8 rounded-[28px] bg-gradient-to-br from-ink to-[#14295a] p-7 text-[#eaf0ff] sm:p-10 lg:grid-cols-[1fr_1fr] lg:items-center">
+          <div>
+            <h2 id="contact-title" className="display text-[2rem] text-white sm:text-4xl">Get in touch</h2>
+            <p className="mt-3 max-w-md text-[#c4d2f0]">Questions, ideas or a partnership in mind? We would like to hear from you.</p>
+          </div>
+          <ContactCard tone="dark" />
+        </div>
       </section>
 
       {!profile && (

@@ -5,6 +5,7 @@ import ErrorBoundary from "../components/ErrorBoundary";
 import Layout from "../components/Layout";
 import AccountPage from "../features/account/AccountPage";
 import { AuthProvider } from "../features/auth/AuthContext";
+import { SiteProvider } from "../features/site/SiteContext";
 import RequireAuth from "../features/auth/RequireAuth";
 import ForgotPasswordPage from "../features/auth/pages/ForgotPasswordPage";
 import LoginPage from "../features/auth/pages/LoginPage";
@@ -17,6 +18,7 @@ import PodcastPage from "../features/podcasts/pages/PodcastPage";
 import ArticlePage from "../features/news/pages/ArticlePage";
 import NewsPage from "../features/news/pages/NewsPage";
 import { isMisconfigured } from "../lib/supabase";
+import AboutPage from "../pages/AboutPage";
 import HelpPage from "../pages/HelpPage";
 import HomePage from "../pages/HomePage";
 import NotFoundPage from "../pages/NotFoundPage";
@@ -29,6 +31,9 @@ const AdminNewsEditorPage = lazy(() => import("../features/news/admin/AdminNewsE
 const AdminEventsPage = lazy(() => import("../features/events/admin/AdminEventsPage"));
 const AdminPodcastPage = lazy(() => import("../features/podcasts/admin/AdminPodcastPage"));
 const AdminPodcastEditorPage = lazy(() => import("../features/podcasts/admin/AdminPodcastEditorPage"));
+const AdminActivitiesPage = lazy(() => import("../features/activities/admin/AdminActivitiesPage"));
+const AdminActivityEditorPage = lazy(() => import("../features/activities/admin/AdminActivityEditorPage"));
+const AdminSitePage = lazy(() => import("../features/site/AdminSitePage"));
 const AdminMembersPage = lazy(() => import("../features/members/AdminMembersPage"));
 const AdminEventEditorPage = lazy(() => import("../features/events/admin/AdminEventEditorPage"));
 
@@ -38,6 +43,7 @@ export default function App() {
   return (
     <ErrorBoundary>
       <AuthProvider>
+        <SiteProvider>
         <BrowserRouter>
           <Suspense fallback={<div className="min-h-screen pt-28 text-center text-mute">Loading…</div>}>
             <Routes>
@@ -49,6 +55,7 @@ export default function App() {
                 <Route path="/events/:slug" element={<EventDetailPage />} />
                 <Route path="/podcast" element={<PodcastPage />} />
                 <Route path="/podcast/:slug" element={<EpisodePage />} />
+                <Route path="/about" element={<AboutPage />} />
                 <Route path="/help" element={<HelpPage />} />
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/login" element={<LoginPage />} />
@@ -66,15 +73,19 @@ export default function App() {
                   <Route path="/admin/podcast" element={<AdminPodcastPage />} />
                   <Route path="/admin/podcast/:id" element={<AdminPodcastEditorPage />} />
                   <Route path="/admin/events/:id" element={<AdminEventEditorPage />} />
+                  <Route path="/admin/activities" element={<AdminActivitiesPage />} />
+                  <Route path="/admin/activities/:id" element={<AdminActivityEditorPage />} />
                 </Route>
                 <Route element={<RequireAuth admin />}>
                   <Route path="/admin/members" element={<AdminMembersPage />} />
+                  <Route path="/admin/site" element={<AdminSitePage />} />
                 </Route>
                 <Route path="*" element={<NotFoundPage />} />
               </Route>
             </Routes>
           </Suspense>
         </BrowserRouter>
+        </SiteProvider>
       </AuthProvider>
     </ErrorBoundary>
   );

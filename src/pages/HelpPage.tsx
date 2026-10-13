@@ -1,6 +1,7 @@
 import { useId, useState } from "react";
 import PageHeader from "../components/ui/PageHeader";
-import { SITE, hasContact } from "../config/site";
+import { SITE } from "../config/site";
+import ContactCard from "../features/site/ContactCard";
 import { FAQ } from "../data/faq";
 
 export default function HelpPage() {
@@ -61,25 +62,7 @@ export default function HelpPage() {
           <div className="space-y-5">
             <div className="rounded-3xl bg-gradient-to-b from-ink to-[#14295a] p-7 text-white">
               <h3 className="display mb-4 text-2xl text-white">Contact us</h3>
-              {hasContact ? (
-                <div className="space-y-4 text-sm">
-                  {[
-                    { label: "Email", value: SITE.contact.email },
-                    { label: "Address", value: SITE.contact.address },
-                    { label: "Phone", value: SITE.contact.phone },
-                    { label: "Hours", value: SITE.contact.hours },
-                  ]
-                    .filter((c) => c.value)
-                    .map((c) => (
-                      <div key={c.label}>
-                        <p className="text-xs text-white/60">{c.label}</p>
-                        <p>{c.value}</p>
-                      </div>
-                    ))}
-                </div>
-              ) : (
-                <p className="text-sm leading-relaxed text-[#c4d2f0]">Contact details will be published here soon.</p>
-              )}
+              <ContactCard tone="dark" />
             </div>
           </div>
         </div>

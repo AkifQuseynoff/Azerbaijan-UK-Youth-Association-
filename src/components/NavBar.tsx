@@ -5,6 +5,7 @@ import AdminMenu from "./AdminMenu";
 import Logo from "./brand/Logo";
 
 const LINKS = [
+  { to: "/about", label: "About" },
   { to: "/news", label: "News" },
   { to: "/events", label: "Events" },
   { to: "/podcast", label: "Podcast" },
@@ -21,7 +22,8 @@ export default function NavBar() {
     { to: "/admin/news", label: "Newsroom" },
     { to: "/admin/events", label: "Events" },
     { to: "/admin/podcast", label: "Podcast" },
-    ...(isAdmin ? [{ to: "/admin/members", label: "Members" }] : []),
+    { to: "/admin/activities", label: "Activities" },
+    ...(isAdmin ? [{ to: "/admin/members", label: "Members" }, { to: "/admin/site", label: "Site details" }] : []),
   ];
 
   useEffect(() => setOpen(false), [pathname]);
