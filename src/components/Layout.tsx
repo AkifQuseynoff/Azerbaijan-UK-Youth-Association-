@@ -7,6 +7,7 @@ import { SITE, SITE_ORIGIN } from "../config/site";
 const PAGE_TITLES: Record<string, string> = {
   "/about": "About us",
   "/events": "Events",
+  "/societies": "Azerbaijan Societies of Universities",
   "/podcast": "Podcast",
   "/news": "News",
   "/help": "Help",

@@ -8,6 +8,7 @@ const LINKS = [
   { to: "/about", label: "About" },
   { to: "/news", label: "News" },
   { to: "/events", label: "Events" },
+  { to: "/societies", label: "Societies" },
   { to: "/podcast", label: "Podcast" },
   { to: "/help", label: "Help" },
 ];
@@ -23,6 +24,7 @@ export default function NavBar() {
     { to: "/admin/events", label: "Events" },
     { to: "/admin/podcast", label: "Podcast" },
     { to: "/admin/activities", label: "Activities" },
+    { to: "/admin/societies", label: "Societies" },
     ...(isAdmin ? [{ to: "/admin/members", label: "Members" }, { to: "/admin/site", label: "Site details" }] : []),
   ];
 

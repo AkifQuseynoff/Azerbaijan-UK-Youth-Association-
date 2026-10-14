@@ -19,6 +19,8 @@ import ArticlePage from "../features/news/pages/ArticlePage";
 import NewsPage from "../features/news/pages/NewsPage";
 import { isMisconfigured } from "../lib/supabase";
 import AboutPage from "../pages/AboutPage";
+import SocietiesPage from "../features/societies/pages/SocietiesPage";
+import SocietyPage from "../features/societies/pages/SocietyPage";
 import HelpPage from "../pages/HelpPage";
 import HomePage from "../pages/HomePage";
 import NotFoundPage from "../pages/NotFoundPage";
@@ -34,6 +36,8 @@ const AdminPodcastEditorPage = lazy(() => import("../features/podcasts/admin/Adm
 const AdminActivitiesPage = lazy(() => import("../features/activities/admin/AdminActivitiesPage"));
 const AdminActivityEditorPage = lazy(() => import("../features/activities/admin/AdminActivityEditorPage"));
 const AdminSitePage = lazy(() => import("../features/site/AdminSitePage"));
+const AdminSocietiesPage = lazy(() => import("../features/societies/admin/AdminSocietiesPage"));
+const AdminSocietyEditorPage = lazy(() => import("../features/societies/admin/AdminSocietyEditorPage"));
 const AdminMembersPage = lazy(() => import("../features/members/AdminMembersPage"));
 const AdminEventEditorPage = lazy(() => import("../features/events/admin/AdminEventEditorPage"));
 
@@ -56,6 +60,8 @@ export default function App() {
                 <Route path="/podcast" element={<PodcastPage />} />
                 <Route path="/podcast/:slug" element={<EpisodePage />} />
                 <Route path="/about" element={<AboutPage />} />
+                <Route path="/societies" element={<SocietiesPage />} />
+                <Route path="/societies/:slug" element={<SocietyPage />} />
                 <Route path="/help" element={<HelpPage />} />
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/login" element={<LoginPage />} />
@@ -73,6 +79,8 @@ export default function App() {
                   <Route path="/admin/podcast" element={<AdminPodcastPage />} />
                   <Route path="/admin/podcast/:id" element={<AdminPodcastEditorPage />} />
                   <Route path="/admin/events/:id" element={<AdminEventEditorPage />} />
+                  <Route path="/admin/societies" element={<AdminSocietiesPage />} />
+                  <Route path="/admin/societies/:id" element={<AdminSocietyEditorPage />} />
                   <Route path="/admin/activities" element={<AdminActivitiesPage />} />
                   <Route path="/admin/activities/:id" element={<AdminActivityEditorPage />} />
                 </Route>

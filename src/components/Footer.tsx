@@ -8,6 +8,7 @@ const nav = [
   { to: "/about", label: "About us" },
   { to: "/news", label: "News" },
   { to: "/events", label: "Events" },
+  { to: "/societies", label: "University societies" },
   { to: "/podcast", label: "Podcast" },
   { to: "/register", label: "Join us" },
   { to: "/help", label: "Help" },
