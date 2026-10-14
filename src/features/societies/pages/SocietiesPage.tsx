@@ -3,7 +3,7 @@ import PageHeader from "../../../components/ui/PageHeader";
 import Reveal from "../../../components/ui/Reveal";
 import { listPublishedSocieties } from "../api";
 import type { Society } from "../api";
-import SocietyCard from "../SocietyCard";
+import SocietyTile from "../SocietyTile";
 
 export default function SocietiesPage() {
   const [societies, setSocieties] = useState<Society[] | null>(null);
@@ -66,9 +66,9 @@ export default function SocietiesPage() {
             {visible.length === 0 ? (
               <p className="py-12 text-center text-mute">No society matches this search.</p>
             ) : (
-              <Reveal className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+              <Reveal className="grid grid-cols-2 gap-4 sm:gap-5 md:grid-cols-3 lg:grid-cols-4">
                 {visible.map((s) => (
-                  <SocietyCard key={s.id} society={s} />
+                  <SocietyTile key={s.id} society={s} />
                 ))}
               </Reveal>
             )}

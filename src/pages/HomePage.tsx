@@ -10,6 +10,9 @@ import ActivityCard from "../features/activities/ActivityCard";
 import { listPublishedActivities } from "../features/activities/api";
 import type { Activity } from "../features/activities/api";
 import ContactCard from "../features/site/ContactCard";
+import { listPublishedSocieties } from "../features/societies/api";
+import type { Society } from "../features/societies/api";
+import SocietyTile from "../features/societies/SocietyTile";
 import { useSite } from "../features/site/SiteContext";
 import { useAuth } from "../features/auth/AuthContext";
 import { eventsApi } from "../features/events/api";
@@ -32,6 +35,7 @@ export default function HomePage() {
   const [episode, setEpisode] = useState<Episode | null>(null);
   const [latest, setLatest] = useState<Article[]>([]);
   const [activities, setActivities] = useState<Activity[]>([]);
+  const [societies, setSocieties] = useState<Society[]>([]);
   const { settings } = useSite();
   const hero = useRef<HTMLElement>(null);
   const now = useNow();
@@ -41,6 +45,7 @@ export default function HomePage() {
     listPublishedEpisodes().then((list) => setEpisode(list[0] ?? null)).catch(() => undefined);
     void listLatestPublished(3).then(setLatest).catch(() => undefined);
     listPublishedActivities(3).then(setActivities).catch(() => undefined);
+    listPublishedSocieties().then(setSocieties).catch(() => undefined);
   }, []);
 
   // The skyline drifts a little as the page scrolls. Bound to scroll, not to the pointer, so it works on a phone too.
@@ -209,6 +214,23 @@ export default function HomePage() {
           <Reveal className="grid gap-6 md:grid-cols-3">
             {activities.map((a) => (
               <ActivityCard key={a.id} activity={a} />
+            ))}
+          </Reveal>
+        </section>
+      )}
+
+      {societies.length > 0 && (
+        <section className="mx-auto max-w-7xl px-5 pt-20 sm:px-8" aria-labelledby="societies-title">
+          <div className="mb-8 flex items-baseline justify-between gap-4">
+            <div>
+              <h2 id="societies-title" className="display text-[2rem] sm:text-5xl">Azerbaijan Societies of Universities</h2>
+              <p className="mt-3 max-w-xl text-lg text-mute">Azerbaijani student societies across the UK. Find the one at your university.</p>
+            </div>
+            <Link to="/societies" className="link-u whitespace-nowrap">See all</Link>
+          </div>
+          <Reveal className="grid grid-cols-2 gap-4 sm:gap-5 md:grid-cols-3 lg:grid-cols-4">
+            {societies.slice(0, 8).map((s) => (
+              <SocietyTile key={s.id} society={s} />
             ))}
           </Reveal>
         </section>
