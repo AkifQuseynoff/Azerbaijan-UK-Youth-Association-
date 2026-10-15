@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { hasContact, hasSocial } from "./api";
 import { useSite } from "./SiteContext";
 
@@ -11,6 +11,7 @@ const Icon = ({ d }: { d: string }) => (
 /** Contact details and social links. Whatever has not been filled in under Site details is left out. */
 export default function ContactCard({ tone = "light", hideEmpty = false }: { tone?: "light" | "dark"; hideEmpty?: boolean }) {
   const { settings: s } = useSite();
+  const onHelp = useLocation().pathname === "/help";
   const dark = tone === "dark";
   const text = dark ? "text-white" : "text-ink";
   const muted = dark ? "text-[#c4d2f0]" : "text-mute";
@@ -20,7 +21,10 @@ export default function ContactCard({ tone = "light", hideEmpty = false }: { ton
     if (hideEmpty) return null;
     return (
       <p className={muted}>
-        Contact details will be published here soon. In the meantime, see <Link to="/help" className={link}>Help</Link>.
+        Contact details will be published here soon.
+        {!onHelp && (
+          <> In the meantime, the answers to common questions are on the <Link to="/help" className={link}>Help page</Link>.</>
+        )}
       </p>
     );
   }

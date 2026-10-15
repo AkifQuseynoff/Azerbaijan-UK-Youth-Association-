@@ -33,5 +33,3 @@ export const SITE: SiteConfig = {
   story: null,
   programmes: [],
 };
-
-export const hasContact = Object.values(SITE.contact).some(Boolean);

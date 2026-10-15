@@ -42,7 +42,7 @@ export default function HomePage() {
 
   useEffect(() => {
     eventsApi.listUpcoming().then((list) => setEvents(list.filter((e) => e.status === "published"))).catch(() => setEvents([]));
-    listPublishedEpisodes().then((list) => setEpisode(list[0] ?? null)).catch(() => undefined);
+    listPublishedEpisodes(1).then((list) => setEpisode(list[0] ?? null)).catch(() => undefined);
     void listLatestPublished(3).then(setLatest).catch(() => undefined);
     listPublishedActivities(3).then(setActivities).catch(() => undefined);
     listPublishedSocieties().then(setSocieties).catch(() => undefined);

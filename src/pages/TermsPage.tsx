@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useSite } from "../features/site/SiteContext";
 import LegalLayout, { LegalSection } from "./LegalLayout";
 
-const UPDATED = "13 October 2026";
+const UPDATED = "15 October 2026";
 
 export default function TermsPage() {
   const { settings } = useSite();
@@ -45,6 +45,9 @@ export default function TermsPage() {
       <LegalSection title="Content on this website">
         <p>The text, logo, pictures and design of this website belong to the Association or are used with permission. News and articles are published by the Association as its own content. Having an account does not give you the right to have your own views published as official Association news. Please do not copy or reuse our material without asking, except for personal use or to share a link.</p>
         <p>The podcast and some pages use players from other companies. Their own terms apply to those players.</p>
+        <p>
+          Links to other websites, and the university societies listed in our directory, are there for your convenience. The societies are independent student groups run by their own committees, and a listing does not mean we run, endorse or answer for them, their events or their websites.
+        </p>
       </LegalSection>
 
       <LegalSection title="Suspending or closing an account">
@@ -55,6 +58,9 @@ export default function TermsPage() {
         <p>The Association is run by volunteers, and we do our best to keep the website and events running well. We cannot promise the website will always be available or free of errors, and the information on it is for general guidance. Nothing in these terms limits any right you have under the law that cannot be limited, including for death or personal injury caused by negligence.</p>
       </LegalSection>
 
+      <LegalSection title="Which law applies">
+        <p>These terms are governed by the law of England and Wales. If you live in Scotland or Northern Ireland, you may also bring proceedings in your local courts.</p>
+      </LegalSection>
       <LegalSection title="Changes">
         <p>We may update these terms as the Association grows. When we make an important change, we will update the date above and, where appropriate, tell members by email. Using the website after a change means you accept the new terms.</p>
       </LegalSection>

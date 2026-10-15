@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useSite } from "../features/site/SiteContext";
 import LegalLayout, { LegalSection } from "./LegalLayout";
 
-const UPDATED = "13 October 2026";
+const UPDATED = "15 October 2026";
 
 export default function PrivacyPage() {
   const { settings } = useSite();
@@ -46,7 +46,7 @@ export default function PrivacyPage() {
 
       <LegalSection title="Who can see your data">
         <p>
-          <strong>Our team.</strong> Volunteers with an editor or admin role can see the names, email addresses and phone numbers of people registered for the events they run, and can download an attendee list. Admins can also manage member accounts. Access is limited to what their role needs, and attendee lists should be deleted once an event is over.
+          <strong>Our team.</strong> Volunteers with an editor or admin role can see the names, email addresses and phone numbers of people registered for events, and can download an attendee list. Only admins can see the full member list and manage member accounts. Access is limited to what their role needs, and attendee lists should be deleted once an event is over.
         </p>
         <p><strong>Other members cannot see your details.</strong> The site has no member directory and no way for members to message each other.</p>
         <p><strong>Companies that help us run the site (our &ldquo;processors&rdquo;):</strong></p>
@@ -58,8 +58,9 @@ export default function PrivacyPage() {
         </ul>
         <p>They may only use your data to provide their service to us. Some of them process data outside the UK, for example in the United States. Where they do, we rely on safeguards that UK law recognises.</p>
         <p>
-          <strong>Embedded players.</strong> Podcast and article pages can show players or videos from YouTube, Vimeo, Spotify, Apple Podcasts or SoundCloud. When you press play, that company receives your data and may set cookies under its own privacy policy. YouTube videos load from YouTube&apos;s privacy-enhanced address, which does not set tracking cookies until you press play.
+          <strong>Embedded players.</strong> Podcast and article pages can show players or videos from YouTube, Vimeo, Spotify, Apple Podcasts or SoundCloud. When a page with a player opens, your browser connects to that company, which receives standard connection details such as your IP address and may set cookies under its own privacy policy. YouTube videos load from YouTube&apos;s privacy-enhanced address, which does not set tracking cookies until you press play.
         </p>
+        <p><strong>University societies.</strong> The societies directory shows the contact details each society gave us for publication. Please only send us an address the society is happy to make public.</p>
         <p>We do not sell your personal data and we do not share it for advertising.</p>
       </LegalSection>
 

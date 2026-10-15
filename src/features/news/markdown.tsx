@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { createElement, Fragment } from "react";
+import { createElement } from "react";
 import { IMAGE_LINE, VIDEO_LINE, isSafeImageSrc, toVideoEmbed } from "./media";
 
 function inline(text: string, keyPrefix: string): ReactNode[] {
@@ -100,8 +100,4 @@ export function MarkdownBody({ source }: { source: string }) {
       return createElement("p", { key: index }, inline(block.replace(/\n/g, " "), `p-${index}`));
     }),
   );
-}
-
-export default function Markdown({ source }: { source: string }) {
-  return createElement(Fragment, null, createElement(MarkdownBody, { source }));
 }

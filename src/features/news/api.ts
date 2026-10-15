@@ -182,7 +182,19 @@ export async function getRelatedArticles(article: Article, limit = 3): Promise<A
     .slice(0, limit);
 }
 
+/** The newest live articles, for the home page: one query, no featured lookup and no total count. */
 export async function listLatestPublished(limit = 3): Promise<Article[]> {
+  if (supabase && isSupabaseConfigured) {
+    const { data, error } = await supabase
+      .from("articles")
+      .select("*")
+      .in("status", LIVE_STATUSES)
+      .lte("published_at", new Date().toISOString())
+      .order("published_at", { ascending: false })
+      .limit(limit);
+    if (error) throw error;
+    return ((data ?? []) as ArticleRow[]).map(fromRow);
+  }
   const { articles } = await listPublishedArticles({ page: 1, pageSize: limit });
   return articles;
 }

@@ -81,18 +81,22 @@ const saveLocal = (episodes: Episode[]) => localStorage.setItem(LOCAL_KEY, JSON.
 const byDateDesc = (a: Episode, b: Episode) => (b.publishedAt ?? b.updatedAt).localeCompare(a.publishedAt ?? a.updatedAt);
 const useSupabase = Boolean(supabase && isSupabaseConfigured);
 
-export async function listPublishedEpisodes(): Promise<Episode[]> {
+/** Live episodes, newest first. Pass a limit when only the latest few are needed (the home page wants one). */
+export async function listPublishedEpisodes(limit?: number): Promise<Episode[]> {
   if (supabase && useSupabase) {
-    const { data, error } = await supabase
+    let request = supabase
       .from("podcast_episodes")
       .select("*")
       .in("status", LIVE_STATUSES)
       .lte("published_at", new Date().toISOString())
       .order("published_at", { ascending: false });
+    if (limit) request = request.limit(limit);
+    const { data, error } = await request;
     if (error) fail(error);
     return ((data ?? []) as Row[]).map(fromRow);
   }
-  return loadLocal().filter((e) => live(e)).sort(byDateDesc);
+  const list = loadLocal().filter((e) => live(e)).sort(byDateDesc);
+  return limit ? list.slice(0, limit) : list;
 }
 
 export async function getPublishedEpisode(slug: string): Promise<Episode | null> {
