@@ -22,7 +22,7 @@ export default function EpisodePage() {
   }, [slug]);
 
   useEffect(() => {
-    if (episode) document.title = `${episode.title} · Podcast · Azerbaijan UK Youth Association`;
+    if (episode) document.title = `${episode.title} · Podcast · UK-Azerbaijan Youth Association`;
   }, [episode]);
 
   if (loading) return <div className="min-h-[60vh] pt-24 text-center text-mute">Loading…</div>;

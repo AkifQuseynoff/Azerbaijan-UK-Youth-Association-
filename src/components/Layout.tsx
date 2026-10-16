@@ -24,7 +24,7 @@ export default function Layout() {
   // (events, episodes, articles) set their own title afterwards.
   useLayoutEffect(() => {
     const title = PAGE_TITLES[pathname];
-    document.title = title ? `${title} · ${SITE.name}` : SITE.name;
+    document.title = title ? `${title} · ${SITE.name}` : `${SITE.name} (UKAYA)`;
 
     let canonical = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
     if (!canonical) {

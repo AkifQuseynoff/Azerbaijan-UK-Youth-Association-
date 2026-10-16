@@ -34,7 +34,7 @@ export default function Footer({ skyline = true }: { skyline?: boolean }) {
           <div className="flex items-center gap-4">
             <BadgeLogo />
             <p className="font-label text-[0.8rem] font-semibold uppercase leading-relaxed tracking-[0.14em]">
-              Azerbaijan–UK
+              UK-Azerbaijan
               <br />
               Youth Association
             </p>

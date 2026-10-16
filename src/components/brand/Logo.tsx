@@ -15,7 +15,7 @@ export function LogoMark({ className, ref, decorative = false }: { className?: s
       className={className}
       viewBox={LOGO_VIEWBOX}
       role={decorative ? undefined : "img"}
-      aria-label={decorative ? undefined : "Azerbaijan UK Youth Association logo"}
+      aria-label={decorative ? undefined : "UK-Azerbaijan Youth Association logo"}
       aria-hidden={decorative || undefined}
       focusable="false"
     >
@@ -45,12 +45,12 @@ export default function Logo({ compact = false }: { compact?: boolean }) {
       <LogoMark className="h-10 w-auto" decorative />
       {!compact && (
         <span className="hidden sm:block font-label text-[0.7rem] font-semibold uppercase leading-snug tracking-[0.14em] text-brand-blue">
-          Azerbaijan–UK
+          UK-Azerbaijan
           <br />
           Youth Association
         </span>
       )}
-      <span className="sr-only">Azerbaijan UK Youth Association, home</span>
+      <span className="sr-only">UK-Azerbaijan Youth Association, home</span>
     </span>
   );
 }

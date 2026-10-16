@@ -1,7 +1,7 @@
 export const FAQ = [
   {
     q: "Who can join the Association?",
-    a: "The Azerbaijan UK Youth Association welcomes young people of Azerbaijani heritage living in the United Kingdom, as well as anyone with a genuine interest in Azerbaijani culture and community. You must be 16 or over to register.",
+    a: "The UK-Azerbaijan Youth Association welcomes young people of Azerbaijani heritage living in the United Kingdom, as well as anyone with a genuine interest in Azerbaijani culture and community. You must be 16 or over to register.",
   },
   {
     q: "Is membership free?",

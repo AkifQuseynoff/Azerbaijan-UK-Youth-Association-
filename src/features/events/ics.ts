@@ -23,7 +23,7 @@ export function buildIcs(event: EventItem, pageUrl: string, ticketCode?: string)
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//Azerbaijan UK Youth Association//Events//EN",
+    "PRODID:-//UK-Azerbaijan Youth Association//Events//EN",
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
     "BEGIN:VEVENT",

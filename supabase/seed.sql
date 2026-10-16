@@ -4,7 +4,7 @@ insert into public.articles (
 values
   (
     'annual-cultural-festival-returns-london-october',
-    'Azerbaijan UK Youth Association Annual Cultural Festival Returns to London This October',
+    'UK-Azerbaijan Youth Association Annual Cultural Festival Returns to London This October',
     'We are proud to announce the return of our Annual Cultural Festival, celebrating the rich heritage of Azerbaijan in the heart of London.',
     E'## A flagship weekend for the diaspora\n\nThe Annual Cultural Festival returns to London this October.',
     'Events',

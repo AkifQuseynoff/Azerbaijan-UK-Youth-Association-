@@ -31,7 +31,7 @@ export default function ArticlePage() {
   }, [slug]);
 
   useEffect(() => {
-    if (article) document.title = `${article.title} · News · Azerbaijan UK Youth Association`;
+    if (article) document.title = `${article.title} · News · UK-Azerbaijan Youth Association`;
   }, [article]);
 
   if (loading) {

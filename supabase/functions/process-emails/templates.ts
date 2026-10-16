@@ -28,7 +28,7 @@ export interface RenderedEmail {
   text: string;
 }
 
-const ORG = "Azerbaijan UK Youth Association";
+const ORG = "UK-Azerbaijan Youth Association";
 // Company details UK law asks for on business emails.
 const LEGAL = "UK-Azerbaijan Youth Association (UKAYA) CIC, a community interest company registered in England and Wales, company number 17526049. Registered office: 182-184 High Street North, London E6 2JA.";
 

@@ -6,4 +6,4 @@ export const PILLARS = [
 
 /** Shown until an admin writes their own text under Site details. */
 export const DEFAULT_ABOUT =
-  "The Azerbaijan UK Youth Association is a community for young people of Azerbaijani heritage, and anyone interested in Azerbaijani culture, who live in the United Kingdom.\n\nWe support cultural exchange, learning and community, helping the Azerbaijani diaspora stay connected to its roots while thriving in British society.";
+  "The UK-Azerbaijan Youth Association is a community for young people of Azerbaijani heritage, and anyone interested in Azerbaijani culture, who live in the United Kingdom.\n\nWe support cultural exchange, learning and community, helping the Azerbaijani diaspora stay connected to its roots while thriving in British society.";

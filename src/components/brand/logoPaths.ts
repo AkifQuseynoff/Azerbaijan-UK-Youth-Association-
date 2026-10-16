@@ -1,4 +1,4 @@
-/** The Azerbaijan-UK Youth Association logo mark as vector parts, traced from the supplied artwork (viewBox 100 140 1330 1000).
+/** The UK-Azerbaijan Youth Association (UKAYA) logo mark as vector parts, traced from the supplied artwork (viewBox 100 140 1330 1000).
  *  The wordmark is live text so it stays sharp and translatable. */
 export const LOGO_VIEWBOX = "100 140 1330 1000";
 export const LOGO_PATHS = {

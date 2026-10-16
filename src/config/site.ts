@@ -37,7 +37,7 @@ export interface SiteConfig {
 }
 
 export const SITE: SiteConfig = {
-  name: "Azerbaijan UK Youth Association",
+  name: "UK-Azerbaijan Youth Association",
   contact: { email: null, address: null, phone: null, hours: null },
   stats: [],
   story: null,

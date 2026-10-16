@@ -4,7 +4,7 @@ export const SEED_ARTICLES: Article[] = [
   {
     id: "1",
     slug: "annual-cultural-festival-returns-london-october",
-    title: "Azerbaijan UK Youth Association Annual Cultural Festival Returns to London This October",
+    title: "UK-Azerbaijan Youth Association Annual Cultural Festival Returns to London This October",
     excerpt: "We are proud to announce the return of our Annual Cultural Festival, celebrating the rich heritage of Azerbaijan in the heart of London. Join thousands of community members for music, dance, art, and traditional cuisine.",
     body: `## A flagship weekend for the diaspora
 
@@ -35,7 +35,7 @@ Volunteers are needed for stewarding, translation, and hospitality. Write to the
   {
     id: "2",
     slug: "mentorship-programme-young-professionals",
-    title: "Azerbaijan UK Youth Association Launches New Mentorship Programme for Young Professionals",
+    title: "UK-Azerbaijan Youth Association Launches New Mentorship Programme for Young Professionals",
     excerpt: "Applications are now open for our flagship mentorship programme connecting young Azerbaijani professionals in the UK with experienced industry leaders across finance, law, medicine, and technology.",
     body: `## A structured year of guidance
 

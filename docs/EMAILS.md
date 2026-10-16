@@ -29,7 +29,7 @@ random webhook secret, saves everything in Supabase, and prints the secret once 
 ```bash
 read -s RESEND_KEY
 SECRET=$(openssl rand -hex 32)
-supabase secrets set RESEND_API_KEY="$RESEND_KEY" EMAIL_FROM="Azerbaijan UK Youth Association <events@azukyouthassociation.com>" SITE_URL=https://www.azukyouthassociation.com EMAIL_WEBHOOK_SECRET="$SECRET"
+supabase secrets set RESEND_API_KEY="$RESEND_KEY" EMAIL_FROM="UK-Azerbaijan Youth Association <events@azukyouthassociation.com>" SITE_URL=https://www.azukyouthassociation.com EMAIL_WEBHOOK_SECRET="$SECRET"
 echo "$SECRET"
 ```
 

@@ -44,7 +44,7 @@ export default function EventDetailPage() {
   }, [load]);
 
   useEffect(() => {
-    if (event) document.title = `${event.title} · Azerbaijan UK Youth Association`;
+    if (event) document.title = `${event.title} · UK-Azerbaijan Youth Association`;
   }, [event]);
 
   if (loading) return <div className="min-h-[60vh] pt-24 text-center text-mute">Loading…</div>;

@@ -76,7 +76,7 @@ export default function HomePage() {
         <div className="hero-ground" aria-hidden="true" />
         <div className="hero-inner">
           <div className="hero-copy">
-            <p className="eyebrow mb-4">Azerbaijan · United Kingdom</p>
+            <p className="eyebrow mb-4">United Kingdom · Azerbaijan</p>
             <h1 id="home-title" className="display text-[2.5rem] sm:text-6xl lg:text-[5.2rem] lg:leading-none">
               Two homes.
               <br />
