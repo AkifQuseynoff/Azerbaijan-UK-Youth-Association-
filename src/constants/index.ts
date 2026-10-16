@@ -5,11 +5,6 @@ export const INTERESTS = [
   "Mentorship", "Volunteering", "Sports & recreation", "Arts & music",
 ];
 
-export const HEARD_FROM_OPTIONS = [
-  "Friend or family member", "Social media (Instagram)", "Social media (Facebook)",
-  "University / college", "Google search", "Attended an event", "Other",
-];
-
 /** Badge colours shared by news categories and event categories: soft tints of the logo colours. */
 export const categoryColors: Record<string, string> = {
   Culture: "bg-brand-green/12 text-[#2c6638]",

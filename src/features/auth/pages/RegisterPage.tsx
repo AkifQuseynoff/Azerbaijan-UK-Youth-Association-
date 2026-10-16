@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import PageHeader from "../../../components/ui/PageHeader";
 import { useAuth } from "../AuthContext";
-import { CITIES, HEARD_FROM_OPTIONS, INTERESTS } from "../../../constants";
+import { CITIES, INTERESTS } from "../../../constants";
 import { Field, SelectField } from "../../../components/ui/Field";
 import { ageFromDob, isValidEmail, passwordIssues } from "../../../lib/validation";
 
@@ -25,7 +25,6 @@ export default function RegisterPage() {
     occupation: "",
     university: "",
     interests: [] as string[],
-    heardFrom: "",
     newsletter: false,
     terms: false,
   });
@@ -87,7 +86,6 @@ export default function RegisterPage() {
         city: form.city,
         occupation: form.occupation.trim(),
         university: form.university.trim(),
-        heardFrom: form.heardFrom,
         newsletter: form.newsletter,
         interests: form.interests,
         termsAccepted: form.terms,
@@ -191,7 +189,7 @@ export default function RegisterPage() {
                 <h2 className="display mb-2 text-3xl">
                   Your interests
                 </h2>
-                <p className="text-mute text-sm mb-6">Select all that apply — helps us tailor what we send you.</p>
+                <p className="text-mute text-sm mb-6">Optional. Tick what you would come to, so we can plan events members want.</p>
                 <div className="grid sm:grid-cols-2 gap-3 mb-8">
                   {INTERESTS.map((interest) => (
                     <label
@@ -205,7 +203,6 @@ export default function RegisterPage() {
                     </label>
                   ))}
                 </div>
-                <SelectField label="How did you hear about us?" value={form.heardFrom} onChange={(e) => setForm({ ...form, heardFrom: e.target.value })} options={HEARD_FROM_OPTIONS} placeholder="Select an option" />
               </div>
             )}
 

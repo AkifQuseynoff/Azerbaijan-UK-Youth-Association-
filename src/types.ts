@@ -47,7 +47,6 @@ export interface Profile {
   occupation: string;
   university: string;
   memberType: string;
-  heardFrom: string;
   newsletter: boolean;
   interests: string[];
   role: MemberRole;
@@ -64,7 +63,6 @@ export interface RegisterPayload {
   city: string;
   occupation: string;
   university: string;
-  heardFrom: string;
   newsletter: boolean;
   interests: string[];
   termsAccepted: boolean;

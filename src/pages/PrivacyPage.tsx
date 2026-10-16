@@ -25,7 +25,7 @@ export default function PrivacyPage() {
 
       <LegalSection title="What we collect">
         <ul>
-          <li><strong>Your membership details:</strong> first and last name, email address, date of birth, and city. You may also give a phone number, occupation, university, your interests, and how you heard about us.</li>
+          <li><strong>Your membership details:</strong> first and last name, email address, date of birth, and city. You may also give a phone number, occupation, university, and the kinds of events you are interested in.</li>
           <li><strong>Your password.</strong> It is handled by our sign-in provider and stored in a scrambled (hashed) form. We cannot read it.</li>
           <li><strong>Your choices and when you made them:</strong> that you accepted the Terms of Membership, and whether you asked for our newsletter.</li>
           <li><strong>Your event bookings:</strong> which events you registered for or joined the waitlist for, the status of each booking, your ticket code, and whether you were checked in.</li>
