@@ -12,7 +12,6 @@ function withDefaults(s: SiteSettings): SiteSettings {
   return {
     ...s,
     about: s.about || SITE.story || "",
-    charityNumber: s.charityNumber || SITE.charityNumber || "",
     contactEmail: s.contactEmail || SITE.contact.email || "",
     contactPhone: s.contactPhone || SITE.contact.phone || "",
     contactAddress: s.contactAddress || SITE.contact.address || "",

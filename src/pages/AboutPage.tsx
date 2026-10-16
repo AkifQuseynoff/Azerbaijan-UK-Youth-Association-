@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import CompanyNotice from "../components/CompanyNotice";
 import PageHeader from "../components/ui/PageHeader";
 import Reveal from "../components/ui/Reveal";
 import { DEFAULT_ABOUT, PILLARS } from "../data/pillars";
@@ -32,7 +33,7 @@ export default function AboutPage() {
           <aside className="card self-start p-6 sm:p-7" aria-labelledby="contact-title">
             <h2 id="contact-title" className="display mb-4 text-2xl">Get in touch</h2>
             <ContactCard />
-            {settings.charityNumber && <p className="mt-5 border-t border-line pt-4 text-xs text-mute">Registered charity in England and Wales · No. {settings.charityNumber}</p>}
+            <CompanyNotice className="mt-5 border-t border-line pt-4 text-xs leading-relaxed text-mute" linkClassName="text-brand-blue underline underline-offset-2" />
           </aside>
         </div>
 

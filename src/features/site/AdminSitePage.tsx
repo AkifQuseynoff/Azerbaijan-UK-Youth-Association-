@@ -55,7 +55,6 @@ export default function AdminSitePage() {
             placeholder={DEFAULT_ABOUT}
             hint="Leave a blank line between paragraphs. The first paragraph also appears on the home page. If empty, a short default text is shown."
           />
-          <Field label="Charity number (optional)" value={form.charityNumber} maxLength={40} onChange={(e) => set("charityNumber", e.target.value)} hint="Shown in the footer and on the About page. Leave empty if the association is not a registered charity." />
         </section>
 
         <section className="card space-y-5 p-6 sm:p-8" aria-labelledby="site-contact">

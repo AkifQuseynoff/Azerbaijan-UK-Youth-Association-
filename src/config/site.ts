@@ -7,10 +7,21 @@
 /** The one canonical address of the public site (used for canonical links and search engines). */
 export const SITE_ORIGIN = "https://www.azukyouthassociation.com";
 
+/**
+ * The legal entity behind the site, as registered at Companies House. UK company law requires the
+ * registered name, number, place of registration and registered office on the website.
+ */
+export const LEGAL = {
+  name: "UK-Azerbaijan Youth Association (UKAYA) CIC",
+  kind: "community interest company",
+  number: "17526049",
+  registeredIn: "England and Wales",
+  office: "182-184 High Street North, London E6 2JA",
+  companiesHouseUrl: "https://find-and-update.company-information.service.gov.uk/company/17526049",
+} as const;
+
 export interface SiteConfig {
   name: string;
-  /** Registered charity number, e.g. "1234567". Leave null if not a registered charity. */
-  charityNumber: string | null;
   contact: {
     email: string | null;
     address: string | null;
@@ -27,7 +38,6 @@ export interface SiteConfig {
 
 export const SITE: SiteConfig = {
   name: "Azerbaijan UK Youth Association",
-  charityNumber: null,
   contact: { email: null, address: null, phone: null, hours: null },
   stats: [],
   story: null,

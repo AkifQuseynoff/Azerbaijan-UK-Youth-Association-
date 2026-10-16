@@ -1,12 +1,13 @@
 import { Link } from "react-router-dom";
+import { LEGAL } from "../config/site";
 import { useSite } from "../features/site/SiteContext";
 import LegalLayout, { LegalSection } from "./LegalLayout";
 
-const UPDATED = "15 October 2026";
+const UPDATED = "16 October 2026";
 
 export default function PrivacyPage() {
   const { settings } = useSite();
-  const contact = settings.contactEmail ? <a href={`mailto:${settings.contactEmail}`}>{settings.contactEmail}</a> : <Link to="/help">the Help page</Link>;
+  const contact = settings.contactEmail ? <a href={`mailto:${settings.contactEmail}`}>{settings.contactEmail}</a> : <>our registered office, {LEGAL.office}</>;
 
   return (
     <LegalLayout
@@ -16,9 +17,8 @@ export default function PrivacyPage() {
     >
       <LegalSection title="Who we are">
         <p>
-          This website is run by the Azerbaijan UK Youth Association (&ldquo;the Association&rdquo;, &ldquo;we&rdquo;). We decide what personal data we collect and how it is used, which makes us the
-          &ldquo;controller&rdquo; under UK data protection law (the UK GDPR and the Data Protection Act 2018).
-          {settings.charityNumber ? ` We are a registered charity in England and Wales, number ${settings.charityNumber}.` : ""}
+          This website is run by {LEGAL.name} (&ldquo;the Association&rdquo;, &ldquo;we&rdquo;), a {LEGAL.kind} registered in {LEGAL.registeredIn} with company number {LEGAL.number}. Our registered office is {LEGAL.office}.
+          We decide what personal data we collect and how it is used, which makes us the &ldquo;controller&rdquo; under UK data protection law (the UK GDPR and the Data Protection Act 2018).
         </p>
         <p>Questions about your data, or requests to use your rights, can be sent to {contact}.</p>
       </LegalSection>

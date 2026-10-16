@@ -3,7 +3,6 @@ import { isSupabaseConfigured, supabase } from "../../lib/supabase";
 /** Public facts about the association that admins edit under Site details. Empty values are simply not shown. */
 export interface SiteSettings {
   about: string;
-  charityNumber: string;
   contactEmail: string;
   contactPhone: string;
   contactAddress: string;
@@ -15,7 +14,6 @@ export interface SiteSettings {
 
 export const EMPTY_SETTINGS: SiteSettings = {
   about: "",
-  charityNumber: "",
   contactEmail: "",
   contactPhone: "",
   contactAddress: "",
@@ -27,7 +25,6 @@ export const EMPTY_SETTINGS: SiteSettings = {
 
 type Row = {
   about: string;
-  charity_number: string;
   contact_email: string;
   contact_phone: string;
   contact_address: string;
@@ -42,7 +39,7 @@ const live = () => Boolean(supabase && isSupabaseConfigured);
 
 function fromRow(r: Row): SiteSettings {
   return {
-    about: r.about, charityNumber: r.charity_number, contactEmail: r.contact_email, contactPhone: r.contact_phone,
+    about: r.about, contactEmail: r.contact_email, contactPhone: r.contact_phone,
     contactAddress: r.contact_address, contactHours: r.contact_hours, instagramUrl: r.instagram_url,
     facebookUrl: r.facebook_url, linkedinUrl: r.linkedin_url,
   };
@@ -73,7 +70,7 @@ export async function saveSiteSettings(s: SiteSettings): Promise<void> {
   const clean = Object.fromEntries(Object.entries(s).map(([k, v]) => [k, v.trim()])) as unknown as SiteSettings;
   if (supabase && live()) {
     const payload = {
-      about: clean.about, charity_number: clean.charityNumber, contact_email: clean.contactEmail, contact_phone: clean.contactPhone,
+      about: clean.about, contact_email: clean.contactEmail, contact_phone: clean.contactPhone,
       contact_address: clean.contactAddress, contact_hours: clean.contactHours, instagram_url: clean.instagramUrl,
       facebook_url: clean.facebookUrl, linkedin_url: clean.linkedinUrl,
     };

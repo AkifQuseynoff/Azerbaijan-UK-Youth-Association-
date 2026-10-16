@@ -29,6 +29,8 @@ export interface RenderedEmail {
 }
 
 const ORG = "Azerbaijan UK Youth Association";
+// Company details UK law asks for on business emails.
+const LEGAL = "UK-Azerbaijan Youth Association (UKAYA) CIC, a community interest company registered in England and Wales, company number 17526049. Registered office: 182-184 High Street North, London E6 2JA.";
 
 export const escapeHtml = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
@@ -107,6 +109,7 @@ export function renderEmail(job: EmailJob, siteUrl: string): RenderedEmail {
     "",
     `${ORG}`,
     "You are receiving this because of your event registration with us.",
+    LEGAL,
   ].join("\n");
 
   const detailRows = rows
@@ -129,7 +132,7 @@ export function renderEmail(job: EmailJob, siteUrl: string): RenderedEmail {
 <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 24px;font-size:14px">${detailRows}</table>
 <a href="${escapeHtml(link)}" style="display:inline-block;background:#003580;color:#ffffff;text-decoration:none;font-weight:bold;padding:12px 22px;border-radius:10px">${escapeHtml(copy.cta)}</a>
 </td></tr>
-<tr><td style="padding:16px 28px 24px;color:#9ca3af;font-size:12px">You are receiving this because of your event registration with ${escapeHtml(ORG)}.</td></tr>
+<tr><td style="padding:16px 28px 24px;color:#9ca3af;font-size:12px">You are receiving this because of your event registration with ${escapeHtml(ORG)}.<br><br>${escapeHtml(LEGAL)}</td></tr>
 </table></td></tr></table></body></html>`;
 
   return { subject: copy.subject(job.event_title), html, text };

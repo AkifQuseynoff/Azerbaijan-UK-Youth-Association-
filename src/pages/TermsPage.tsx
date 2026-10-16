@@ -1,12 +1,13 @@
 import { Link } from "react-router-dom";
+import { LEGAL } from "../config/site";
 import { useSite } from "../features/site/SiteContext";
 import LegalLayout, { LegalSection } from "./LegalLayout";
 
-const UPDATED = "15 October 2026";
+const UPDATED = "16 October 2026";
 
 export default function TermsPage() {
   const { settings } = useSite();
-  const contact = settings.contactEmail ? <a href={`mailto:${settings.contactEmail}`}>{settings.contactEmail}</a> : <Link to="/help">the Help page</Link>;
+  const contact = settings.contactEmail ? <a href={`mailto:${settings.contactEmail}`}>{settings.contactEmail}</a> : <>our registered office, {LEGAL.office}</>;
 
   return (
     <LegalLayout
@@ -14,9 +15,14 @@ export default function TermsPage() {
       updated={UPDATED}
       intro="The simple rules for being part of the Association and using this website."
     >
+      <LegalSection title="Who we are">
+        <p>
+          These terms are an agreement between you and {LEGAL.name} (&ldquo;the Association&rdquo;, &ldquo;we&rdquo;), a {LEGAL.kind} registered in {LEGAL.registeredIn} with company number {LEGAL.number}. Our registered office is {LEGAL.office}.
+        </p>
+      </LegalSection>
       <LegalSection title="Who can join">
         <p>
-          Membership of the Azerbaijan UK Youth Association is free. It is open to people aged 16 or over who live in the United Kingdom and who are of Azerbaijani heritage or have a genuine interest in Azerbaijani culture and community. By creating an account you confirm that you meet these conditions and that you accept these terms and our <Link to="/privacy">privacy policy</Link>.
+          Membership of the Association is free. It is open to people aged 16 or over who live in the United Kingdom and who are of Azerbaijani heritage or have a genuine interest in Azerbaijani culture and community. By creating an account you confirm that you meet these conditions and that you accept these terms and our <Link to="/privacy">privacy policy</Link>.
         </p>
       </LegalSection>
 

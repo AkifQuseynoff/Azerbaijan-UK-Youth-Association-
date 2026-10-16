@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import ContactCard from "../features/site/ContactCard";
-import { useSite } from "../features/site/SiteContext";
+import { LEGAL } from "../config/site";
+import CompanyNotice from "./CompanyNotice";
 import { BadgeLogo } from "./brand/Logo";
 import Skyline from "./brand/Skyline";
 
@@ -21,7 +22,6 @@ const resources = [
 
 /** `skyline` is off on the home page, whose hero already carries the skyline. */
 export default function Footer({ skyline = true }: { skyline?: boolean }) {
-  const { settings } = useSite();
   return (
     <footer className={`${skyline ? "mt-20" : "mt-24"} bg-ink text-white`}>
       {skyline && (
@@ -43,9 +43,7 @@ export default function Footer({ skyline = true }: { skyline?: boolean }) {
             A community for young people of Azerbaijani heritage across the United Kingdom.
           </p>
           <div className="mt-6 max-w-sm text-sm"><ContactCard tone="dark" hideEmpty /></div>
-          {settings.charityNumber && (
-            <p className="mt-6 text-xs text-white/60">Registered charity in England and Wales · No. {settings.charityNumber}</p>
-          )}
+          <CompanyNotice className="mt-6 max-w-md text-xs leading-relaxed text-white/60" linkClassName="underline decoration-white/40 underline-offset-2 hover:text-white" />
         </div>
         <nav aria-label="Footer">
           <h2 className="eyebrow !text-white/60">Navigate</h2>
@@ -65,7 +63,7 @@ export default function Footer({ skyline = true }: { skyline?: boolean }) {
         </div>
       </div>
       <div className="border-t border-white/10 px-6 py-5 text-center text-xs text-white/60">
-        © {new Date().getFullYear()} Azerbaijan UK Youth Association. All rights reserved.
+        © {new Date().getFullYear()} {LEGAL.name}. All rights reserved.
       </div>
     </footer>
   );
